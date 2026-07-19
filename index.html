@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Angus Grill Premium Meat | Web App Preview</title>
+    <meta name="description" content="Catalogo premium com pedido pelo WhatsApp para Angus Grill Premium Meat em Canterbury.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#produtos">Pular para produtos</a>
+    <div class="announcement">Entrega rapida em Canterbury • Retirada na loja disponivel • Carnes premium selecionadas todos os dias</div>
+
+    <header class="site-header">
+      <div class="brand">
+        <img src="assets/images/angus-logo-new.png" alt="Angus Grill Premium Meat">
+      </div>
+      <div class="search-row">
+        <select id="headerCategory" aria-label="Todas as categorias"></select>
+        <label class="search-box">
+          <span class="sr-only">Buscar produto</span>
+          <input id="searchInput" type="search" placeholder="O que voce esta procurando?">
+        </label>
+        <button class="icon-button red" id="searchButton" type="button" aria-label="Buscar">Buscar</button>
+      </div>
+      <nav class="header-actions" aria-label="Acoes">
+        <a href="#como-funciona">Como comprar</a>
+        <a href="tel:01227781164">Ligar</a>
+        <button class="cart-button" id="openCart" type="button">Carrinho <span id="cartCount">0</span></button>
+      </nav>
+    </header>
+
+    <nav class="category-nav" id="categoryNav" aria-label="Categorias"></nav>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Acougue premium em Canterbury</p>
+          <h1>Carnes premium em Canterbury, <span>agora online.</span></h1>
+          <p>Cortes selecionados, linguicas artesanais e kits para churrasco. Entrega rapida ou retirada na loja.</p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#produtos">Comprar agora</a>
+            <a class="secondary-button" href="#kits">Ver kits churrasco</a>
+          </div>
+          <div class="hero-rating" aria-label="Avaliacao e servicos">
+            <span>★★★★★</span>
+            <strong>5.0 Google Reviews</strong>
+            <em>Entrega e retirada disponiveis</em>
+          </div>
+        </div>
+        <div class="hero-image">
+          <img src="assets/images/hero-meat-counter.png" alt="Cortes premium e carnes para churrasco Angus Grill">
+          <div class="hero-card">
+            <strong>Preparado sob pedido</strong>
+            <span>Cortes, porcoes e observacoes combinados diretamente pelo WhatsApp.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="trust-strip" aria-label="Diferenciais">
+        <span>5.0 no Google</span>
+        <span>Entrega rapida</span>
+        <span>Produtos frescos</span>
+        <span>Retirada na loja</span>
+      </section>
+
+      <section class="section category-section">
+        <div class="section-heading">
+          <p class="eyebrow">Categorias</p>
+          <h2>Compre por categoria</h2>
+          <p>Encontre cortes selecionados, linguicas, carnes para o dia a dia e kits completos para churrasco.</p>
+        </div>
+        <div class="category-cards" id="categoryCards"></div>
+      </section>
+
+      <section class="section product-section" id="produtos">
+        <div class="section-heading row">
+          <div>
+            <p class="eyebrow">Catalogo</p>
+            <h2>Mais pedidos da semana</h2>
+            <p><span id="productCount">0 produtos encontrados</span> com selecao especial para churrasco, familia e compras do dia a dia.</p>
+          </div>
+          <label class="sort-label">Organizar por
+            <select id="sortSelect">
+              <option value="featured">Destaques</option>
+              <option value="price-asc">Menor preco</option>
+              <option value="price-desc">Maior preco</option>
+              <option value="name">Nome</option>
+            </select>
+          </label>
+        </div>
+        <div class="shop-layout">
+          <aside class="filters" aria-label="Filtros">
+            <h3>Filtros</h3>
+            <button class="filter-chip active" data-filter="Todos" type="button">Todos</button>
+            <button class="filter-chip" data-filter="Ofertas" type="button">Ofertas</button>
+            <button class="filter-chip" data-filter="Mais Vendidos" type="button">Mais Vendidos</button>
+            <button class="filter-chip" data-filter="Kits Churrasco" type="button">Kits Churrasco</button>
+            <label class="check-line"><input id="stockOnly" type="checkbox"> Somente disponiveis</label>
+          </aside>
+          <div class="product-grid" id="productGrid" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="feature-band" id="kits">
+        <div>
+          <p class="eyebrow">Churrasco sem complicacao</p>
+          <h2>Kits prontos para churrasco</h2>
+          <p>Escolha um kit, adicione ao carrinho e fale conosco pelo WhatsApp para confirmar o preparo e a retirada ou entrega.</p>
+          <a class="primary-button" href="#produtos" data-category-link="Kits Churrasco">Ver kits churrasco</a>
+        </div>
+        <img src="assets/images/product-assortment.png" alt="Kit churrasco Angus Grill">
+      </section>
+
+      <section class="reviews section">
+        <div class="section-heading">
+          <p class="eyebrow">Confianca local</p>
+          <h2>Avaliado com 5 estrelas pelos nossos clientes em Canterbury</h2>
+          <p>Carnes de qualidade, atendimento proximo, entrega rapida e produtos cuidadosamente embalados.</p>
+        </div>
+        <div class="review-carousel" aria-label="Avaliacoes de clientes">
+          <div class="review-grid" id="reviewCarousel" aria-live="polite">
+            <blockquote class="review-slide is-active" data-review-slide>
+              <span class="review-stars" aria-label="5 estrelas">★★★★★</span>
+              <p>Excelente qualidade e atendimento. Carnes frescas e muito bem embaladas.</p>
+              <cite>Cliente Angus Grill</cite>
+            </blockquote>
+            <blockquote class="review-slide" data-review-slide hidden>
+              <span class="review-stars" aria-label="5 estrelas">★★★★★</span>
+              <p>Otima variedade de cortes e entrega rapida.</p>
+              <cite>Compra para churrasco</cite>
+            </blockquote>
+            <blockquote class="review-slide" data-review-slide hidden>
+              <span class="review-stars" aria-label="5 estrelas">★★★★★</span>
+              <p>A melhor carne da regiao. Recomendo para churrasco e compras da semana.</p>
+              <cite>Cliente local em Canterbury</cite>
+            </blockquote>
+          </div>
+          <div class="review-controls" aria-label="Controles das avaliacoes">
+            <div class="review-dots" id="reviewDots" aria-label="Selecionar avaliacao"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="how section" id="como-funciona">
+        <div class="section-heading">
+          <p class="eyebrow">Pedido simples</p>
+          <h2>Como funciona</h2>
+        </div>
+        <div class="step-grid">
+          <article><span>1</span><h3>Escolha seus produtos</h3><p>Navegue pelas categorias e adicione seus cortes favoritos ao carrinho.</p></article>
+          <article><span>2</span><h3>Informe entrega ou retirada</h3><p>Escolha a melhor opcao e adicione observacoes para o acougueiro.</p></article>
+          <article><span>3</span><h3>Finalize pelo WhatsApp</h3><p>Envie o pedido pronto e confirme diretamente com a equipe Angus Grill.</p></article>
+        </div>
+      </section>
+
+      <section class="app-promo">
+        <div>
+          <p class="eyebrow">Fase 2</p>
+          <h2>Em breve no Google Play e App Store</h2>
+          <p>Estamos preparando uma experiencia ainda mais pratica para voce comprar pelo celular.</p>
+        </div>
+        <div class="store-badges" aria-label="Aplicativos em breve">
+          <span>Google Play</span>
+          <span>App Store</span>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div><h3>Angus Grill</h3><a>Sobre nos</a><a>Fale conosco</a><a>Localizacao</a><a>Avaliacoes</a></div>
+      <div><h3>Comprar</h3><a>Ofertas</a><a>Mais vendidos</a><a>Kits churrasco</a><a>Todos os produtos</a></div>
+      <div><h3>Atendimento</h3><a>Entrega e retirada</a><a>Como comprar</a><a>WhatsApp</a><a>Horarios</a></div>
+      <div><h3>Contato</h3><p>36 Brymore Road, Canterbury CT1 1JE</p><p>01227 781164</p><p>07923 832005</p><a href="admin.html">Painel admin</a></div>
+    </footer>
+
+    <div class="modal-backdrop" id="productModal" hidden>
+      <article class="product-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button class="close-button" id="closeModal" type="button" aria-label="Fechar">x</button>
+        <img id="modalImage" alt="">
+        <div>
+          <p class="eyebrow" id="modalCategory"></p>
+          <h2 id="modalTitle"></h2>
+          <p id="modalDescription"></p>
+          <p class="modal-unit" id="modalUnit"></p>
+          <p class="modal-note" id="modalNote"></p>
+          <div class="price-row"><strong id="modalPrice"></strong><span id="modalStock"></span></div>
+          <button class="primary-button" id="modalAdd" type="button">Adicionar ao carrinho</button>
+        </div>
+      </article>
+    </div>
+
+    <aside class="cart-drawer" id="cartDrawer" aria-label="Seu pedido" aria-hidden="true">
+      <div class="cart-panel">
+        <div class="cart-head">
+          <h2>Seu pedido</h2>
+          <button class="close-button" id="closeCart" type="button" aria-label="Fechar carrinho">x</button>
+        </div>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="cart-total"><span>Subtotal</span><strong id="subtotal">£0.00</strong></div>
+        <p class="delivery-note">Entrega e retirada serao confirmadas pela equipe Angus Grill no WhatsApp.</p>
+        <form class="checkout" id="checkoutForm">
+          <h3>Finalizar pedido</h3>
+          <label>Nome<input name="name" autocomplete="name" required></label>
+          <label>Telefone ou e-mail<input name="contact" autocomplete="email"></label>
+          <div class="toggle-group" role="group" aria-label="Entrega ou retirada">
+            <label><input type="radio" name="fulfilmentType" value="delivery" checked> Entrega</label>
+            <label><input type="radio" name="fulfilmentType" value="collection"> Retirada</label>
+          </div>
+          <label id="addressLabel">Endereco de entrega<input name="address" autocomplete="street-address"></label>
+          <label>Data preferida<input name="preferredDate" type="date"></label>
+          <label>Horario preferido<select name="preferredTime"><option>Manha</option><option>Tarde</option><option>Final do dia</option><option>Combinar pelo WhatsApp</option></select></label>
+          <label>Observacoes para o acougueiro<textarea name="butcherNotes" placeholder="Ex: cortar em bifes finos, separar em porcoes, retirar excesso de gordura..."></textarea></label>
+          <button class="whatsapp-submit" type="submit">Finalizar pedido no WhatsApp</button>
+          <p class="confirmation" id="confirmation" hidden>Pedido preparado para envio no WhatsApp. Confira a mensagem antes de enviar.</p>
+        </form>
+        <button class="secondary-button full" id="continueShopping" type="button">Continuar comprando</button>
+      </div>
+    </aside>
+
+    <a class="floating-whatsapp" href="https://wa.me/447923832005" target="_blank" rel="noreferrer" aria-label="Abrir WhatsApp">WhatsApp</a>
+    <button class="mobile-cart" id="mobileCart" type="button" hidden>Ver pedido <span id="mobileCartTotal">£0.00</span></button>
+
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel Angus Grill | Admin Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+  <body class="admin-shell">
+    <header class="admin-header">
+      <div class="brand">
+        <img src="assets/images/angus-logo-new.png" alt="Angus Grill Premium Meat">
+        <div>
+          <strong>Painel Angus Grill</strong>
+          <span>ADMIN PREVIEW</span>
+        </div>
+      </div>
+      <nav class="header-actions">
+        <a href="index.html">Ver loja</a>
+        <button class="cart-button" type="button">Login futuro</button>
+      </nav>
+    </header>
+
+    <main class="admin-main">
+      <section class="section-heading">
+        <p class="eyebrow">Gestao do catalogo</p>
+        <h1>Painel Angus Grill</h1>
+        <p>Preview da area administrativa para gerenciar produtos, precos, categorias, disponibilidade, destaques e ofertas.</p>
+      </section>
+
+      <section class="summary-grid" id="summaryGrid" aria-label="Resumo"></section>
+
+      <section class="admin-scope" aria-label="Escopo do painel">
+        <article>
+          <p class="eyebrow">Phase 1</p>
+          <h2>Admin preview para aprovacao</h2>
+          <p>Esta tela mostra como o negocio podera gerir catalogo, precos, categorias, disponibilidade, destaques e ofertas. Nesta fase, os dados ainda vivem no app e os pedidos continuam pelo WhatsApp.</p>
+        </article>
+        <article>
+          <p class="eyebrow">Backend futuro</p>
+          <h2>Gestao real apos aprovacao</h2>
+          <p>Na proxima fase, este painel pode salvar alteracoes, carregar imagens, controlar estoque simples e receber historico de pedidos sem transformar o projeto em ecommerce completo.</p>
+        </article>
+        <article>
+          <p class="eyebrow">Fora do MVP</p>
+          <h2>Manter simples</h2>
+          <p>Pagamentos online, contas de cliente, push notifications, rastreamento ao vivo, POS e contabilidade ficam fora para proteger prazo, custo e manutencao.</p>
+        </article>
+      </section>
+
+      <section>
+        <div class="admin-toolbar">
+          <div>
+            <p class="eyebrow">Produtos</p>
+            <h2>Gerenciamento de produtos</h2>
+            <p class="admin-note">Preview visual: alteracoes nesta tabela nao sao salvas ate a fase com backend.</p>
+          </div>
+          <button class="primary-button" type="button" id="addProduct">Adicionar produto preview</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Categoria</th>
+                <th>Preco</th>
+                <th>Estoque</th>
+                <th>Destaque</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody id="productRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="info-panel">
+        <p class="eyebrow">Pedidos pelo WhatsApp</p>
+        <h2>Fluxo aprovado para a primeira versao</h2>
+        <p>Os pedidos da primeira versao serao finalizados pelo WhatsApp. Em uma proxima fase, este painel podera receber pedidos diretamente, controlar estoque, relatorios e historico de clientes.</p>
+        <p><strong>Fora desta fase:</strong> pagamentos online, contas de cliente, rastreamento ao vivo, push notifications, automacao de estoque, multiplas funcoes de equipe e integracao com POS ou contabilidade.</p>
+      </aside>
+    </main>
+
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/admin.js"></script>
+  </body>
+</html>
