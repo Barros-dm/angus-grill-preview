@@ -11,6 +11,34 @@ const state = {
 const money = (value) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 const byId = (id) => document.getElementById(id);
 
+function isVariableWeight(product) {
+  return product.pricingType === "perKg" || product.pricingType === "variable";
+}
+
+function priceLabel(product) {
+  if (product.pricingType === "perKg") return `${money(product.price)}/kg`;
+  if (product.pricingType === "variable") return "Preco a confirmar";
+  return money(product.price);
+}
+
+function oldPriceLabel(product) {
+  if (!product.oldPrice) return "";
+  return product.pricingType === "perKg" ? `${money(product.oldPrice)}/kg` : money(product.oldPrice);
+}
+
+function pricingNote(product) {
+  if (product.pricingNote) return product.pricingNote;
+  if (isVariableWeight(product)) return "Preco final confirmado apos pesagem.";
+  return "";
+}
+
+function lineLabel(product, quantity) {
+  const unit = product.orderUnit || "unidade";
+  const invariantUnits = new Set(["kg", "g"]);
+  const plural = quantity > 1 && !unit.endsWith("s") && !invariantUnits.has(unit) ? `${unit}s` : unit;
+  return `${quantity} ${plural}`;
+}
+
 const elements = {
   headerCategory: byId("headerCategory"),
   searchInput: byId("searchInput"),
@@ -67,7 +95,21 @@ function cartItems() {
 }
 
 function cartSubtotal() {
-  return cartItems().reduce((total, item) => total + item.product.price * item.quantity, 0);
+  return cartItems()
+    .filter((item) => !isVariableWeight(item.product))
+    .reduce((total, item) => total + item.product.price * item.quantity, 0);
+}
+
+function cartHasVariableWeight() {
+  return cartItems().some((item) => isVariableWeight(item.product));
+}
+
+function cartTotalLabel() {
+  const fixedSubtotal = cartSubtotal();
+  if (cartHasVariableWeight()) {
+    return fixedSubtotal ? `${money(fixedSubtotal)} + itens a pesar` : "A confirmar";
+  }
+  return money(fixedSubtotal);
 }
 
 function cartCount() {
@@ -167,7 +209,11 @@ function renderProducts() {
         <h3>${product.name}</h3>
         <div class="unit-stock"><span>${product.unit}</span><span class="${product.inStock ? "stock-ok" : "stock-out"}">${product.inStock ? "Disponivel" : "Indisponivel"}</span></div>
         <p>${product.description}</p>
-        <div class="price-row"><div><strong>${money(product.price)}</strong>${product.oldPrice ? ` <del>${money(product.oldPrice)}</del>` : ""}</div></div>
+        <div class="price-row">
+          <div><strong>${priceLabel(product)}</strong>${product.oldPrice ? ` <del>${oldPriceLabel(product)}</del>` : ""}</div>
+          ${isVariableWeight(product) ? `<small>final apos pesagem</small>` : ""}
+        </div>
+        ${pricingNote(product) ? `<p class="pricing-note">${pricingNote(product)}</p>` : ""}
         <div class="card-actions">
           <button class="secondary-button" type="button" data-detail="${product.id}">Ver detalhes</button>
           <button class="primary-button" type="button" data-add="${product.id}" ${product.inStock ? "" : "disabled"}>${product.inStock ? "Adicionar ao carrinho" : "Indisponivel"}</button>
@@ -180,8 +226,8 @@ function renderProducts() {
 function renderCart() {
   const items = cartItems();
   elements.cartCount.textContent = String(cartCount());
-  elements.subtotal.textContent = money(cartSubtotal());
-  elements.mobileCartTotal.textContent = money(cartSubtotal());
+  elements.subtotal.textContent = cartTotalLabel();
+  elements.mobileCartTotal.textContent = cartTotalLabel();
   elements.mobileCart.hidden = items.length === 0;
 
   if (!items.length) {
@@ -193,7 +239,8 @@ function renderCart() {
     <article class="cart-item">
       <div>
         <h4>${product.name}</h4>
-        <p>${product.unit} - ${money(product.price)}</p>
+        <p>${lineLabel(product, quantity)} - ${product.unit} - ${priceLabel(product)}</p>
+        ${isVariableWeight(product) ? `<p class="cart-note">Peso e preco final confirmados no WhatsApp.</p>` : ""}
         <button class="remove-link" type="button" data-remove="${product.id}">Remover</button>
       </div>
       <div class="qty" aria-label="Quantidade de ${product.name}">
@@ -225,8 +272,8 @@ function openModal(productId) {
   elements.modalTitle.textContent = product.name;
   elements.modalDescription.textContent = product.description;
   elements.modalUnit.textContent = product.unit;
-  elements.modalNote.textContent = product.preparationNote || "Fale pelo WhatsApp para combinar cortes, preparo e embalagem.";
-  elements.modalPrice.textContent = money(product.price);
+  elements.modalNote.textContent = product.preparationNote || pricingNote(product) || "Fale pelo WhatsApp para combinar cortes, preparo e embalagem.";
+  elements.modalPrice.textContent = priceLabel(product);
   elements.modalStock.textContent = product.inStock ? "Disponivel" : "Indisponivel";
   elements.modalStock.className = product.inStock ? "stock-ok" : "stock-out";
   elements.modalAdd.disabled = !product.inStock;
@@ -265,7 +312,10 @@ function startReviewCarousel() {
 
 function createMessage(form) {
   const type = form.fulfilmentType === "delivery" ? "Entrega" : "Retirada";
-  const products = cartItems().map(({ product, quantity }) => `- ${quantity}x ${product.name} - ${product.unit} - ${money(product.price)}`).join("\n");
+  const products = cartItems().map(({ product, quantity }) => {
+    const note = isVariableWeight(product) ? " - final peso/preco confirmado apos pesagem" : "";
+    return `- ${lineLabel(product, quantity)} ${product.name} - ${product.unit} - ${priceLabel(product)}${note}`;
+  }).join("\n");
   return `Ola Angus Grill, gostaria de fazer um pedido:
 
 Nome: ${form.name || "A informar"}
@@ -277,7 +327,8 @@ Horario: ${form.preferredTime || "Combinar pelo WhatsApp"}
 Produtos:
 ${products}
 
-Subtotal: ${money(cartSubtotal())}
+Total/estimativa: ${cartTotalLabel()}
+${cartHasVariableWeight() ? "Obs: itens por kg podem variar conforme o peso real separado pela equipe." : ""}
 
 Observacoes para o acougueiro:
 ${form.butcherNotes || "Sem observacoes."}

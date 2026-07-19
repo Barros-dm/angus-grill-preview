@@ -552,6 +552,19 @@ a {
   font-size: 1.42rem;
 }
 
+.price-row small,
+.pricing-note,
+.cart-note {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.pricing-note,
+.cart-note {
+  margin: -6px 0 0;
+}
+
 .price-row del {
   color: var(--muted);
 }

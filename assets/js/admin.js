@@ -5,6 +5,13 @@ const summary = [
   ["Pedidos pelo WhatsApp", "Ativo"]
 ];
 
+const adminPriceLabel = (product) => {
+  const price = `£${product.price.toFixed(2)}`;
+  if (product.pricingType === "perKg") return `${price}/kg`;
+  if (product.pricingType === "variable") return "A confirmar";
+  return price;
+};
+
 document.getElementById("summaryGrid").innerHTML = summary.map(([label, value]) => `
   <article class="summary-card">
     <span>${label}</span>
@@ -20,7 +27,7 @@ document.getElementById("productRows").innerHTML = PRODUCTS.map((product) => `
         ${CATEGORIES.filter((category) => category !== "Todos" && category !== "Ofertas" && category !== "Mais Vendidos").map((category) => `<option ${category === product.category ? "selected" : ""}>${category}</option>`).join("")}
       </select>
     </td>
-    <td><input aria-label="Preco de ${product.name}" value="${product.price.toFixed(2)}"></td>
+    <td><input aria-label="Preco de ${product.name}" value="${adminPriceLabel(product)}"></td>
     <td><button class="small-button" type="button">${product.inStock ? "Indisponibilizar" : "Disponibilizar"}</button></td>
     <td><label><input type="checkbox" ${product.featured ? "checked" : ""}> Destaque/oferta</label></td>
     <td><button class="small-button" type="button">Editar preview</button> <button class="small-button" type="button">Salvar futuro</button></td>
