@@ -734,6 +734,61 @@ a {
   font-weight: 700;
 }
 
+.weight-options {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.weight-options p {
+  margin: 0;
+  color: var(--charcoal);
+  font-weight: 900;
+}
+
+.weight-option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.weight-option {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--white);
+  color: var(--charcoal);
+  text-align: left;
+}
+
+.weight-option.selected {
+  border-color: var(--deep-red);
+  box-shadow: inset 0 0 0 1px var(--deep-red);
+}
+
+.weight-option:disabled {
+  opacity: 0.46;
+  cursor: not-allowed;
+}
+
+.weight-option span {
+  font-weight: 900;
+}
+
+.weight-option strong {
+  color: var(--deep-red);
+  font-size: 1.08rem;
+}
+
+.weight-option em {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
 .cart-drawer {
   position: fixed;
   inset: 0;

@@ -7,6 +7,7 @@ const summary = [
 
 const adminPriceLabel = (product) => {
   const price = `£${product.price.toFixed(2)}`;
+  if (product.weightOptions?.length) return `${price}/kg (${product.weightOptions.length} opcoes)`;
   if (product.pricingType === "perKg") return `${price}/kg`;
   if (product.pricingType === "variable") return "A confirmar";
   return price;

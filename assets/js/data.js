@@ -23,7 +23,12 @@ const PRODUCTS = [
     orderUnit: "peca",
     estimatedWeight: "1.2kg - 1.8kg",
     unit: "1 peca aprox. 1.2kg - 1.8kg",
-    pricingNote: "Preco final confirmado apos pesagem.",
+    pricingNote: "Escolha uma faixa de peso disponivel antes de adicionar.",
+    weightOptions: [
+      { id: "picanha-1200-1400", label: "1.200kg a 1.400kg", weightKg: 1.3, price: 25.99, stock: 4 },
+      { id: "picanha-1400-1600", label: "1.400kg a 1.600kg", weightKg: 1.5, price: 29.99, stock: 5 },
+      { id: "picanha-1600-1800", label: "1.600kg a 1.800kg", weightKg: 1.7, price: 33.98, stock: 3 }
+    ],
     image: "assets/images/product-picanha.png",
     badge: "Oferta",
     featured: true,
@@ -41,7 +46,12 @@ const PRODUCTS = [
     orderUnit: "peca",
     estimatedWeight: "1kg - 1.5kg",
     unit: "1 peca aprox. 1kg - 1.5kg",
-    pricingNote: "Preco final confirmado apos pesagem.",
+    pricingNote: "Escolha uma faixa de peso disponivel antes de adicionar.",
+    weightOptions: [
+      { id: "contra-1000-1200", label: "1.000kg a 1.200kg", weightKg: 1.1, price: 17.59, stock: 3 },
+      { id: "contra-1200-1400", label: "1.200kg a 1.400kg", weightKg: 1.3, price: 20.79, stock: 4 },
+      { id: "contra-1400-1600", label: "1.400kg a 1.600kg", weightKg: 1.5, price: 23.99, stock: 2 }
+    ],
     image: "assets/images/product-contra-file.png",
     badge: "Mais vendido",
     bestSeller: true,
@@ -58,7 +68,12 @@ const PRODUCTS = [
     orderUnit: "peca",
     estimatedWeight: "800g - 1.3kg",
     unit: "1 peca aprox. 800g - 1.3kg",
-    pricingNote: "Preco final confirmado apos pesagem.",
+    pricingNote: "Escolha uma faixa de peso disponivel antes de adicionar.",
+    weightOptions: [
+      { id: "fraldinha-0800-1000", label: "800g a 1.000kg", weightKg: 0.9, price: 13.49, stock: 4 },
+      { id: "fraldinha-1000-1200", label: "1.000kg a 1.200kg", weightKg: 1.1, price: 16.49, stock: 3 },
+      { id: "fraldinha-1200-1400", label: "1.200kg a 1.400kg", weightKg: 1.3, price: 19.49, stock: 2 }
+    ],
     image: "assets/images/product-fraldinha.png",
     bestSeller: true,
     inStock: true
@@ -73,7 +88,12 @@ const PRODUCTS = [
     orderUnit: "peca",
     estimatedWeight: "1kg - 2kg",
     unit: "1 peca aprox. 1kg - 2kg",
-    pricingNote: "Preco final confirmado apos pesagem.",
+    pricingNote: "Escolha uma faixa de peso disponivel antes de adicionar.",
+    weightOptions: [
+      { id: "costela-1000-1300", label: "1.000kg a 1.300kg", weightKg: 1.15, price: 13.79, stock: 3 },
+      { id: "costela-1300-1600", label: "1.300kg a 1.600kg", weightKg: 1.45, price: 17.39, stock: 3 },
+      { id: "costela-1600-2000", label: "1.600kg a 2.000kg", weightKg: 1.8, price: 21.58, stock: 2 }
+    ],
     image: "assets/images/product-costela.png",
     badge: "Corte especial",
     inStock: true
@@ -88,7 +108,11 @@ const PRODUCTS = [
     orderUnit: "pacote",
     estimatedWeight: "800g - 1kg",
     unit: "pacote aprox. 800g - 1kg",
-    pricingNote: "Preco final confirmado apos pesagem.",
+    pricingNote: "Escolha o tamanho do pacote disponivel.",
+    weightOptions: [
+      { id: "linguica-toscana-800g", label: "Pacote 800g", weightKg: 0.8, price: 7.19, stock: 8 },
+      { id: "linguica-toscana-1kg", label: "Pacote 1kg", weightKg: 1, price: 8.99, stock: 10 }
+    ],
     image: "assets/images/product-linguica-toscana.png",
     badge: "Mais vendido",
     featured: true,
@@ -105,7 +129,11 @@ const PRODUCTS = [
     orderUnit: "pacote",
     estimatedWeight: "800g - 1kg",
     unit: "pacote aprox. 800g - 1kg",
-    pricingNote: "Preco final confirmado apos pesagem.",
+    pricingNote: "Escolha o tamanho do pacote disponivel.",
+    weightOptions: [
+      { id: "linguica-frango-800g", label: "Pacote 800g", weightKg: 0.8, price: 6.39, stock: 5 },
+      { id: "linguica-frango-1kg", label: "Pacote 1kg", weightKg: 1, price: 7.99, stock: 6 }
+    ],
     image: "assets/images/product-assortment.png",
     inStock: true
   },
@@ -119,7 +147,12 @@ const PRODUCTS = [
     orderUnit: "kg",
     estimatedWeight: "pedido por kg",
     unit: "preco por kg",
-    pricingNote: "Peso e preco final confirmados apos separacao.",
+    pricingNote: "Escolha a quantidade desejada.",
+    weightOptions: [
+      { id: "coxa-500g", label: "500g", weightKg: 0.5, price: 3.0, stock: 10 },
+      { id: "coxa-1kg", label: "1kg", weightKg: 1, price: 5.99, stock: 10 },
+      { id: "coxa-2kg", label: "2kg", weightKg: 2, price: 11.98, stock: 6 }
+    ],
     image: "assets/images/product-assortment.png",
     badge: "Fresco",
     inStock: true
@@ -134,7 +167,12 @@ const PRODUCTS = [
     orderUnit: "kg",
     estimatedWeight: "pedido por kg",
     unit: "preco por kg",
-    pricingNote: "Peso e preco final confirmados apos separacao.",
+    pricingNote: "Escolha a quantidade desejada.",
+    weightOptions: [
+      { id: "asa-500g", label: "500g", weightKg: 0.5, price: 3.25, stock: 10 },
+      { id: "asa-1kg", label: "1kg", weightKg: 1, price: 6.49, stock: 10 },
+      { id: "asa-2kg", label: "2kg", weightKg: 2, price: 12.98, stock: 6 }
+    ],
     image: "assets/images/product-assortment.png",
     bestSeller: true,
     inStock: true
@@ -149,7 +187,12 @@ const PRODUCTS = [
     orderUnit: "kg",
     estimatedWeight: "pedido por kg",
     unit: "preco por kg",
-    pricingNote: "Peso e preco final confirmados apos separacao.",
+    pricingNote: "Escolha a quantidade desejada.",
+    weightOptions: [
+      { id: "bisteca-500g", label: "500g", weightKg: 0.5, price: 3.75, stock: 10 },
+      { id: "bisteca-1kg", label: "1kg", weightKg: 1, price: 7.49, stock: 10 },
+      { id: "bisteca-2kg", label: "2kg", weightKg: 2, price: 14.98, stock: 5 }
+    ],
     image: "assets/images/product-assortment.png",
     inStock: true
   },
@@ -163,7 +206,12 @@ const PRODUCTS = [
     orderUnit: "kg",
     estimatedWeight: "pedido por kg",
     unit: "preco por kg",
-    pricingNote: "Peso e preco final confirmados apos pesagem.",
+    pricingNote: "Escolha a quantidade desejada.",
+    weightOptions: [
+      { id: "moida-500g", label: "500g", weightKg: 0.5, price: 5.0, stock: 12 },
+      { id: "moida-1kg", label: "1kg", weightKg: 1, price: 9.99, stock: 12 },
+      { id: "moida-2kg", label: "2kg", weightKg: 2, price: 19.98, stock: 6 }
+    ],
     image: "assets/images/product-assortment.png",
     badge: "Fresco",
     inStock: true,

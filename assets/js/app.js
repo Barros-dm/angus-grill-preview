@@ -5,6 +5,7 @@ const state = {
   stockOnly: false,
   cart: new Map(),
   modalProduct: null,
+  modalOptionId: null,
   reviewIndex: 0
 };
 
@@ -15,7 +16,31 @@ function isVariableWeight(product) {
   return product.pricingType === "perKg" || product.pricingType === "variable";
 }
 
+function productOptions(product) {
+  return product.weightOptions || [];
+}
+
+function hasOptions(product) {
+  return productOptions(product).length > 0;
+}
+
+function optionPrice(product, option) {
+  if (!option) return product.price;
+  return option.price ?? product.price * option.weightKg;
+}
+
+function lowestOptionPrice(product) {
+  const prices = productOptions(product).map((option) => optionPrice(product, option));
+  return prices.length ? Math.min(...prices) : product.price;
+}
+
+function selectedModalOption() {
+  if (!state.modalProduct) return null;
+  return productOptions(state.modalProduct).find((option) => option.id === state.modalOptionId) || null;
+}
+
 function priceLabel(product) {
+  if (hasOptions(product)) return `A partir de ${money(lowestOptionPrice(product))}`;
   if (product.pricingType === "perKg") return `${money(product.price)}/kg`;
   if (product.pricingType === "variable") return "Preco a confirmar";
   return money(product.price);
@@ -23,6 +48,7 @@ function priceLabel(product) {
 
 function oldPriceLabel(product) {
   if (!product.oldPrice) return "";
+  if (hasOptions(product)) return "";
   return product.pricingType === "perKg" ? `${money(product.oldPrice)}/kg` : money(product.oldPrice);
 }
 
@@ -32,11 +58,16 @@ function pricingNote(product) {
   return "";
 }
 
-function lineLabel(product, quantity) {
-  const unit = product.orderUnit || "unidade";
+function lineLabel(product, quantity, option = null) {
+  if (option) return `${quantity}x`;
+  const unit = option ? "opcao" : product.orderUnit || "unidade";
   const invariantUnits = new Set(["kg", "g"]);
   const plural = quantity > 1 && !unit.endsWith("s") && !invariantUnits.has(unit) ? `${unit}s` : unit;
   return `${quantity} ${plural}`;
+}
+
+function cartKey(productId, optionId = "") {
+  return optionId ? `${productId}::${optionId}` : productId;
 }
 
 const elements = {
@@ -67,6 +98,7 @@ const elements = {
   modalDescription: byId("modalDescription"),
   modalUnit: byId("modalUnit"),
   modalNote: byId("modalNote"),
+  modalOptions: byId("modalOptions"),
   modalPrice: byId("modalPrice"),
   modalStock: byId("modalStock"),
   modalAdd: byId("modalAdd"),
@@ -95,13 +127,15 @@ function cartItems() {
 }
 
 function cartSubtotal() {
-  return cartItems()
-    .filter((item) => !isVariableWeight(item.product))
-    .reduce((total, item) => total + item.product.price * item.quantity, 0);
+  return cartItems().reduce((total, item) => {
+    if (item.option) return total + optionPrice(item.product, item.option) * item.quantity;
+    if (!isVariableWeight(item.product)) return total + item.product.price * item.quantity;
+    return total;
+  }, 0);
 }
 
 function cartHasVariableWeight() {
-  return cartItems().some((item) => isVariableWeight(item.product));
+  return cartItems().some((item) => isVariableWeight(item.product) && !item.option);
 }
 
 function cartTotalLabel() {
@@ -160,20 +194,31 @@ function sortedProducts() {
   });
 }
 
-function addToCart(productId, quantity = 1) {
+function addToCart(productId, quantity = 1, optionId = null) {
   const product = PRODUCTS.find((item) => item.id === productId);
   if (!product || !product.inStock) return;
-  const existing = state.cart.get(productId);
-  state.cart.set(productId, { product, quantity: (existing?.quantity || 0) + quantity });
+  const option = optionId ? productOptions(product).find((item) => item.id === optionId) : null;
+  if (hasOptions(product) && !option) {
+    openModal(productId);
+    return;
+  }
+  if (option && option.stock <= 0) return;
+  const key = cartKey(productId, option?.id);
+  const existing = state.cart.get(key);
+  const nextQuantity = (existing?.quantity || 0) + quantity;
+  state.cart.set(key, { key, product, option, quantity: option ? Math.min(nextQuantity, option.stock) : nextQuantity });
   renderCart();
 }
 
-function setCartQuantity(productId, quantity) {
+function setCartQuantity(key, quantity) {
   if (quantity <= 0) {
-    state.cart.delete(productId);
+    state.cart.delete(key);
   } else {
-    const existing = state.cart.get(productId);
-    if (existing) state.cart.set(productId, { ...existing, quantity });
+    const existing = state.cart.get(key);
+    if (existing) {
+      const nextQuantity = existing.option ? Math.min(quantity, existing.option.stock) : quantity;
+      state.cart.set(key, { ...existing, quantity: nextQuantity });
+    }
   }
   renderCart();
 }
@@ -210,13 +255,13 @@ function renderProducts() {
         <div class="unit-stock"><span>${product.unit}</span><span class="${product.inStock ? "stock-ok" : "stock-out"}">${product.inStock ? "Disponivel" : "Indisponivel"}</span></div>
         <p>${product.description}</p>
         <div class="price-row">
-          <div><strong>${priceLabel(product)}</strong>${product.oldPrice ? ` <del>${oldPriceLabel(product)}</del>` : ""}</div>
-          ${isVariableWeight(product) ? `<small>final apos pesagem</small>` : ""}
+          <div><strong>${priceLabel(product)}</strong>${oldPriceLabel(product) ? ` <del>${oldPriceLabel(product)}</del>` : ""}</div>
+          ${hasOptions(product) ? `<small>escolha o peso</small>` : isVariableWeight(product) ? `<small>final apos pesagem</small>` : ""}
         </div>
         ${pricingNote(product) ? `<p class="pricing-note">${pricingNote(product)}</p>` : ""}
         <div class="card-actions">
           <button class="secondary-button" type="button" data-detail="${product.id}">Ver detalhes</button>
-          <button class="primary-button" type="button" data-add="${product.id}" ${product.inStock ? "" : "disabled"}>${product.inStock ? "Adicionar ao carrinho" : "Indisponivel"}</button>
+          <button class="primary-button" type="button" data-add="${product.id}" ${product.inStock ? "" : "disabled"}>${product.inStock ? (hasOptions(product) ? "Escolher tamanho" : "Adicionar ao carrinho") : "Indisponivel"}</button>
         </div>
       </div>
     </article>
@@ -235,18 +280,18 @@ function renderCart() {
     return;
   }
 
-  elements.cartItems.innerHTML = items.map(({ product, quantity }) => `
+  elements.cartItems.innerHTML = items.map(({ key, product, option, quantity }) => `
     <article class="cart-item">
       <div>
         <h4>${product.name}</h4>
-        <p>${lineLabel(product, quantity)} - ${product.unit} - ${priceLabel(product)}</p>
-        ${isVariableWeight(product) ? `<p class="cart-note">Peso e preco final confirmados no WhatsApp.</p>` : ""}
-        <button class="remove-link" type="button" data-remove="${product.id}">Remover</button>
+        <p>${lineLabel(product, quantity, option)} - ${option ? option.label : product.unit} - ${option ? money(optionPrice(product, option)) : priceLabel(product)}</p>
+        ${option ? `<p class="cart-note">Opcao selecionada pelo cliente.</p>` : isVariableWeight(product) ? `<p class="cart-note">Peso e preco final confirmados no WhatsApp.</p>` : ""}
+        <button class="remove-link" type="button" data-remove="${key}">Remover</button>
       </div>
       <div class="qty" aria-label="Quantidade de ${product.name}">
-        <button type="button" data-dec="${product.id}">-</button>
+        <button type="button" data-dec="${key}">-</button>
         <span>${quantity}</span>
-        <button type="button" data-inc="${product.id}">+</button>
+        <button type="button" data-inc="${key}">+</button>
       </div>
     </article>
   `).join("");
@@ -266,6 +311,7 @@ function openModal(productId) {
   const product = PRODUCTS.find((item) => item.id === productId);
   if (!product) return;
   state.modalProduct = product;
+  state.modalOptionId = productOptions(product).find((option) => option.stock > 0)?.id || productOptions(product)[0]?.id || null;
   elements.modalImage.src = product.image;
   elements.modalImage.alt = product.name;
   elements.modalCategory.textContent = product.category;
@@ -273,7 +319,8 @@ function openModal(productId) {
   elements.modalDescription.textContent = product.description;
   elements.modalUnit.textContent = product.unit;
   elements.modalNote.textContent = product.preparationNote || pricingNote(product) || "Fale pelo WhatsApp para combinar cortes, preparo e embalagem.";
-  elements.modalPrice.textContent = priceLabel(product);
+  renderModalOptions();
+  elements.modalPrice.textContent = selectedModalOption() ? money(optionPrice(product, selectedModalOption())) : priceLabel(product);
   elements.modalStock.textContent = product.inStock ? "Disponivel" : "Indisponivel";
   elements.modalStock.className = product.inStock ? "stock-ok" : "stock-out";
   elements.modalAdd.disabled = !product.inStock;
@@ -283,6 +330,29 @@ function openModal(productId) {
 function closeModal() {
   elements.productModal.hidden = true;
   state.modalProduct = null;
+  state.modalOptionId = null;
+}
+
+function renderModalOptions() {
+  const product = state.modalProduct;
+  if (!product || !hasOptions(product)) {
+    elements.modalOptions.hidden = true;
+    elements.modalOptions.innerHTML = "";
+    return;
+  }
+  elements.modalOptions.hidden = false;
+  elements.modalOptions.innerHTML = `
+    <p>Escolha o peso disponivel</p>
+    <div class="weight-option-grid">
+      ${productOptions(product).map((option) => `
+        <button class="weight-option ${state.modalOptionId === option.id ? "selected" : ""}" type="button" data-option="${option.id}" ${option.stock > 0 ? "" : "disabled"}>
+          <span>${option.label}</span>
+          <strong>${money(optionPrice(product, option))}</strong>
+          <em>${option.stock > 0 ? `${option.stock} disponiveis` : "Esgotado"}</em>
+        </button>
+      `).join("")}
+    </div>
+  `;
 }
 
 function renderReviewCarousel() {
@@ -312,9 +382,11 @@ function startReviewCarousel() {
 
 function createMessage(form) {
   const type = form.fulfilmentType === "delivery" ? "Entrega" : "Retirada";
-  const products = cartItems().map(({ product, quantity }) => {
-    const note = isVariableWeight(product) ? " - final peso/preco confirmado apos pesagem" : "";
-    return `- ${lineLabel(product, quantity)} ${product.name} - ${product.unit} - ${priceLabel(product)}${note}`;
+  const products = cartItems().map(({ product, option, quantity }) => {
+    const price = option ? money(optionPrice(product, option)) : priceLabel(product);
+    const selected = option ? ` - ${option.label}` : ` - ${product.unit}`;
+    const note = option ? " - opcao selecionada pelo cliente" : isVariableWeight(product) ? " - final peso/preco confirmado apos pesagem" : "";
+    return `- ${lineLabel(product, quantity, option)} ${product.name}${selected} - ${price}${note}`;
   }).join("\n");
   return `Ola Angus Grill, gostaria de fazer um pedido:
 
@@ -352,6 +424,11 @@ function setupEvents() {
     }
     if (target.dataset.add) addToCart(target.dataset.add);
     if (target.dataset.detail) openModal(target.dataset.detail);
+    if (target.dataset.option && state.modalProduct) {
+      state.modalOptionId = target.dataset.option;
+      renderModalOptions();
+      elements.modalPrice.textContent = money(optionPrice(state.modalProduct, selectedModalOption()));
+    }
     if (target.dataset.inc) setCartQuantity(target.dataset.inc, (state.cart.get(target.dataset.inc)?.quantity || 0) + 1);
     if (target.dataset.dec) setCartQuantity(target.dataset.dec, (state.cart.get(target.dataset.dec)?.quantity || 0) - 1);
     if (target.dataset.remove) setCartQuantity(target.dataset.remove, 0);
@@ -396,7 +473,7 @@ function setupEvents() {
     if (event.target === elements.productModal) closeModal();
   });
   elements.modalAdd.addEventListener("click", () => {
-    if (state.modalProduct) addToCart(state.modalProduct.id);
+    if (state.modalProduct) addToCart(state.modalProduct.id, 1, state.modalOptionId);
     closeModal();
     openCart();
   });
