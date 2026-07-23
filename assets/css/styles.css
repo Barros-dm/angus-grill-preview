@@ -905,6 +905,12 @@ a {
   font-weight: 800;
 }
 
+.checkout label small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .checkout input,
 .checkout select,
 .checkout textarea {
@@ -918,6 +924,59 @@ a {
 .checkout textarea {
   min-height: 86px;
   resize: vertical;
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.delivery-quote-card {
+  display: grid;
+  gap: 4px;
+  border: 1px solid rgba(143, 17, 24, 0.18);
+  border-left: 4px solid var(--deep-red);
+  border-radius: 8px;
+  padding: 13px 14px;
+  background: #fff;
+}
+
+.delivery-quote-card .quote-kicker {
+  color: var(--deep-red);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.delivery-quote-card strong {
+  color: var(--charcoal);
+  font-size: 1rem;
+}
+
+.delivery-quote-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.delivery-quote-card.is-loading {
+  border-left-color: var(--gold);
+}
+
+.delivery-quote-card.is-outside {
+  border-left-color: var(--muted);
+  background: #f8f8f7;
+}
+
+.pac-container {
+  z-index: 10000;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 16px 40px rgba(14, 14, 14, 0.16);
+  font-family: "Manrope", Arial, sans-serif;
 }
 
 .toggle-group {
@@ -2159,15 +2218,9 @@ body {
 
 .hero {
   position: relative;
-  display: grid;
   min-height: clamp(560px, 72vh, 780px);
-  grid-template-columns: minmax(320px, 0.95fr) minmax(360px, 1.05fr);
-  align-items: center;
-  padding: clamp(58px, 7.5vw, 112px) clamp(22px, 8vw, 170px);
   overflow: hidden;
-  background:
-    linear-gradient(90deg, rgba(5, 5, 5, 0.98) 0%, rgba(5, 5, 5, 0.88) 35%, rgba(5, 5, 5, 0.38) 63%, rgba(5, 5, 5, 0.08) 100%),
-    url("../images/hero-steak-premium.png") right center / cover no-repeat;
+  background: #050505;
   color: var(--white);
   border-bottom: 1px solid rgba(14, 14, 14, 0.12);
 }
@@ -2176,7 +2229,62 @@ body {
   display: none;
 }
 
+.hero-slides {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(320px, 0.95fr) minmax(360px, 1.05fr);
+  align-items: center;
+  padding: clamp(58px, 7.5vw, 112px) clamp(22px, 8vw, 170px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease;
+}
+
+.hero-slide::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  content: "";
+  background:
+    linear-gradient(90deg, rgba(5, 5, 5, 0.98) 0%, rgba(5, 5, 5, 0.88) 35%, rgba(5, 5, 5, 0.38) 63%, rgba(5, 5, 5, 0.08) 100%),
+    var(--hero-image) var(--hero-position, right center) / cover no-repeat;
+  transform: scale(1.015);
+  transition: transform 6.5s ease;
+}
+
+.hero-slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hero-slide.is-active::before {
+  transform: scale(1);
+}
+
+.hero-slide-carnes {
+  --hero-image: url("../images/hero-steak-premium.png");
+  --hero-position: right center;
+}
+
+.hero-slide-mercearia {
+  --hero-image: url("../images/product-assortment.png");
+  --hero-position: right center;
+}
+
+.hero-slide-promocao {
+  --hero-image: url("../images/hero-meat-counter.png");
+  --hero-position: right center;
+}
+
 .hero-copy {
+  position: relative;
+  z-index: 1;
   max-width: 640px;
 }
 
@@ -2287,6 +2395,30 @@ body {
   display: none;
 }
 
+.hero-dots {
+  position: absolute;
+  z-index: 3;
+  left: clamp(22px, 8vw, 170px);
+  bottom: clamp(24px, 4vw, 46px);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.hero-dot {
+  width: 36px;
+  height: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.34);
+  cursor: pointer;
+}
+
+.hero-dot.is-active {
+  background: var(--premium-red);
+}
+
 .trust-strip {
   background: #0e0e0e;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -2321,8 +2453,11 @@ body {
 
 @media (max-width: 1120px) {
   .hero {
+    min-height: 720px;
+  }
+
+  .hero-slide {
     grid-template-columns: 1fr;
-    background-position: 58% center;
   }
 
   .hero-copy {
@@ -2349,10 +2484,16 @@ body {
 
   .hero {
     min-height: 760px;
+  }
+
+  .hero-slide {
     padding: 42px 22px 340px;
+  }
+
+  .hero-slide::before {
     background:
       linear-gradient(180deg, rgba(5, 5, 5, 0.96) 0%, rgba(5, 5, 5, 0.88) 42%, rgba(5, 5, 5, 0.25) 100%),
-      url("../images/hero-steak-premium.png") 62% bottom / cover no-repeat;
+      var(--hero-image) var(--hero-mobile-position, 62% bottom) / cover no-repeat;
   }
 
   .hero h1 {
@@ -2368,6 +2509,9 @@ body {
 @media (max-width: 560px) {
   .hero {
     min-height: 720px;
+  }
+
+  .hero-slide {
     padding-bottom: 270px;
   }
 
@@ -2379,6 +2523,18 @@ body {
   .hero-actions {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .hero-dots {
+    left: 22px;
+    bottom: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide,
+  .hero-slide::before {
+    transition: none;
   }
 }
 

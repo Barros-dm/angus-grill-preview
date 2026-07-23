@@ -7,7 +7,7 @@ const summary = [
 
 const adminPriceLabel = (product) => {
   const price = `£${product.price.toFixed(2)}`;
-  if (product.weightOptions?.length) return `${price}/kg (${product.weightOptions.length} opcoes)`;
+  if (product.weightOptions?.length) return `${price}/kg (${product.weightOptions.length} opções)`;
   if (product.pricingType === "perKg") return `${price}/kg`;
   if (product.pricingType === "variable") return "A confirmar";
   return price;
@@ -28,7 +28,7 @@ document.getElementById("productRows").innerHTML = PRODUCTS.map((product) => `
         ${CATEGORIES.filter((category) => category !== "Todos" && category !== "Ofertas" && category !== "Mais Vendidos").map((category) => `<option ${category === product.category ? "selected" : ""}>${category}</option>`).join("")}
       </select>
     </td>
-    <td><input aria-label="Preco de ${product.name}" value="${adminPriceLabel(product)}"></td>
+    <td><input aria-label="Preço de ${product.name}" value="${adminPriceLabel(product)}"></td>
     <td><button class="small-button" type="button">${product.inStock ? "Indisponibilizar" : "Disponibilizar"}</button></td>
     <td><label><input type="checkbox" ${product.featured ? "checked" : ""}> Destaque/oferta</label></td>
     <td><button class="small-button" type="button">Editar preview</button> <button class="small-button" type="button">Salvar futuro</button></td>
@@ -36,5 +36,5 @@ document.getElementById("productRows").innerHTML = PRODUCTS.map((product) => `
 `).join("");
 
 document.getElementById("addProduct").addEventListener("click", () => {
-  alert("Preview: na versao com backend, este botao abrira o formulario para adicionar produto, imagem, preco, categoria e disponibilidade.");
+  alert("Preview: na versão com backend, este botão abrirá o formulário para adicionar produto, imagem, preço, categoria e disponibilidade.");
 });

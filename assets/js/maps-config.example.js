@@ -1,0 +1,2 @@
+window.ANGUS_GRILL_MAPS_API_KEY = "YOUR_RESTRICTED_GOOGLE_MAPS_BROWSER_KEY";
+window.ANGUS_GRILL_DELIVERY_QUOTE_ENDPOINT = "https://YOUR_PROJECT.functions.supabase.co/delivery-quote";
