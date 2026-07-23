@@ -12,6 +12,13 @@ const state = {
 const money = (value) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 const byId = (id) => document.getElementById(id);
 
+const DELIVERY_ZONES = {
+  local: { label: "Canterbury e ate 7.5 milhas", fee: 2.5 },
+  extended: { label: "Herne Bay, Whitstable e 7.5 a 15 milhas", fee: 5 }
+};
+
+const FREE_DELIVERY_THRESHOLD = 40;
+
 function isVariableWeight(product) {
   return product.pricingType === "perKg" || product.pricingType === "variable";
 }
@@ -86,6 +93,9 @@ const elements = {
   cartDrawer: byId("cartDrawer"),
   cartItems: byId("cartItems"),
   subtotal: byId("subtotal"),
+  deliveryFee: byId("deliveryFee"),
+  orderTotal: byId("orderTotal"),
+  deliveryNote: byId("deliveryNote"),
   checkoutForm: byId("checkoutForm"),
   confirmation: byId("confirmation"),
   mobileCart: byId("mobileCart"),
@@ -103,6 +113,8 @@ const elements = {
   modalStock: byId("modalStock"),
   modalAdd: byId("modalAdd"),
   addressLabel: byId("addressLabel"),
+  deliveryZone: byId("deliveryZone"),
+  deliveryZoneLabel: byId("deliveryZoneLabel"),
   productCount: byId("productCount"),
   reviewSlides: [...document.querySelectorAll("[data-review-slide]")],
   reviewDots: byId("reviewDots"),
@@ -138,12 +150,53 @@ function cartHasVariableWeight() {
   return cartItems().some((item) => isVariableWeight(item.product) && !item.option);
 }
 
-function cartTotalLabel() {
+function cartSubtotalLabel() {
   const fixedSubtotal = cartSubtotal();
   if (cartHasVariableWeight()) {
     return fixedSubtotal ? `${money(fixedSubtotal)} + itens a pesar` : "A confirmar";
   }
   return money(fixedSubtotal);
+}
+
+function selectedFulfilmentType() {
+  return new FormData(elements.checkoutForm).get("fulfilmentType") || "delivery";
+}
+
+function selectedDeliveryZone() {
+  return elements.deliveryZone?.value || "local";
+}
+
+function deliveryFeeAmount() {
+  if (!cartItems().length) return 0;
+  if (selectedFulfilmentType() !== "delivery") return 0;
+  const subtotal = cartSubtotal();
+  if (subtotal >= FREE_DELIVERY_THRESHOLD && !cartHasVariableWeight()) return 0;
+  return DELIVERY_ZONES[selectedDeliveryZone()]?.fee || 0;
+}
+
+function deliveryFeeLabel() {
+  if (selectedFulfilmentType() !== "delivery") return "Retirada";
+  if (cartSubtotal() >= FREE_DELIVERY_THRESHOLD && !cartHasVariableWeight()) return "Gratis";
+  return money(deliveryFeeAmount());
+}
+
+function orderTotalLabel() {
+  if (cartHasVariableWeight()) return cartSubtotal() ? `${money(cartSubtotal() + deliveryFeeAmount())} + itens a pesar` : "A confirmar";
+  return money(cartSubtotal() + deliveryFeeAmount());
+}
+
+function updateDeliveryUi() {
+  const isDelivery = selectedFulfilmentType() === "delivery";
+  elements.addressLabel.style.display = isDelivery ? "grid" : "none";
+  elements.deliveryZoneLabel.style.display = isDelivery ? "grid" : "none";
+  if (!elements.deliveryNote) return;
+  if (!isDelivery) {
+    elements.deliveryNote.textContent = "Retirada na loja sem taxa de entrega. Horario sera confirmado pelo WhatsApp.";
+  } else if (cartSubtotal() >= FREE_DELIVERY_THRESHOLD && !cartHasVariableWeight()) {
+    elements.deliveryNote.textContent = "Entrega gratis aplicada para pedidos acima de £40. Distancia maxima para entrega: 15 milhas.";
+  } else {
+    elements.deliveryNote.textContent = "Entrega: ate 7.5 milhas £2.50, de 7.5 a 15 milhas £5.00. Gratis acima de £40.";
+  }
 }
 
 function cartCount() {
@@ -271,9 +324,12 @@ function renderProducts() {
 function renderCart() {
   const items = cartItems();
   elements.cartCount.textContent = String(cartCount());
-  elements.subtotal.textContent = cartTotalLabel();
-  elements.mobileCartTotal.textContent = cartTotalLabel();
+  elements.subtotal.textContent = cartSubtotalLabel();
+  elements.deliveryFee.textContent = deliveryFeeLabel();
+  elements.orderTotal.textContent = orderTotalLabel();
+  elements.mobileCartTotal.textContent = orderTotalLabel();
   elements.mobileCart.hidden = items.length === 0;
+  updateDeliveryUi();
 
   if (!items.length) {
     elements.cartItems.innerHTML = `<p>Seu carrinho esta vazio. Adicione produtos para montar seu pedido.</p>`;
@@ -399,7 +455,8 @@ Horario: ${form.preferredTime || "Combinar pelo WhatsApp"}
 Produtos:
 ${products}
 
-Total/estimativa: ${cartTotalLabel()}
+Subtotal produtos: ${cartSubtotalLabel()}
+${form.fulfilmentType === "delivery" ? `Zona de entrega: ${DELIVERY_ZONES[form.deliveryZone]?.label || "A confirmar"}\nTaxa de entrega: ${deliveryFeeLabel()}\n` : "Retirada na loja: sem taxa de entrega\n"}Total/estimativa: ${orderTotalLabel()}
 ${cartHasVariableWeight() ? "Obs: itens por kg podem variar conforme o peso real separado pela equipe." : ""}
 
 Observacoes para o acougueiro:
@@ -485,8 +542,9 @@ function setupEvents() {
   }
   elements.checkoutForm.addEventListener("change", (event) => {
     if (event.target.name === "fulfilmentType") {
-      elements.addressLabel.style.display = event.target.value === "delivery" ? "grid" : "none";
+      updateDeliveryUi();
     }
+    if (event.target.name === "fulfilmentType" || event.target.name === "deliveryZone") renderCart();
   });
   elements.checkoutForm.addEventListener("submit", (event) => {
     event.preventDefault();

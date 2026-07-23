@@ -854,10 +854,30 @@ a {
   font-weight: 800;
 }
 
-.cart-total {
+.cart-summary {
+  display: grid;
+  gap: 8px;
   border-top: 1px solid var(--border);
   padding-top: 16px;
+}
+
+.cart-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   font-size: 1.2rem;
+}
+
+.cart-total:not(.grand-total) {
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.grand-total {
+  padding-top: 8px;
+  color: var(--charcoal);
+  font-weight: 900;
 }
 
 .delivery-note {

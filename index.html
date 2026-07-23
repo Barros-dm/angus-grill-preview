@@ -201,8 +201,12 @@
           <button class="close-button" id="closeCart" type="button" aria-label="Fechar carrinho">x</button>
         </div>
         <div id="cartItems" class="cart-items"></div>
-        <div class="cart-total"><span>Subtotal</span><strong id="subtotal">£0.00</strong></div>
-        <p class="delivery-note">Entrega e retirada serao confirmadas pela equipe Angus Grill no WhatsApp.</p>
+        <div class="cart-summary" aria-label="Resumo do pedido">
+          <div class="cart-total"><span>Subtotal produtos</span><strong id="subtotal">£0.00</strong></div>
+          <div class="cart-total"><span>Entrega</span><strong id="deliveryFee">£0.00</strong></div>
+          <div class="cart-total grand-total"><span>Total estimado</span><strong id="orderTotal">£0.00</strong></div>
+        </div>
+        <p class="delivery-note" id="deliveryNote">Entrega gratis acima de £40. Distancia maxima para entrega: 15 milhas.</p>
         <form class="checkout" id="checkoutForm">
           <h3>Finalizar pedido</h3>
           <label>Nome<input name="name" autocomplete="name" required></label>
@@ -211,6 +215,13 @@
             <label><input type="radio" name="fulfilmentType" value="delivery" checked> Entrega</label>
             <label><input type="radio" name="fulfilmentType" value="collection"> Retirada</label>
           </div>
+          <label id="deliveryZoneLabel">Zona de entrega
+            <select name="deliveryZone" id="deliveryZone">
+              <option value="local">Canterbury e ate 7.5 milhas - £2.50</option>
+              <option value="extended">Herne Bay, Whitstable e 7.5 a 15 milhas - £5.00</option>
+              <option value="outside" disabled>Fora de 15 milhas - consultar pelo WhatsApp</option>
+            </select>
+          </label>
           <label id="addressLabel">Endereco de entrega<input name="address" autocomplete="street-address"></label>
           <label>Data preferida<input name="preferredDate" type="date"></label>
           <label>Horario preferido<select name="preferredTime"><option>Manha</option><option>Tarde</option><option>Final do dia</option><option>Combinar pelo WhatsApp</option></select></label>
