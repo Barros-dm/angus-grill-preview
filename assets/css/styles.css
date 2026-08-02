@@ -2993,19 +2993,20 @@ body {
     gap: 12px;
   }
 
-  .cart-item .qty {
-    justify-self: start;
-    grid-template-columns: 52px minmax(88px, auto) 52px;
+  .cart-items .cart-item .qty {
+    justify-self: stretch;
+    width: 100%;
+    grid-template-columns: 56px minmax(96px, 1fr) 56px;
   }
 
-  .cart-item .qty button {
-    min-width: 52px;
-    height: 48px;
+  .cart-items .cart-item .qty button {
+    min-width: 56px;
+    height: 50px;
     font-size: 1.15rem;
   }
 
-  .cart-item .qty span {
-    min-width: 88px;
+  .cart-items .cart-item .qty span {
+    min-width: 96px;
     font-size: 1.05rem;
   }
 
@@ -3094,5 +3095,13 @@ body {
 
   .category-cards {
     grid-auto-columns: 82vw;
+  }
+
+  .cart-items .cart-item .qty {
+    grid-template-columns: 50px minmax(92px, 1fr) 50px;
+  }
+
+  .cart-items .cart-item .qty button {
+    min-width: 50px;
   }
 }
