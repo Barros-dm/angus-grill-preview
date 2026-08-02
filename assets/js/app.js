@@ -788,6 +788,8 @@ const elements = {
   searchInput: byId("searchInput"),
   searchButton: byId("searchButton"),
   categoryNav: byId("categoryNav"),
+  mobileMenuToggle: byId("mobileMenuToggle"),
+  mobileCategoryMenu: byId("mobileCategoryMenu"),
   categoryCards: byId("categoryCards"),
   productGrid: byId("productGrid"),
   sortSelect: byId("sortSelect"),
@@ -1315,6 +1317,12 @@ function scrollToProducts() {
   window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
 }
 
+function closeMobileCategoryMenu() {
+  if (!elements.mobileCategoryMenu || !elements.mobileMenuToggle) return;
+  elements.mobileCategoryMenu.hidden = true;
+  elements.mobileMenuToggle.setAttribute("aria-expanded", "false");
+}
+
 function setCategory(category, options = {}) {
   state.selectedCategory = category;
   elements.headerCategory.value = category;
@@ -1389,6 +1397,9 @@ function setCartQuantity(key, quantity) {
 function renderCatégories() {
   elements.headerCategory.innerHTML = CATEGORIES.map((category) => `<option value="${category}">${category === "Todos" ? "Todas as categorias" : category}</option>`).join("");
   elements.categoryNav.innerHTML = CATEGORIES.map((category) => `<button type="button" class="${category === "Todos" ? "active" : ""}" data-category="${category}">${category === "Todos" ? "Todos os Produtos" : category}</button>`).join("");
+  if (elements.mobileCategoryMenu) {
+    elements.mobileCategoryMenu.innerHTML = CATEGORIES.map((category) => `<button type="button" class="${category === "Todos" ? "active" : ""}" data-category="${category}">${category === "Todos" ? "Todos os Produtos" : category}</button>`).join("");
+  }
   elements.categoryCards.innerHTML = CATEGORIES.filter((category) => category !== "Todos").map((category) => {
     const count = PRODUCTS.filter((product) => product.category === category || (category === "Ofertas" && product.oldPrice) || (category === "Mais Vendidos" && product.bestSeller)).length;
     const representative = PRODUCTS.find((product) => product.category === category || (category === "Ofertas" && product.oldPrice) || (category === "Mais Vendidos" && product.bestSeller)) || PRODUCTS[0];
@@ -1628,12 +1639,22 @@ Obrigado.`;
 
 function setupEvents() {
   document.body.addEventListener("click", (event) => {
+    if (elements.mobileCategoryMenu && !elements.mobileCategoryMenu.hidden && !event.target.closest(".site-header")) {
+      closeMobileCategoryMenu();
+    }
     const target = event.target.closest("button, a");
     if (!target) return;
 
+    if (target === elements.mobileMenuToggle) {
+      const isOpen = elements.mobileCategoryMenu.hidden;
+      elements.mobileCategoryMenu.hidden = !isOpen;
+      elements.mobileMenuToggle.setAttribute("aria-expanded", String(isOpen));
+      return;
+    }
     if (target.dataset.category) {
       event.preventDefault();
       setCategory(target.dataset.category, { scrollToProducts: true });
+      closeMobileCategoryMenu();
     }
     if (target.dataset.filter) setCategory(target.dataset.filter);
     if (target.dataset.categoryLink) {

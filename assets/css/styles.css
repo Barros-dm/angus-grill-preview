@@ -135,6 +135,11 @@ a {
   letter-spacing: 0.14em;
 }
 
+.mobile-menu-toggle,
+.mobile-category-menu {
+  display: none;
+}
+
 .search-row {
   display: grid;
   grid-template-columns: 190px 1fr auto;
@@ -2840,7 +2845,7 @@ body {
   }
 
   .site-header {
-    grid-template-columns: 54px minmax(0, 1fr);
+    grid-template-columns: 54px minmax(0, 1fr) auto;
     gap: 10px 12px;
     padding: 10px 14px;
   }
@@ -2855,7 +2860,65 @@ body {
     height: 50px;
   }
 
+  .mobile-menu-toggle {
+    display: inline-flex;
+    grid-column: 3;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 13px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--white);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    touch-action: manipulation;
+  }
+
+  .mobile-menu-toggle strong {
+    color: var(--premium-red);
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .mobile-category-menu {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px 0 2px;
+  }
+
+  .mobile-category-menu[hidden] {
+    display: none;
+  }
+
+  .mobile-category-menu button {
+    min-height: 44px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.055);
+    color: rgba(255, 255, 255, 0.86);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-align: left;
+    padding: 10px 12px;
+    touch-action: manipulation;
+  }
+
+  .mobile-category-menu button.active {
+    border-color: rgba(176, 22, 33, 0.82);
+    background: rgba(176, 22, 33, 0.18);
+    color: var(--white);
+  }
+
   .search-row {
+    grid-column: 1 / -1;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 86px;
     width: 100%;
@@ -2908,16 +2971,7 @@ body {
   }
 
   .category-nav {
-    position: relative;
-    top: 0;
-    gap: 18px;
-    padding: 10px 14px;
-  }
-
-  .category-nav button {
-    flex: 0 0 auto;
-    font-size: 0.78rem;
-    white-space: nowrap;
+    display: none;
   }
 
   .hero {

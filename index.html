@@ -11,26 +11,37 @@
     <link rel="stylesheet" href="assets/css/styles.css?v=postcode-zone">
   </head>
   <body>
-    <a class="skip-link" href="#produtos">Pular para produtos</a>
-    <div class="announcement">Entrega rápida em Canterbury • Retirada na loja disponível • Carnes e mercearia brasileira selecionadas</div>
+    <a class="skip-link" href="#produtos" data-i18n="skipLink">Pular para produtos</a>
+    <div class="announcement" data-i18n="announcement">Entrega rápida em Canterbury • Retirada na loja disponível • Carnes e mercearia brasileira selecionadas</div>
 
     <header class="site-header">
       <div class="brand">
         <img src="assets/images/angus-logo-new.png" alt="Angus Grill Premium Meat">
       </div>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-controls="mobileCategoryMenu" aria-expanded="false">
+        <span>Produtos</span>
+        <strong aria-hidden="true">☰</strong>
+      </button>
       <div class="search-row">
         <select id="headerCategory" aria-label="Todas as categorias"></select>
         <label class="search-box">
-          <span class="sr-only">Buscar produto</span>
-          <input id="searchInput" type="search" placeholder="O que você está procurando?">
+          <span class="sr-only" data-i18n="searchSr">Buscar produto</span>
+          <input id="searchInput" type="search" placeholder="O que você está procurando?" data-i18n-placeholder="searchPlaceholder">
         </label>
-        <button class="icon-button red" id="searchButton" type="button" aria-label="Buscar">Buscar</button>
+        <button class="icon-button red" id="searchButton" type="button" aria-label="Buscar" data-i18n="searchButton" data-i18n-aria="searchButton">Buscar</button>
       </div>
       <nav class="header-actions" aria-label="Ações">
-        <a href="#como-funciona">Como comprar</a>
-        <a href="tel:01227781164">Ligar</a>
-        <button class="cart-button" id="openCart" type="button">Carrinho <span id="cartCount">0</span></button>
+        <a href="#como-funciona" data-i18n="howToBuy">Como comprar</a>
+        <a href="tel:01227781164" data-i18n="call">Ligar</a>
+        <div class="language-switcher" aria-label="Idioma">
+          <button type="button" data-language="pt" aria-label="Português"><span>🇧🇷</span></button>
+          <button type="button" data-language="en" aria-label="English"><span>🇬🇧</span></button>
+          <button type="button" data-language="es" aria-label="Español"><span>🇪🇸</span></button>
+          <button type="button" data-language="ro" aria-label="Română"><span>🇷🇴</span></button>
+        </div>
+        <button class="cart-button" id="openCart" type="button"><span data-i18n="cart">Carrinho</span> <span id="cartCount">0</span></button>
       </nav>
+      <div class="mobile-category-menu" id="mobileCategoryMenu" hidden></div>
     </header>
 
     <nav class="category-nav" id="categoryNav" aria-label="Categorias"></nav>
@@ -40,49 +51,49 @@
         <div class="hero-slides">
           <article class="hero-slide is-active hero-slide-carnes" data-hero-slide>
             <div class="hero-copy">
-              <p class="eyebrow">Açougue premium em Canterbury</p>
-              <h1>Carnes premium em Canterbury, <span>agora online.</span></h1>
-              <p>Cortes selecionados como picanha, maminha, costela e linguiça toscana. Entrega rápida ou retirada na loja.</p>
+              <p class="eyebrow" data-i18n="heroMeatEyebrow">Açougue premium em Canterbury</p>
+              <h1 data-i18n-html="heroMeatTitle">Carnes premium em Canterbury, <span>agora online.</span></h1>
+              <p data-i18n="heroMeatText">Cortes selecionados como picanha, maminha, costela e linguiça toscana. Entrega rápida ou retirada na loja.</p>
               <div class="hero-actions">
-                <a class="primary-button" href="#produtos" data-category-link="Bovino">Comprar carnes</a>
-                <a class="secondary-button" href="#produtos" data-category-link="Linguiças">Ver linguiças</a>
+                <a class="primary-button" href="#produtos" data-category-link="Bovino" data-i18n="shopMeat">Comprar carnes</a>
+                <a class="secondary-button" href="#produtos" data-category-link="Linguiças" data-i18n="viewSausages">Ver linguiças</a>
               </div>
               <div class="hero-rating" aria-label="Avaliação e serviços">
                 <span>★★★★★</span>
                 <strong>5.0 Google Reviews</strong>
-                <em>Entrega e retirada disponíveis</em>
+                <em data-i18n="deliveryCollectionAvailable">Entrega e retirada disponíveis</em>
               </div>
             </div>
           </article>
           <article class="hero-slide hero-slide-mercearia" data-hero-slide aria-hidden="true">
             <div class="hero-copy">
-              <p class="eyebrow">Mercearia brasileira</p>
-              <h1>Produtos do Brasil para completar <span>sua compra.</span></h1>
-              <p>Temperos, congelados, bebidas, doces e itens de mercearia selecionados para o dia a dia da comunidade brasileira.</p>
+              <p class="eyebrow" data-i18n="heroGroceryEyebrow">Mercearia brasileira</p>
+              <h1 data-i18n-html="heroGroceryTitle">Produtos do Brasil para completar <span>sua compra.</span></h1>
+              <p data-i18n="heroGroceryText">Temperos, congelados, bebidas, doces e itens de mercearia selecionados para o dia a dia da comunidade brasileira.</p>
               <div class="hero-actions">
-                <a class="primary-button" href="#produtos" data-category-link="Mercearia">Ver mercearia</a>
-                <a class="secondary-button" href="#produtos" data-category-link="Bebidas">Ver bebidas</a>
+                <a class="primary-button" href="#produtos" data-category-link="Mercearia" data-i18n="viewGrocery">Ver mercearia</a>
+                <a class="secondary-button" href="#produtos" data-category-link="Bebidas" data-i18n="viewDrinks">Ver bebidas</a>
               </div>
               <div class="hero-rating" aria-label="Categorias de mercearia">
                 <span>BR</span>
-                <strong>Mercearia + congelados</strong>
-                <em>Produtos selecionados</em>
+                <strong data-i18n="groceryFrozen">Mercearia + congelados</strong>
+                <em data-i18n="selectedProducts">Produtos selecionados</em>
               </div>
             </div>
           </article>
           <article class="hero-slide hero-slide-promocao" data-hero-slide aria-hidden="true">
             <div class="hero-copy">
-              <p class="eyebrow">Promoção da semana</p>
-              <h1>Ofertas para churrasco e compras <span>do dia a dia.</span></h1>
-              <p>Confira produtos em promoção, aproveite a entrega grátis acima de £40 e finalize o pedido direto pelo WhatsApp.</p>
+              <p class="eyebrow" data-i18n="heroPromoEyebrow">Promoção da semana</p>
+              <h1 data-i18n-html="heroPromoTitle">Ofertas para churrasco e compras <span>do dia a dia.</span></h1>
+              <p data-i18n="heroPromoText">Confira produtos em promoção, aproveite a entrega grátis acima de £40 e finalize o pedido direto pelo WhatsApp.</p>
               <div class="hero-actions">
-                <a class="primary-button" href="#produtos" data-category-link="Ofertas">Ver ofertas</a>
-                <a class="secondary-button" href="#como-funciona">Como comprar</a>
+                <a class="primary-button" href="#produtos" data-category-link="Ofertas" data-i18n="viewOffers">Ver ofertas</a>
+                <a class="secondary-button" href="#como-funciona" data-i18n="howToBuy">Como comprar</a>
               </div>
               <div class="hero-rating" aria-label="Condições de entrega">
                 <span>£40+</span>
-                <strong>Entrega grátis</strong>
-                <em>Dentro do raio atendido</em>
+                <strong data-i18n="freeDelivery">Entrega grátis</strong>
+                <em data-i18n="insideDeliveryRadius">Dentro do raio atendido</em>
               </div>
             </div>
           </article>
@@ -91,17 +102,17 @@
       </section>
 
       <section class="trust-strip" aria-label="Diferenciais">
-        <span>5.0 no Google</span>
-        <span>Entrega rápida</span>
-        <span>Mercearia brasileira</span>
-        <span>Retirada na loja</span>
+        <span data-i18n="googleRating">5.0 no Google</span>
+        <span data-i18n="fastDelivery">Entrega rápida</span>
+        <span data-i18n="brazilianGrocery">Mercearia brasileira</span>
+        <span data-i18n="storeCollection">Retirada na loja</span>
       </section>
 
       <section class="section category-section">
         <div class="section-heading">
-          <p class="eyebrow">Categorias</p>
-          <h2>Compre por categoria</h2>
-          <p>Encontre cortes selecionados, linguiças, temperos, congelados, bebidas e produtos brasileiros para completar sua compra.</p>
+          <p class="eyebrow" data-i18n="categoriesEyebrow">Categorias</p>
+          <h2 data-i18n="shopByCategory">Compre por categoria</h2>
+          <p data-i18n="categoryIntro">Encontre cortes selecionados, linguiças, temperos, congelados, bebidas e produtos brasileiros para completar sua compra.</p>
         </div>
         <div class="category-cards" id="categoryCards"></div>
       </section>
@@ -109,27 +120,27 @@
       <section class="section product-section" id="produtos">
         <div class="section-heading row">
           <div>
-            <p class="eyebrow">Catálogo</p>
-            <h2>Mais pedidos da semana</h2>
-            <p><span id="productCount">0 produtos encontrados</span> com seleção especial para churrasco, família e compras do dia a dia.</p>
+            <p class="eyebrow" data-i18n="catalogEyebrow">Catálogo</p>
+            <h2 data-i18n="weeklyPopular">Mais pedidos da semana</h2>
+            <p><span id="productCount">0 produtos encontrados</span> <span data-i18n="productCountSuffix">com seleção especial para churrasco, família e compras do dia a dia.</span></p>
           </div>
-          <label class="sort-label">Organizar por
+          <label class="sort-label"><span data-i18n="sortBy">Organizar por</span>
             <select id="sortSelect">
-              <option value="featured">Destaques</option>
-              <option value="price-asc">Menor preço</option>
-              <option value="price-desc">Maior preço</option>
-              <option value="name">Nome</option>
+              <option value="featured" data-i18n="sortFeatured">Destaques</option>
+              <option value="price-asc" data-i18n="sortPriceAsc">Menor preço</option>
+              <option value="price-desc" data-i18n="sortPriceDesc">Maior preço</option>
+              <option value="name" data-i18n="sortName">Nome</option>
             </select>
           </label>
         </div>
         <div class="shop-layout">
           <aside class="filters" aria-label="Filtros">
-            <h3>Filtros</h3>
-            <button class="filter-chip active" data-filter="Todos" type="button">Todos</button>
-            <button class="filter-chip" data-filter="Ofertas" type="button">Ofertas</button>
-            <button class="filter-chip" data-filter="Mais Vendidos" type="button">Mais Vendidos</button>
-            <button class="filter-chip" data-filter="Mercearia" type="button">Mercearia</button>
-            <label class="check-line"><input id="stockOnly" type="checkbox"> Somente disponíveis</label>
+            <h3 data-i18n="filters">Filtros</h3>
+            <button class="filter-chip active" data-filter="Todos" type="button" data-category-label="Todos">Todos</button>
+            <button class="filter-chip" data-filter="Ofertas" type="button" data-category-label="Ofertas">Ofertas</button>
+            <button class="filter-chip" data-filter="Mais Vendidos" type="button" data-category-label="Mais Vendidos">Mais Vendidos</button>
+            <button class="filter-chip" data-filter="Mercearia" type="button" data-category-label="Mercearia">Mercearia</button>
+            <label class="check-line"><input id="stockOnly" type="checkbox"> <span data-i18n="stockOnly">Somente disponíveis</span></label>
           </aside>
           <div class="product-grid" id="productGrid" aria-live="polite"></div>
         </div>
@@ -137,36 +148,36 @@
 
       <section class="feature-band" id="mercearia">
         <div>
-          <p class="eyebrow">Mercearia brasileira</p>
-          <h2>Produtos selecionados para completar sua compra</h2>
-          <p>Escolha carnes, temperos, congelados, bebidas e itens de mercearia, adicione ao carrinho e confirme retirada ou entrega pelo WhatsApp.</p>
-          <a class="primary-button" href="#produtos" data-category-link="Mercearia">Ver mercearia</a>
+          <p class="eyebrow" data-i18n="featureEyebrow">Mercearia brasileira</p>
+          <h2 data-i18n="featureTitle">Produtos selecionados para completar sua compra</h2>
+          <p data-i18n="featureText">Escolha carnes, temperos, congelados, bebidas e itens de mercearia, adicione ao carrinho e confirme retirada ou entrega pelo WhatsApp.</p>
+          <a class="primary-button" href="#produtos" data-category-link="Mercearia" data-i18n="viewGrocery">Ver mercearia</a>
         </div>
         <img src="assets/images/product-assortment.png" alt="Produtos de mercearia Angus Grill">
       </section>
 
       <section class="reviews section">
         <div class="section-heading">
-          <p class="eyebrow">Confiança local</p>
-          <h2>Avaliado com 5 estrelas pelos nossos clientes em Canterbury</h2>
-          <p>Carnes de qualidade, mercearia brasileira, atendimento próximo, entrega rápida e produtos cuidadosamente embalados.</p>
+          <p class="eyebrow" data-i18n="reviewsEyebrow">Confiança local</p>
+          <h2 data-i18n="reviewsTitle">Avaliado com 5 estrelas pelos nossos clientes em Canterbury</h2>
+          <p data-i18n="reviewsIntro">Carnes de qualidade, mercearia brasileira, atendimento próximo, entrega rápida e produtos cuidadosamente embalados.</p>
         </div>
         <div class="review-carousel" aria-label="Avaliações de clientes">
           <div class="review-grid" id="reviewCarousel" aria-live="polite">
             <blockquote class="review-slide is-active" data-review-slide>
               <span class="review-stars" aria-label="5 estrelas">★★★★★</span>
-              <p>Excelente qualidade e atendimento. Carnes frescas e muito bem embaladas.</p>
-              <cite>Cliente Angus Grill</cite>
+              <p data-i18n="reviewOne">Excelente qualidade e atendimento. Carnes frescas e muito bem embaladas.</p>
+              <cite data-i18n="reviewOneBy">Cliente Angus Grill</cite>
             </blockquote>
             <blockquote class="review-slide" data-review-slide hidden>
               <span class="review-stars" aria-label="5 estrelas">★★★★★</span>
-              <p>Ótima variedade de cortes e entrega rápida.</p>
-              <cite>Compra para churrasco</cite>
+              <p data-i18n="reviewTwo">Ótima variedade de cortes e entrega rápida.</p>
+              <cite data-i18n="reviewTwoBy">Compra para churrasco</cite>
             </blockquote>
             <blockquote class="review-slide" data-review-slide hidden>
               <span class="review-stars" aria-label="5 estrelas">★★★★★</span>
-              <p>A melhor carne da região. Recomendo para churrasco e compras da semana.</p>
-              <cite>Cliente local em Canterbury</cite>
+              <p data-i18n="reviewThree">A melhor carne da região. Recomendo para churrasco e compras da semana.</p>
+              <cite data-i18n="reviewThreeBy">Cliente local em Canterbury</cite>
             </blockquote>
           </div>
           <div class="review-controls" aria-label="Controles das avaliações">
@@ -177,21 +188,21 @@
 
       <section class="how section" id="como-funciona">
         <div class="section-heading">
-          <p class="eyebrow">Pedido simples</p>
-          <h2>Como funciona</h2>
+          <p class="eyebrow" data-i18n="simpleOrder">Pedido simples</p>
+          <h2 data-i18n="howItWorks">Como funciona</h2>
         </div>
         <div class="step-grid">
-          <article><span>1</span><h3>Escolha seus produtos</h3><p>Navegue pelas categorias e adicione carnes, mercearia e produtos brasileiros ao carrinho.</p></article>
-          <article><span>2</span><h3>Informe entrega ou retirada</h3><p>Escolha a melhor opção e adicione observações para o açougueiro.</p></article>
-          <article><span>3</span><h3>Finalize pelo WhatsApp</h3><p>Envie o pedido pronto e confirme diretamente com a equipe Angus Grill.</p></article>
+          <article><span>1</span><h3 data-i18n="stepOneTitle">Escolha seus produtos</h3><p data-i18n="stepOneText">Navegue pelas categorias e adicione carnes, mercearia e produtos brasileiros ao carrinho.</p></article>
+          <article><span>2</span><h3 data-i18n="stepTwoTitle">Informe entrega ou retirada</h3><p data-i18n="stepTwoText">Escolha a melhor opção e adicione observações para entrega ou preparo.</p></article>
+          <article><span>3</span><h3 data-i18n="stepThreeTitle">Finalize pelo WhatsApp</h3><p data-i18n="stepThreeText">Envie o pedido pronto e confirme diretamente com a equipe Angus Grill.</p></article>
         </div>
       </section>
 
       <section class="app-promo">
         <div>
-          <p class="eyebrow">Fase 2</p>
-          <h2>Em breve no Google Play e App Store</h2>
-          <p>Estamos preparando uma experiência ainda mais prática para você comprar pelo celular.</p>
+          <p class="eyebrow" data-i18n="phaseTwo">Fase 2</p>
+          <h2 data-i18n="appsSoon">Em breve no Google Play e App Store</h2>
+          <p data-i18n="appsText">Estamos preparando uma experiência ainda mais prática para você comprar pelo celular.</p>
         </div>
         <div class="store-badges" aria-label="Aplicativos em breve">
           <span>Google Play</span>
@@ -201,10 +212,10 @@
     </main>
 
     <footer class="footer">
-      <div><h3>Angus Grill</h3><a>Sobre nós</a><a>Fale conosco</a><a>Localização</a><a>Avaliações</a></div>
-      <div><h3>Comprar</h3><a>Ofertas</a><a>Mais vendidos</a><a>Mercearia</a><a>Congelados</a><a>Todos os produtos</a></div>
-      <div><h3>Atendimento</h3><a>Entrega e retirada</a><a>Como comprar</a><a>WhatsApp</a><a>Horários</a></div>
-      <div><h3>Contato</h3><p>36 Brymore Road, Canterbury CT1 1JE</p><p>01227 781164</p><p>07923 832005</p><a href="admin.html">Painel admin</a></div>
+      <div><h3>Angus Grill</h3><a data-i18n="aboutUs">Sobre nós</a><a data-i18n="contactUs">Fale conosco</a><a data-i18n="location">Localização</a><a data-i18n="reviews">Avaliações</a></div>
+      <div><h3 data-i18n="shop">Comprar</h3><a data-category-label="Ofertas">Ofertas</a><a data-category-label="Mais Vendidos">Mais vendidos</a><a data-category-label="Mercearia">Mercearia</a><a data-category-label="Congelados">Congelados</a><a data-i18n="allProducts">Todos os produtos</a></div>
+      <div><h3 data-i18n="service">Atendimento</h3><a data-i18n="deliveryAndCollection">Entrega e retirada</a><a data-i18n="howToBuy">Como comprar</a><a>WhatsApp</a><a data-i18n="openingHours">Horários</a></div>
+      <div><h3 data-i18n="contact">Contato</h3><p>36 Brymore Road, Canterbury CT1 1JE</p><p>01227 781164</p><p>07923 832005</p><a href="admin.html" data-i18n="adminPanel">Painel admin</a></div>
     </footer>
 
     <div class="modal-backdrop" id="productModal" hidden>
@@ -219,37 +230,37 @@
           <p class="modal-note" id="modalNote"></p>
           <div class="weight-options" id="modalOptions" hidden></div>
           <div class="price-row"><strong id="modalPrice"></strong><span id="modalStock"></span></div>
-          <button class="primary-button" id="modalAdd" type="button">Adicionar ao carrinho</button>
+          <button class="primary-button" id="modalAdd" type="button" data-i18n="addToCart">Adicionar ao carrinho</button>
         </div>
       </article>
     </div>
 
-    <aside class="cart-drawer" id="cartDrawer" aria-label="Seu pedido" aria-hidden="true">
+    <aside class="cart-drawer" id="cartDrawer" aria-label="Seu pedido" aria-hidden="true" data-i18n-aria="yourOrder">
       <div class="cart-panel">
         <div class="cart-head">
-          <h2>Seu pedido</h2>
-          <button class="close-button" id="closeCart" type="button" aria-label="Fechar carrinho">x</button>
+          <h2 data-i18n="yourOrder">Seu pedido</h2>
+          <button class="close-button" id="closeCart" type="button" aria-label="Fechar carrinho" data-i18n-aria="closeCart">x</button>
         </div>
         <div id="cartItems" class="cart-items"></div>
         <div class="cart-summary" aria-label="Resumo do pedido">
-          <div class="cart-total"><span>Subtotal produtos</span><strong id="subtotal">£0.00</strong></div>
-          <div class="cart-total"><span>Entrega</span><strong id="deliveryFee">£0.00</strong></div>
-          <div class="cart-total grand-total"><span>Total estimado</span><strong id="orderTotal">£0.00</strong></div>
+          <div class="cart-total"><span data-i18n="productsSubtotal">Subtotal produtos</span><strong id="subtotal">£0.00</strong></div>
+          <div class="cart-total"><span data-i18n="delivery">Entrega</span><strong id="deliveryFee">£0.00</strong></div>
+          <div class="cart-total grand-total"><span data-i18n="estimatedTotal">Total estimado</span><strong id="orderTotal">£0.00</strong></div>
         </div>
         <p class="delivery-note" id="deliveryNote">Entrega grátis acima de £40. Distância máxima para entrega: 15 milhas.</p>
         <form class="checkout" id="checkoutForm">
-          <h3>Finalizar pedido</h3>
-          <label>Nome<input name="name" autocomplete="name" required></label>
-          <label>Telefone ou e-mail<input name="contact" autocomplete="email"></label>
+          <h3 data-i18n="checkout">Finalizar pedido</h3>
+          <label><span data-i18n="name">Nome</span><input name="name" autocomplete="name" required></label>
+          <label><span data-i18n="phoneOrEmail">Telefone ou e-mail</span><input name="contact" autocomplete="email"></label>
           <div class="toggle-group" role="group" aria-label="Entrega ou retirada">
-            <label><input type="radio" name="fulfilmentType" value="delivery" checked> Entrega</label>
-            <label><input type="radio" name="fulfilmentType" value="collection"> Retirada</label>
+            <label><input type="radio" name="fulfilmentType" value="delivery" checked> <span data-i18n="delivery">Entrega</span></label>
+            <label><input type="radio" name="fulfilmentType" value="collection"> <span data-i18n="collection">Retirada</span></label>
           </div>
           <input type="hidden" name="deliveryZone" id="deliveryZone" value="local">
-          <label id="addressLabel">Endereço<input name="address" id="addressInput" autocomplete="street-address" inputmode="text"></label>
-          <label id="addressLine2Label">Apartamento, bloco etc. (opcional)<input name="addressLine2" id="addressLine2Input" autocomplete="address-line2"></label>
+          <label id="addressLabel"><span data-i18n="address">Endereço</span><input name="address" id="addressInput" autocomplete="street-address" inputmode="text"></label>
+          <label id="addressLine2Label"><span data-i18n="addressLine2">Apartamento, bloco etc. (opcional)</span><input name="addressLine2" id="addressLine2Input" autocomplete="address-line2"></label>
           <div class="address-grid" id="addressGrid">
-            <label>Cidade<input name="city" id="cityInput" autocomplete="address-level2"></label>
+            <label><span data-i18n="city">Cidade</span><input name="city" id="cityInput" autocomplete="address-level2"></label>
             <label>Postcode<input name="postcode" id="postcodeInput" autocomplete="postal-code" inputmode="text"></label>
           </div>
           <div class="delivery-quote-card" id="deliveryQuoteCard" aria-live="polite">
@@ -257,18 +268,18 @@
             <strong id="deliveryQuoteTitle">Digite o endereço para calcular</strong>
             <p id="deliveryQuoteText">Selecione o endereço sugerido para calcular a entrega.</p>
           </div>
-          <label>Data preferida<input name="preferredDaté" type="daté"></label>
-          <label>Horário preferido<select name="preferredTime"><option>Manhã</option><option>Tarde</option><option>Final do dia</option><option>Combinar pelo WhatsApp</option></select></label>
-          <label>Observações para o açougueiro<textárea name="butcherNotes" placeholder="Ex: cortar em bifes finos, separar em porções, retirar excesso de gordura..."></textárea></label>
-          <button class="whatsapp-submit" type="submit">Finalizar pedido no WhatsApp</button>
-          <p class="confirmation" id="confirmation" hidden>Pedido preparado para envio no WhatsApp. Confira a mensagem antes de enviar.</p>
+          <label><span data-i18n="preferredDate">Data preferida</span><input name="preferredDate" type="date"></label>
+          <label><span data-i18n="preferredTime">Horário preferido</span><select name="preferredTime"><option value="morning" data-i18n="morning">Manhã</option><option value="afternoon" data-i18n="afternoon">Tarde</option><option value="lateDay" data-i18n="lateDay">Final do dia</option><option value="arrangeWhatsapp" data-i18n="arrangeWhatsapp">Combinar pelo WhatsApp</option></select></label>
+          <label><span data-i18n="deliveryNotes">Observações para entrega</span><textarea name="butcherNotes" placeholder="Ex: deixar na recepção, tocar campainha, separar produtos congelados..." data-i18n-placeholder="deliveryNotesPlaceholder"></textarea></label>
+          <button class="whatsapp-submit" type="submit" data-i18n="finishWhatsapp">Finalizar pedido no WhatsApp</button>
+          <p class="confirmation" id="confirmation" hidden data-i18n="confirmation">Pedido preparado para envio no WhatsApp. Confira a mensagem antes de enviar.</p>
         </form>
-        <button class="secondary-button full" id="continueShopping" type="button">Continuar comprando</button>
+        <button class="secondary-button full" id="continueShopping" type="button" data-i18n="continueShopping">Continuar comprando</button>
       </div>
     </aside>
 
     <a class="floating-whatsapp" href="https://wa.me/447923832005" target="_blank" rel="noreferrer" aria-label="Abrir WhatsApp">WhatsApp</a>
-    <button class="mobile-cart" id="mobileCart" type="button" hidden>Ver pedido <span id="mobileCartTotal">£0.00</span></button>
+    <button class="mobile-cart" id="mobileCart" type="button" hidden><span data-i18n="viewOrder">Ver pedido</span> <span id="mobileCartTotal">£0.00</span></button>
 
     <script src="assets/js/brasilinbox-products.js?v=supplier-catalogue"></script>
     <script src="assets/js/data.js?v=supplier-catalogue"></script>
