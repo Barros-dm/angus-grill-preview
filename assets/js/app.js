@@ -1456,9 +1456,9 @@ function renderCart() {
         <button class="remove-link" type="button" data-remove="${key}">Remover</button>
       </div>
       <div class="qty" aria-label="Quantidade de ${product.name}">
-        <button type="button" data-dec="${key}">-</button>
+        <button type="button" data-dec="${key}" aria-label="Diminuir quantidade de ${product.name}">-</button>
         <span>${isKgAmountProduct(product) ? formatKgAmount(quantity) : quantity}</span>
-        <button type="button" data-inc="${key}">+</button>
+        <button type="button" data-inc="${key}" aria-label="Aumentar quantidade de ${product.name}">+</button>
       </div>
     </article>
   `).join("");

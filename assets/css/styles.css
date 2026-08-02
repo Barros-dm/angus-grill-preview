@@ -576,22 +576,33 @@ a {
 
 .qty {
   display: inline-grid;
-  grid-template-columns: 36px 42px 36px;
+  grid-template-columns: 44px minmax(74px, auto) 44px;
   align-items: center;
+  flex: 0 0 auto;
   width: max-content;
+  max-width: 100%;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 999px;
 }
 
 .qty button {
-  height: 34px;
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  height: 42px;
   background: #f5f6f7;
+  font-size: 1rem;
+  line-height: 1;
+  touch-action: manipulation;
 }
 
 .qty span {
+  min-width: 74px;
+  padding: 0 8px;
   text-align: center;
   font-weight: 900;
+  white-space: nowrap;
 }
 
 .feature-band,
@@ -919,6 +930,10 @@ a {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px;
+}
+
+.cart-item > div:first-child {
+  min-width: 0;
 }
 
 .cart-item h4,
@@ -2969,6 +2984,29 @@ body {
   .cart-panel {
     width: 100%;
     padding: 18px;
+  }
+
+  .cart-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 12px;
+  }
+
+  .cart-item .qty {
+    justify-self: start;
+    grid-template-columns: 52px minmax(88px, auto) 52px;
+  }
+
+  .cart-item .qty button {
+    min-width: 52px;
+    height: 48px;
+    font-size: 1.15rem;
+  }
+
+  .cart-item .qty span {
+    min-width: 88px;
+    font-size: 1.05rem;
   }
 
   .modal-backdrop {
