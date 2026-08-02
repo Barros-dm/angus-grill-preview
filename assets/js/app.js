@@ -1,4 +1,5 @@
 const state = {
+  language: "pt",
   selectedCategory: "Todos",
   search: "",
   sort: "featured",
@@ -622,6 +623,13 @@ function currentLanguage() {
   return I18N[state.language] ? state.language : "pt";
 }
 
+const LANGUAGE_FLAGS = {
+  pt: "🇧🇷",
+  en: "🇬🇧",
+  es: "🇪🇸",
+  ro: "🇷🇴"
+};
+
 function t(key) {
   const language = currentLanguage();
   return I18N[language]?.[key] || I18N.pt[key] || key;
@@ -790,6 +798,9 @@ const elements = {
   categoryNav: byId("categoryNav"),
   mobileMenuToggle: byId("mobileMenuToggle"),
   mobileCategoryMenu: byId("mobileCategoryMenu"),
+  mobileLanguageToggle: byId("mobileLanguageToggle"),
+  mobileLanguageMenu: byId("mobileLanguageMenu"),
+  mobileLanguageFlag: byId("mobileLanguageFlag"),
   categoryCards: byId("categoryCards"),
   productGrid: byId("productGrid"),
   sortSelect: byId("sortSelect"),
@@ -1323,6 +1334,29 @@ function closeMobileCategoryMenu() {
   elements.mobileMenuToggle.setAttribute("aria-expanded", "false");
 }
 
+function closeMobileLanguageMenu() {
+  if (!elements.mobileLanguageMenu || !elements.mobileLanguageToggle) return;
+  elements.mobileLanguageMenu.hidden = true;
+  elements.mobileLanguageToggle.setAttribute("aria-expanded", "false");
+}
+
+function updateLanguageButtons() {
+  const language = currentLanguage();
+  if (elements.mobileLanguageFlag) elements.mobileLanguageFlag.textContent = LANGUAGE_FLAGS[language] || LANGUAGE_FLAGS.pt;
+  document.querySelectorAll("[data-language]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.language === language);
+  });
+}
+
+function setLanguage(language) {
+  if (!I18N[language]) return;
+  state.language = language;
+  updateLanguageButtons();
+  renderCatégories();
+  renderProducts();
+  renderCart();
+}
+
 function setCategory(category, options = {}) {
   state.selectedCategory = category;
   elements.headerCategory.value = category;
@@ -1642,6 +1676,9 @@ function setupEvents() {
     if (elements.mobileCategoryMenu && !elements.mobileCategoryMenu.hidden && !event.target.closest(".site-header")) {
       closeMobileCategoryMenu();
     }
+    if (elements.mobileLanguageMenu && !elements.mobileLanguageMenu.hidden && !event.target.closest(".site-header")) {
+      closeMobileLanguageMenu();
+    }
     const target = event.target.closest("button, a");
     if (!target) return;
 
@@ -1649,6 +1686,19 @@ function setupEvents() {
       const isOpen = elements.mobileCategoryMenu.hidden;
       elements.mobileCategoryMenu.hidden = !isOpen;
       elements.mobileMenuToggle.setAttribute("aria-expanded", String(isOpen));
+      closeMobileLanguageMenu();
+      return;
+    }
+    if (target === elements.mobileLanguageToggle) {
+      const isOpen = elements.mobileLanguageMenu.hidden;
+      elements.mobileLanguageMenu.hidden = !isOpen;
+      elements.mobileLanguageToggle.setAttribute("aria-expanded", String(isOpen));
+      closeMobileCategoryMenu();
+      return;
+    }
+    if (target.dataset.language) {
+      setLanguage(target.dataset.language);
+      closeMobileLanguageMenu();
       return;
     }
     if (target.dataset.category) {

@@ -19,8 +19,11 @@
         <img src="assets/images/angus-logo-new.png" alt="Angus Grill Premium Meat">
       </div>
       <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-controls="mobileCategoryMenu" aria-expanded="false">
-        <span>Produtos</span>
         <strong aria-hidden="true">☰</strong>
+      </button>
+      <button class="mobile-language-toggle" id="mobileLanguageToggle" type="button" aria-controls="mobileLanguageMenu" aria-expanded="false" aria-label="Idioma">
+        <span id="mobileLanguageFlag">🇧🇷</span>
+        <strong aria-hidden="true">⌄</strong>
       </button>
       <div class="search-row">
         <select id="headerCategory" aria-label="Todas as categorias"></select>
@@ -42,6 +45,12 @@
         <button class="cart-button" id="openCart" type="button"><span data-i18n="cart">Carrinho</span> <span id="cartCount">0</span></button>
       </nav>
       <div class="mobile-category-menu" id="mobileCategoryMenu" hidden></div>
+      <div class="mobile-language-menu" id="mobileLanguageMenu" hidden>
+        <button type="button" data-language="pt" aria-label="Português"><span>🇧🇷</span> Português</button>
+        <button type="button" data-language="en" aria-label="English"><span>🇬🇧</span> English</button>
+        <button type="button" data-language="es" aria-label="Español"><span>🇪🇸</span> Español</button>
+        <button type="button" data-language="ro" aria-label="Română"><span>🇷🇴</span> Română</button>
+      </div>
     </header>
 
     <nav class="category-nav" id="categoryNav" aria-label="Categorias"></nav>

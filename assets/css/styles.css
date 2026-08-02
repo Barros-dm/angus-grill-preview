@@ -136,6 +136,8 @@ a {
 }
 
 .mobile-menu-toggle,
+.mobile-language-toggle,
+.mobile-language-menu,
 .mobile-category-menu {
   display: none;
 }
@@ -2845,7 +2847,7 @@ body {
   }
 
   .site-header {
-    grid-template-columns: 54px minmax(0, 1fr) auto;
+    grid-template-columns: 54px minmax(0, 1fr) 44px 44px;
     gap: 10px 12px;
     padding: 10px 14px;
   }
@@ -2863,25 +2865,38 @@ body {
   .mobile-menu-toggle {
     display: inline-flex;
     grid-column: 3;
+  }
+
+  .mobile-language-toggle {
+    display: inline-flex;
+    grid-column: 4;
+  }
+
+  .mobile-menu-toggle,
+  .mobile-language-toggle {
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    width: 44px;
     min-height: 42px;
-    padding: 0 13px;
+    padding: 0;
     border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 999px;
+    border-radius: 14px;
     background: rgba(255, 255, 255, 0.06);
     color: var(--white);
     font: inherit;
-    font-size: 0.78rem;
     font-weight: 900;
-    letter-spacing: 0.02em;
     touch-action: manipulation;
   }
 
-  .mobile-menu-toggle strong {
+  .mobile-menu-toggle strong,
+  .mobile-language-toggle strong {
     color: var(--premium-red);
     font-size: 1rem;
+    line-height: 1;
+  }
+
+  .mobile-language-toggle span {
+    font-size: 1.05rem;
     line-height: 1;
   }
 
@@ -2897,7 +2912,20 @@ body {
     display: none;
   }
 
-  .mobile-category-menu button {
+  .mobile-language-menu {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px 0 2px;
+  }
+
+  .mobile-language-menu[hidden] {
+    display: none;
+  }
+
+  .mobile-category-menu button,
+  .mobile-language-menu button {
     min-height: 44px;
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 12px;
@@ -2911,7 +2939,8 @@ body {
     touch-action: manipulation;
   }
 
-  .mobile-category-menu button.active {
+  .mobile-category-menu button.active,
+  .mobile-language-menu button.active {
     border-color: rgba(176, 22, 33, 0.82);
     background: rgba(176, 22, 33, 0.18);
     color: var(--white);
@@ -2953,6 +2982,10 @@ body {
     grid-template-columns: 1fr 1fr auto;
     width: 100%;
     gap: 8px;
+  }
+
+  .header-actions .language-switcher {
+    display: none;
   }
 
   .header-actions a,
