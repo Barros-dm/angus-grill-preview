@@ -789,6 +789,76 @@ a {
   font-weight: 800;
 }
 
+.kg-amount-selector {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--soft-grey);
+}
+
+.kg-amount-selector button {
+  border: 0;
+  border-radius: 0;
+  background: var(--white);
+  color: var(--charcoal);
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.kg-amount-selector label {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-inline: 1px solid var(--border);
+}
+
+.kg-amount-selector span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.kg-amount-selector input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--charcoal);
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: 900;
+  outline: 0;
+}
+
+.kg-estimate {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  background: var(--white);
+}
+
+.kg-estimate span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.kg-estimate strong {
+  color: var(--deep-red);
+  text-align: right;
+}
+
+.kg-note {
+  color: var(--muted);
+  font-weight: 700;
+}
+
 .cart-drawer {
   position: fixed;
   inset: 0;

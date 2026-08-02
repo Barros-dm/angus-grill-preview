@@ -6,6 +6,7 @@ const state = {
   cart: new Map(),
   modalProduct: null,
   modalOptionId: null,
+  modalKgAmount: 1,
   heroIndex: 0,
   reviewIndex: 0,
   deliveryQuote: {
@@ -19,6 +20,629 @@ const state = {
 
 const money = (value) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 const byId = (id) => document.getElementById(id);
+
+const LANGUAGE_META = {
+  pt: { html: "pt-BR", label: "Português" },
+  en: { html: "en-GB", label: "English" },
+  es: { html: "es", label: "Español" },
+  ro: { html: "ro", label: "Română" }
+};
+
+const I18N = {
+  pt: {
+    skipLink: "Pular para produtos",
+    announcement: "Entrega rápida em Canterbury • Retirada na loja disponível • Carnes e mercearia brasileira selecionadas",
+    searchSr: "Buscar produto",
+    searchPlaceholder: "O que você está procurando?",
+    searchButton: "Buscar",
+    howToBuy: "Como comprar",
+    call: "Ligar",
+    cart: "Carrinho",
+    allCategories: "Todas as categorias",
+    allProductsNav: "Todos os Produtos",
+    heroMeatEyebrow: "Açougue premium em Canterbury",
+    heroMeatTitle: "Carnes premium em Canterbury, <span>agora online.</span>",
+    heroMeatText: "Cortes selecionados como picanha, maminha, costela e linguiça toscana. Entrega rápida ou retirada na loja.",
+    shopMeat: "Comprar carnes",
+    viewSausages: "Ver linguiças",
+    deliveryCollectionAvailable: "Entrega e retirada disponíveis",
+    heroGroceryEyebrow: "Mercearia brasileira",
+    heroGroceryTitle: "Produtos do Brasil para completar <span>sua compra.</span>",
+    heroGroceryText: "Temperos, congelados, bebidas, doces e itens de mercearia selecionados para o dia a dia da comunidade brasileira.",
+    viewGrocery: "Ver mercearia",
+    viewDrinks: "Ver bebidas",
+    groceryFrozen: "Mercearia + congelados",
+    selectedProducts: "Produtos selecionados",
+    heroPromoEyebrow: "Promoção da semana",
+    heroPromoTitle: "Ofertas para churrasco e compras <span>do dia a dia.</span>",
+    heroPromoText: "Confira produtos em promoção, aproveite a entrega grátis acima de £40 e finalize o pedido direto pelo WhatsApp.",
+    viewOffers: "Ver ofertas",
+    freeDelivery: "Entrega grátis",
+    insideDeliveryRadius: "Dentro do raio atendido",
+    googleRating: "5.0 no Google",
+    fastDelivery: "Entrega rápida",
+    brazilianGrocery: "Mercearia brasileira",
+    storeCollection: "Retirada na loja",
+    categoriesEyebrow: "Categorias",
+    shopByCategory: "Compre por categoria",
+    categoryIntro: "Encontre cortes selecionados, linguiças, temperos, congelados, bebidas e produtos brasileiros para completar sua compra.",
+    catalogEyebrow: "Catálogo",
+    weeklyPopular: "Mais pedidos da semana",
+    productCountSuffix: "com seleção especial para churrasco, família e compras do dia a dia.",
+    sortBy: "Organizar por",
+    sortFeatured: "Destaques",
+    sortPriceAsc: "Menor preço",
+    sortPriceDesc: "Maior preço",
+    sortName: "Nome",
+    filters: "Filtros",
+    stockOnly: "Somente disponíveis",
+    featureEyebrow: "Mercearia brasileira",
+    featureTitle: "Produtos selecionados para completar sua compra",
+    featureText: "Escolha carnes, temperos, congelados, bebidas e itens de mercearia, adicione ao carrinho e confirme retirada ou entrega pelo WhatsApp.",
+    reviewsEyebrow: "Confiança local",
+    reviewsTitle: "Avaliado com 5 estrelas pelos nossos clientes em Canterbury",
+    reviewsIntro: "Carnes de qualidade, mercearia brasileira, atendimento próximo, entrega rápida e produtos cuidadosamente embalados.",
+    reviewOne: "Excelente qualidade e atendimento. Carnes frescas e muito bem embaladas.",
+    reviewOneBy: "Cliente Angus Grill",
+    reviewTwo: "Ótima variedade de cortes e entrega rápida.",
+    reviewTwoBy: "Compra para churrasco",
+    reviewThree: "A melhor carne da região. Recomendo para churrasco e compras da semana.",
+    reviewThreeBy: "Cliente local em Canterbury",
+    simpleOrder: "Pedido simples",
+    howItWorks: "Como funciona",
+    stepOneTitle: "Escolha seus produtos",
+    stepOneText: "Navegue pelas categorias e adicione carnes, mercearia e produtos brasileiros ao carrinho.",
+    stepTwoTitle: "Informe entrega ou retirada",
+    stepTwoText: "Escolha a melhor opção e adicione observações para entrega ou preparo.",
+    stepThreeTitle: "Finalize pelo WhatsApp",
+    stepThreeText: "Envie o pedido pronto e confirme diretamente com a equipe Angus Grill.",
+    phaseTwo: "Fase 2",
+    appsSoon: "Em breve no Google Play e App Store",
+    appsText: "Estamos preparando uma experiência ainda mais prática para você comprar pelo celular.",
+    aboutUs: "Sobre nós",
+    contactUs: "Fale conosco",
+    location: "Localização",
+    reviews: "Avaliações",
+    shop: "Comprar",
+    service: "Atendimento",
+    deliveryAndCollection: "Entrega e retirada",
+    openingHours: "Horários",
+    contact: "Contato",
+    adminPanel: "Painel admin",
+    addToCart: "Adicionar ao carrinho",
+    yourOrder: "Seu pedido",
+    closeCart: "Fechar carrinho",
+    productsSubtotal: "Subtotal produtos",
+    delivery: "Entrega",
+    collection: "Retirada",
+    estimatedTotal: "Total estimado",
+    checkout: "Finalizar pedido",
+    name: "Nome",
+    phoneOrEmail: "Telefone ou e-mail",
+    address: "Endereço",
+    addressLine2: "Apartamento, bloco etc. (opcional)",
+    city: "Cidade",
+    preferredDate: "Data preferida",
+    preferredTime: "Horário preferido",
+    morning: "Manhã",
+    afternoon: "Tarde",
+    lateDay: "Final do dia",
+    arrangeWhatsapp: "Combinar pelo WhatsApp",
+    deliveryNotes: "Observações para entrega",
+    deliveryNotesPlaceholder: "Ex: deixar na recepção, tocar campainha, separar produtos congelados...",
+    finishWhatsapp: "Finalizar pedido no WhatsApp",
+    confirmation: "Pedido preparado para envio no WhatsApp. Confira a mensagem antes de enviar.",
+    continueShopping: "Continuar comprando",
+    viewOrder: "Ver pedido",
+    categoryItems: "produtos",
+    categoryItem: "produto",
+    productFound: "produto encontrado",
+    productsFound: "produtos encontrados",
+    noProductsTitle: "Nenhum produto encontrado",
+    noProductsText: "Tente outra categoria ou busca.",
+    available: "Disponível",
+    unavailable: "Indisponível",
+    chooseWeight: "escolha o peso",
+    finalAfterWeighing: "final após pesagem",
+    viewDetails: "Ver detalhes",
+    chooseSize: "Escolher tamanho",
+    emptyCart: "Seu carrinho está vazio. Adicione produtos para montar seu pedido.",
+    selectedOption: "Opção selecionada pelo cliente.",
+    weightFinalWhatsapp: "Peso e preço final confirmados no WhatsApp.",
+    remove: "Remover",
+    chooseAvailableWeight: "Escolha o peso disponível",
+    availablePlural: "disponíveis",
+    soldOut: "Esgotado",
+    talkWhatsappPrepare: "Fale pelo WhatsApp para combinar cortes, preparo e embalagem.",
+    fromPrice: "A partir de",
+    priceToConfirm: "Preço a confirmar",
+    finalPriceAfterWeighing: "Preço final confirmado após pesagem.",
+    selectionFallback: "Seleção Angus Grill.",
+    title: "Angus Grill Premium Meat | Açougue e Mercearia"
+  },
+  en: {
+    skipLink: "Skip to products",
+    announcement: "Fast delivery in Canterbury • Store collection available • Selected premium meats and Brazilian groceries",
+    searchSr: "Search product",
+    searchPlaceholder: "What are you looking for?",
+    searchButton: "Search",
+    howToBuy: "How to buy",
+    call: "Call",
+    cart: "Basket",
+    allCategories: "All categories",
+    allProductsNav: "All Products",
+    heroMeatEyebrow: "Premium butcher in Canterbury",
+    heroMeatTitle: "Premium meats in Canterbury, <span>now online.</span>",
+    heroMeatText: "Selected cuts including picanha, maminha, beef ribs and Toscana sausage. Fast delivery or store collection.",
+    shopMeat: "Shop meats",
+    viewSausages: "View sausages",
+    deliveryCollectionAvailable: "Delivery and collection available",
+    heroGroceryEyebrow: "Brazilian grocery",
+    heroGroceryTitle: "Brazilian products to complete <span>your shop.</span>",
+    heroGroceryText: "Seasonings, frozen foods, drinks, sweets and grocery items selected for the Brazilian community.",
+    viewGrocery: "View grocery",
+    viewDrinks: "View drinks",
+    groceryFrozen: "Grocery + frozen",
+    selectedProducts: "Selected products",
+    heroPromoEyebrow: "Weekly promotion",
+    heroPromoTitle: "Offers for barbecue and <span>everyday shopping.</span>",
+    heroPromoText: "Browse promotional products, get free delivery over £40 and finish the order directly on WhatsApp.",
+    viewOffers: "View offers",
+    freeDelivery: "Free delivery",
+    insideDeliveryRadius: "Inside the delivery radius",
+    googleRating: "5.0 on Google",
+    fastDelivery: "Fast delivery",
+    brazilianGrocery: "Brazilian grocery",
+    storeCollection: "Store collection",
+    categoriesEyebrow: "Categories",
+    shopByCategory: "Shop by category",
+    categoryIntro: "Find selected cuts, sausages, seasonings, frozen foods, drinks and Brazilian products to complete your shop.",
+    catalogEyebrow: "Catalogue",
+    weeklyPopular: "Most ordered this week",
+    productCountSuffix: "with a special selection for barbecue, family and everyday shopping.",
+    sortBy: "Sort by",
+    sortFeatured: "Featured",
+    sortPriceAsc: "Lowest price",
+    sortPriceDesc: "Highest price",
+    sortName: "Name",
+    filters: "Filters",
+    stockOnly: "Available only",
+    featureEyebrow: "Brazilian grocery",
+    featureTitle: "Selected products to complete your shop",
+    featureText: "Choose meats, seasonings, frozen foods, drinks and grocery items, add them to the basket and confirm delivery or collection on WhatsApp.",
+    reviewsEyebrow: "Local trust",
+    reviewsTitle: "Rated 5 stars by our customers in Canterbury",
+    reviewsIntro: "Quality meats, Brazilian grocery, friendly service, fast delivery and carefully packed products.",
+    reviewOne: "Excellent quality and service. Fresh meats and very well packed.",
+    reviewOneBy: "Angus Grill customer",
+    reviewTwo: "Great variety of cuts and fast delivery.",
+    reviewTwoBy: "Barbecue order",
+    reviewThree: "The best meat in the area. Recommended for barbecue and weekly shopping.",
+    reviewThreeBy: "Local Canterbury customer",
+    simpleOrder: "Simple order",
+    howItWorks: "How it works",
+    stepOneTitle: "Choose your products",
+    stepOneText: "Browse the categories and add meats, grocery and Brazilian products to the basket.",
+    stepTwoTitle: "Choose delivery or collection",
+    stepTwoText: "Choose the best option and add delivery or preparation notes.",
+    stepThreeTitle: "Finish on WhatsApp",
+    stepThreeText: "Send the prepared order and confirm directly with the Angus Grill team.",
+    phaseTwo: "Phase 2",
+    appsSoon: "Coming soon to Google Play and App Store",
+    appsText: "We are preparing an even easier mobile shopping experience.",
+    aboutUs: "About us",
+    contactUs: "Contact us",
+    location: "Location",
+    reviews: "Reviews",
+    shop: "Shop",
+    service: "Service",
+    deliveryAndCollection: "Delivery and collection",
+    openingHours: "Opening hours",
+    contact: "Contact",
+    adminPanel: "Admin panel",
+    addToCart: "Add to basket",
+    yourOrder: "Your order",
+    closeCart: "Close basket",
+    productsSubtotal: "Products subtotal",
+    delivery: "Delivery",
+    collection: "Collection",
+    estimatedTotal: "Estimated total",
+    checkout: "Checkout",
+    name: "Name",
+    phoneOrEmail: "Phone or email",
+    address: "Address",
+    addressLine2: "Apartment, block etc. (optional)",
+    city: "City",
+    preferredDate: "Preferred date",
+    preferredTime: "Preferred time",
+    morning: "Morning",
+    afternoon: "Afternoon",
+    lateDay: "End of day",
+    arrangeWhatsapp: "Arrange on WhatsApp",
+    deliveryNotes: "Delivery notes",
+    deliveryNotesPlaceholder: "E.g. leave at reception, ring bell, separate frozen products...",
+    finishWhatsapp: "Finish order on WhatsApp",
+    confirmation: "Order prepared for WhatsApp. Please check the message before sending.",
+    continueShopping: "Continue shopping",
+    viewOrder: "View order",
+    categoryItems: "products",
+    categoryItem: "product",
+    productFound: "product found",
+    productsFound: "products found",
+    noProductsTitle: "No products found",
+    noProductsText: "Try another category or search.",
+    available: "Available",
+    unavailable: "Unavailable",
+    chooseWeight: "choose weight",
+    finalAfterWeighing: "final after weighing",
+    viewDetails: "View details",
+    chooseSize: "Choose size",
+    emptyCart: "Your basket is empty. Add products to build your order.",
+    selectedOption: "Option selected by the customer.",
+    weightFinalWhatsapp: "Final weight and price confirmed on WhatsApp.",
+    remove: "Remove",
+    chooseAvailableWeight: "Choose the available weight",
+    availablePlural: "available",
+    soldOut: "Sold out",
+    talkWhatsappPrepare: "Talk on WhatsApp to arrange cuts, preparation and packaging.",
+    fromPrice: "From",
+    priceToConfirm: "Price to confirm",
+    finalPriceAfterWeighing: "Final price confirmed after weighing.",
+    selectionFallback: "Angus Grill selection.",
+    title: "Angus Grill Premium Meat | Butcher and Grocery"
+  },
+  es: {
+    skipLink: "Ir a productos",
+    announcement: "Entrega rápida en Canterbury • Recogida en tienda disponible • Carnes y productos brasileños seleccionados",
+    searchSr: "Buscar producto",
+    searchPlaceholder: "¿Qué estás buscando?",
+    searchButton: "Buscar",
+    howToBuy: "Cómo comprar",
+    call: "Llamar",
+    cart: "Carrito",
+    allCategories: "Todas las categorías",
+    allProductsNav: "Todos los productos",
+    heroMeatEyebrow: "Carnicería premium en Canterbury",
+    heroMeatTitle: "Carnes premium en Canterbury, <span>ahora online.</span>",
+    heroMeatText: "Cortes seleccionados como picanha, maminha, costilla y linguiça toscana. Entrega rápida o recogida en tienda.",
+    shopMeat: "Comprar carnes",
+    viewSausages: "Ver linguiças",
+    deliveryCollectionAvailable: "Entrega y recogida disponibles",
+    heroGroceryEyebrow: "Mercería brasileña",
+    heroGroceryTitle: "Productos de Brasil para completar <span>tu compra.</span>",
+    heroGroceryText: "Condimentos, congelados, bebidas, dulces y productos seleccionados para la comunidad brasileña.",
+    viewGrocery: "Ver mercería",
+    viewDrinks: "Ver bebidas",
+    groceryFrozen: "Mercería + congelados",
+    selectedProducts: "Productos seleccionados",
+    heroPromoEyebrow: "Promoción de la semana",
+    heroPromoTitle: "Ofertas para barbacoa y compras <span>del día a día.</span>",
+    heroPromoText: "Consulta productos en promoción, aprovecha entrega gratis desde £40 y finaliza el pedido por WhatsApp.",
+    viewOffers: "Ver ofertas",
+    freeDelivery: "Entrega gratis",
+    insideDeliveryRadius: "Dentro del radio de entrega",
+    googleRating: "5.0 en Google",
+    fastDelivery: "Entrega rápida",
+    brazilianGrocery: "Mercería brasileña",
+    storeCollection: "Recogida en tienda",
+    categoriesEyebrow: "Categorías",
+    shopByCategory: "Comprar por categoría",
+    categoryIntro: "Encuentra cortes seleccionados, linguiças, condimentos, congelados, bebidas y productos brasileños.",
+    catalogEyebrow: "Catálogo",
+    weeklyPopular: "Más pedidos de la semana",
+    productCountSuffix: "con selección especial para barbacoa, familia y compras del día a día.",
+    sortBy: "Ordenar por",
+    sortFeatured: "Destacados",
+    sortPriceAsc: "Menor precio",
+    sortPriceDesc: "Mayor precio",
+    sortName: "Nombre",
+    filters: "Filtros",
+    stockOnly: "Solo disponibles",
+    featureEyebrow: "Mercería brasileña",
+    featureTitle: "Productos seleccionados para completar tu compra",
+    featureText: "Elige carnes, condimentos, congelados, bebidas y mercería, añade al carrito y confirma entrega o recogida por WhatsApp.",
+    reviewsEyebrow: "Confianza local",
+    reviewsTitle: "Valorado con 5 estrellas por nuestros clientes en Canterbury",
+    reviewsIntro: "Carnes de calidad, mercería brasileña, atención cercana, entrega rápida y productos cuidadosamente embalados.",
+    reviewOne: "Excelente calidad y atención. Carnes frescas y muy bien embaladas.",
+    reviewOneBy: "Cliente Angus Grill",
+    reviewTwo: "Gran variedad de cortes y entrega rápida.",
+    reviewTwoBy: "Compra para barbacoa",
+    reviewThree: "La mejor carne de la zona. Recomiendo para barbacoa y compras semanales.",
+    reviewThreeBy: "Cliente local en Canterbury",
+    simpleOrder: "Pedido simple",
+    howItWorks: "Cómo funciona",
+    stepOneTitle: "Elige tus productos",
+    stepOneText: "Navega por las categorías y añade carnes, mercería y productos brasileños al carrito.",
+    stepTwoTitle: "Indica entrega o recogida",
+    stepTwoText: "Elige la mejor opción y añade notas de entrega o preparación.",
+    stepThreeTitle: "Finaliza por WhatsApp",
+    stepThreeText: "Envía el pedido preparado y confirma directamente con el equipo Angus Grill.",
+    phaseTwo: "Fase 2",
+    appsSoon: "Próximamente en Google Play y App Store",
+    appsText: "Estamos preparando una experiencia móvil aún más práctica.",
+    aboutUs: "Sobre nosotros",
+    contactUs: "Contacto",
+    location: "Ubicación",
+    reviews: "Reseñas",
+    shop: "Comprar",
+    service: "Atención",
+    deliveryAndCollection: "Entrega y recogida",
+    openingHours: "Horarios",
+    contact: "Contacto",
+    adminPanel: "Panel admin",
+    addToCart: "Añadir al carrito",
+    yourOrder: "Tu pedido",
+    closeCart: "Cerrar carrito",
+    productsSubtotal: "Subtotal productos",
+    delivery: "Entrega",
+    collection: "Recogida",
+    estimatedTotal: "Total estimado",
+    checkout: "Finalizar pedido",
+    name: "Nombre",
+    phoneOrEmail: "Teléfono o email",
+    address: "Dirección",
+    addressLine2: "Apartamento, bloque etc. (opcional)",
+    city: "Ciudad",
+    preferredDate: "Fecha preferida",
+    preferredTime: "Horario preferido",
+    morning: "Mañana",
+    afternoon: "Tarde",
+    lateDay: "Final del día",
+    arrangeWhatsapp: "Confirmar por WhatsApp",
+    deliveryNotes: "Notas de entrega",
+    deliveryNotesPlaceholder: "Ej: dejar en recepción, tocar el timbre, separar congelados...",
+    finishWhatsapp: "Finalizar pedido por WhatsApp",
+    confirmation: "Pedido preparado para WhatsApp. Revisa el mensaje antes de enviar.",
+    continueShopping: "Continuar comprando",
+    viewOrder: "Ver pedido",
+    categoryItems: "productos",
+    categoryItem: "producto",
+    productFound: "producto encontrado",
+    productsFound: "productos encontrados",
+    noProductsTitle: "No se encontraron productos",
+    noProductsText: "Prueba otra categoría o búsqueda.",
+    available: "Disponible",
+    unavailable: "No disponible",
+    chooseWeight: "elige el peso",
+    finalAfterWeighing: "final tras pesaje",
+    viewDetails: "Ver detalles",
+    chooseSize: "Elegir tamaño",
+    emptyCart: "Tu carrito está vacío. Añade productos para crear tu pedido.",
+    selectedOption: "Opción seleccionada por el cliente.",
+    weightFinalWhatsapp: "Peso y precio final confirmados por WhatsApp.",
+    remove: "Eliminar",
+    chooseAvailableWeight: "Elige el peso disponible",
+    availablePlural: "disponibles",
+    soldOut: "Agotado",
+    talkWhatsappPrepare: "Habla por WhatsApp para acordar cortes, preparación y embalaje.",
+    fromPrice: "Desde",
+    priceToConfirm: "Precio a confirmar",
+    finalPriceAfterWeighing: "Precio final confirmado tras pesaje.",
+    selectionFallback: "Selección Angus Grill.",
+    title: "Angus Grill Premium Meat | Carnicería y Mercería"
+  },
+  ro: {
+    skipLink: "Sari la produse",
+    announcement: "Livrare rapidă în Canterbury • Ridicare din magazin disponibilă • Carne premium și produse braziliene selectate",
+    searchSr: "Caută produs",
+    searchPlaceholder: "Ce cauți?",
+    searchButton: "Caută",
+    howToBuy: "Cum cumperi",
+    call: "Sună",
+    cart: "Coș",
+    allCategories: "Toate categoriile",
+    allProductsNav: "Toate produsele",
+    heroMeatEyebrow: "Măcelărie premium în Canterbury",
+    heroMeatTitle: "Carne premium în Canterbury, <span>acum online.</span>",
+    heroMeatText: "Bucăți selectate precum picanha, maminha, costiță și cârnați Toscana. Livrare rapidă sau ridicare din magazin.",
+    shopMeat: "Cumpără carne",
+    viewSausages: "Vezi cârnați",
+    deliveryCollectionAvailable: "Livrare și ridicare disponibile",
+    heroGroceryEyebrow: "Băcănie braziliană",
+    heroGroceryTitle: "Produse din Brazilia pentru <span>cumpărăturile tale.</span>",
+    heroGroceryText: "Condimente, congelate, băuturi, dulciuri și produse alimentare selectate pentru comunitatea braziliană.",
+    viewGrocery: "Vezi băcănia",
+    viewDrinks: "Vezi băuturi",
+    groceryFrozen: "Băcănie + congelate",
+    selectedProducts: "Produse selectate",
+    heroPromoEyebrow: "Promoția săptămânii",
+    heroPromoTitle: "Oferte pentru grătar și <span>cumpărături zilnice.</span>",
+    heroPromoText: "Vezi produsele la promoție, livrare gratuită peste £40 și finalizează comanda pe WhatsApp.",
+    viewOffers: "Vezi ofertele",
+    freeDelivery: "Livrare gratuită",
+    insideDeliveryRadius: "În raza de livrare",
+    googleRating: "5.0 pe Google",
+    fastDelivery: "Livrare rapidă",
+    brazilianGrocery: "Băcănie braziliană",
+    storeCollection: "Ridicare din magazin",
+    categoriesEyebrow: "Categorii",
+    shopByCategory: "Cumpără pe categorii",
+    categoryIntro: "Găsește carne selectată, cârnați, condimente, congelate, băuturi și produse braziliene.",
+    catalogEyebrow: "Catalog",
+    weeklyPopular: "Cele mai comandate ale săptămânii",
+    productCountSuffix: "cu selecție specială pentru grătar, familie și cumpărături zilnice.",
+    sortBy: "Sortează după",
+    sortFeatured: "Recomandate",
+    sortPriceAsc: "Preț crescător",
+    sortPriceDesc: "Preț descrescător",
+    sortName: "Nume",
+    filters: "Filtre",
+    stockOnly: "Doar disponibile",
+    featureEyebrow: "Băcănie braziliană",
+    featureTitle: "Produse selectate pentru cumpărăturile tale",
+    featureText: "Alege carne, condimente, congelate, băuturi și produse alimentare, adaugă în coș și confirmă livrarea sau ridicarea pe WhatsApp.",
+    reviewsEyebrow: "Încredere locală",
+    reviewsTitle: "Evaluat cu 5 stele de clienții noștri din Canterbury",
+    reviewsIntro: "Carne de calitate, produse braziliene, servicii apropiate, livrare rapidă și produse ambalate cu grijă.",
+    reviewOne: "Calitate și servicii excelente. Carne proaspătă și foarte bine ambalată.",
+    reviewOneBy: "Client Angus Grill",
+    reviewTwo: "Varietate bună de bucăți și livrare rapidă.",
+    reviewTwoBy: "Comandă pentru grătar",
+    reviewThree: "Cea mai bună carne din zonă. Recomand pentru grătar și cumpărături săptămânale.",
+    reviewThreeBy: "Client local din Canterbury",
+    simpleOrder: "Comandă simplă",
+    howItWorks: "Cum funcționează",
+    stepOneTitle: "Alege produsele",
+    stepOneText: "Navighează categoriile și adaugă carne, produse alimentare și produse braziliene în coș.",
+    stepTwoTitle: "Alege livrare sau ridicare",
+    stepTwoText: "Alege opțiunea potrivită și adaugă observații pentru livrare sau pregătire.",
+    stepThreeTitle: "Finalizează pe WhatsApp",
+    stepThreeText: "Trimite comanda pregătită și confirmă direct cu echipa Angus Grill.",
+    phaseTwo: "Faza 2",
+    appsSoon: "În curând pe Google Play și App Store",
+    appsText: "Pregătim o experiență mobilă și mai practică.",
+    aboutUs: "Despre noi",
+    contactUs: "Contactează-ne",
+    location: "Locație",
+    reviews: "Recenzii",
+    shop: "Cumpără",
+    service: "Servicii",
+    deliveryAndCollection: "Livrare și ridicare",
+    openingHours: "Program",
+    contact: "Contact",
+    adminPanel: "Panou admin",
+    addToCart: "Adaugă în coș",
+    yourOrder: "Comanda ta",
+    closeCart: "Închide coșul",
+    productsSubtotal: "Subtotal produse",
+    delivery: "Livrare",
+    collection: "Ridicare",
+    estimatedTotal: "Total estimat",
+    checkout: "Finalizează comanda",
+    name: "Nume",
+    phoneOrEmail: "Telefon sau email",
+    address: "Adresă",
+    addressLine2: "Apartament, bloc etc. (opțional)",
+    city: "Oraș",
+    preferredDate: "Data preferată",
+    preferredTime: "Ora preferată",
+    morning: "Dimineața",
+    afternoon: "După-amiază",
+    lateDay: "Spre seară",
+    arrangeWhatsapp: "Stabilește pe WhatsApp",
+    deliveryNotes: "Observații pentru livrare",
+    deliveryNotesPlaceholder: "Ex: lăsați la recepție, sunați la sonerie, separați produsele congelate...",
+    finishWhatsapp: "Finalizează pe WhatsApp",
+    confirmation: "Comanda este pregătită pentru WhatsApp. Verifică mesajul înainte de trimitere.",
+    continueShopping: "Continuă cumpărăturile",
+    viewOrder: "Vezi comanda",
+    categoryItems: "produse",
+    categoryItem: "produs",
+    productFound: "produs găsit",
+    productsFound: "produse găsite",
+    noProductsTitle: "Nu s-au găsit produse",
+    noProductsText: "Încearcă altă categorie sau căutare.",
+    available: "Disponibil",
+    unavailable: "Indisponibil",
+    chooseWeight: "alege greutatea",
+    finalAfterWeighing: "final după cântărire",
+    viewDetails: "Vezi detalii",
+    chooseSize: "Alege mărimea",
+    emptyCart: "Coșul este gol. Adaugă produse pentru comandă.",
+    selectedOption: "Opțiune selectată de client.",
+    weightFinalWhatsapp: "Greutatea și prețul final se confirmă pe WhatsApp.",
+    remove: "Elimină",
+    chooseAvailableWeight: "Alege greutatea disponibilă",
+    availablePlural: "disponibile",
+    soldOut: "Epuizat",
+    talkWhatsappPrepare: "Vorbește pe WhatsApp pentru tăiere, pregătire și ambalare.",
+    fromPrice: "De la",
+    priceToConfirm: "Preț de confirmat",
+    finalPriceAfterWeighing: "Prețul final se confirmă după cântărire.",
+    selectionFallback: "Selecție Angus Grill.",
+    title: "Angus Grill Premium Meat | Măcelărie și Băcănie"
+  }
+};
+
+const CATEGORY_LABELS = {
+  pt: {
+    Todos: "Todos",
+    Ofertas: "Ofertas",
+    "Mais Vendidos": "Mais Vendidos",
+    Bovino: "Bovino",
+    Linguiças: "Linguiças",
+    Mercearia: "Mercearia",
+    Congelados: "Congelados",
+    Temperos: "Temperos",
+    Bebidas: "Bebidas",
+    Doces: "Doces",
+    Utilidades: "Utilidades",
+    Beleza: "Beleza",
+    Livros: "Livros"
+  },
+  en: {
+    Todos: "All",
+    Ofertas: "Offers",
+    "Mais Vendidos": "Best Sellers",
+    Bovino: "Beef",
+    Linguiças: "Sausages",
+    Mercearia: "Grocery",
+    Congelados: "Frozen",
+    Temperos: "Seasonings",
+    Bebidas: "Drinks",
+    Doces: "Sweets",
+    Utilidades: "Utilities",
+    Beleza: "Beauty",
+    Livros: "Books"
+  },
+  es: {
+    Todos: "Todos",
+    Ofertas: "Ofertas",
+    "Mais Vendidos": "Más vendidos",
+    Bovino: "Vacuno",
+    Linguiças: "Linguiças",
+    Mercearia: "Mercería",
+    Congelados: "Congelados",
+    Temperos: "Condimentos",
+    Bebidas: "Bebidas",
+    Doces: "Dulces",
+    Utilidades: "Utilidades",
+    Beleza: "Belleza",
+    Livros: "Libros"
+  },
+  ro: {
+    Todos: "Toate",
+    Ofertas: "Oferte",
+    "Mais Vendidos": "Cele mai vândute",
+    Bovino: "Vită",
+    Linguiças: "Cârnați",
+    Mercearia: "Băcănie",
+    Congelados: "Congelate",
+    Temperos: "Condimente",
+    Bebidas: "Băuturi",
+    Doces: "Dulciuri",
+    Utilidades: "Utile",
+    Beleza: "Îngrijire",
+    Livros: "Cărți"
+  }
+};
+
+function currentLanguage() {
+  return I18N[state.language] ? state.language : "pt";
+}
+
+function t(key) {
+  const language = currentLanguage();
+  return I18N[language]?.[key] || I18N.pt[key] || key;
+}
+
+function categoryLabel(category) {
+  const language = currentLanguage();
+  return CATEGORY_LABELS[language]?.[category] || CATEGORY_LABELS.pt[category] || category;
+}
+
+function productName(product) {
+  return product.translations?.[currentLanguage()]?.name || product.name;
+}
+
+function productDescription(product) {
+  return product.translations?.[currentLanguage()]?.description || product.description;
+}
+
+function productUnit(product) {
+  return product.translations?.[currentLanguage()]?.unit || product.unit;
+}
 
 const DELIVERY_ZONES = {
   local: { label: "Canterbury e até 7.5 milhas", fee: 2.5 },
@@ -42,8 +666,43 @@ function productOptions(product) {
   return product.weightOptions || [];
 }
 
+const KG_AMOUNT_CATEGORIES = new Set(["Bovino", "Frango", "Suíno"]);
+
+function parseKgValue(rawValue, rawUnit = "") {
+  const value = Number(String(rawValue).replace(",", "."));
+  if (!Number.isFinite(value)) return null;
+  const unit = String(rawUnit).toLowerCase();
+  if (unit === "g" || value > 50) return value / 1000;
+  return value;
+}
+
+function optionAverageKg(label = "") {
+  const matches = [...String(label).matchAll(/(\d+(?:[.,]\d+)?)\s*(kg|g)?/gi)];
+  const values = matches.map((match) => parseKgValue(match[1], match[2])).filter((value) => value && value > 0);
+  if (!values.length) return null;
+  if (values.length === 1) return values[0];
+  return (values[0] + values[1]) / 2;
+}
+
+function derivedPricePerKg(product) {
+  if (product.pricePerKg) return product.pricePerKg;
+  if (product.pricingType === "perKg" && !productOptions(product).length) return product.price;
+  const derived = productOptions(product)
+    .map((option) => {
+      const kg = option.weightKg || optionAverageKg(option.label);
+      return kg ? optionPrice(product, option) / kg : null;
+    })
+    .filter((value) => Number.isFinite(value) && value > 0);
+  return derived.length ? Number(derived[0].toFixed(2)) : product.price;
+}
+
+function isKgAmountProduct(product) {
+  if (!product || !KG_AMOUNT_CATEGORIES.has(product.category)) return false;
+  return product.pricingType === "perKg" || productOptions(product).some((option) => optionAverageKg(option.label));
+}
+
 function hasOptions(product) {
-  return productOptions(product).length > 0;
+  return productOptions(product).length > 0 && !isKgAmountProduct(product);
 }
 
 function optionPrice(product, option) {
@@ -62,6 +721,7 @@ function selectedModalOption() {
 }
 
 function priceLabel(product) {
+  if (isKgAmountProduct(product)) return `${money(derivedPricePerKg(product))}/kg`;
   if (hasOptions(product)) return `A partir de ${money(lowestOptionPrice(product))}`;
   if (product.pricingType === "perKg") return `${money(product.price)}/kg`;
   if (product.pricingType === "variable") return "Preço a confirmar";
@@ -75,17 +735,41 @@ function oldPriceLabel(product) {
 }
 
 function pricingNote(product) {
+  if (isKgAmountProduct(product)) return "Informe quantos kg deseja. O total é estimado pela quantidade selecionada.";
   if (product.pricingNote) return product.pricingNote;
   if (isVariableWeight(product)) return "Preço final confirmado após pesagem.";
   return "";
 }
 
 function lineLabel(product, quantity, option = null) {
+  if (isKgAmountProduct(product)) return `${formatKgAmount(quantity)} solicitados`;
   if (option) return `${quantity}x`;
   const unit = option ? "opção" : product.orderUnit || "unidade";
   const invariantUnits = new Set(["kg", "g"]);
   const plural = quantity > 1 && !unit.endsWith("s") && !invariantUnits.has(unit) ? `${unit}s` : unit;
   return `${quantity} ${plural}`;
+}
+
+function sanitizeKgAmount(value) {
+  const amount = Number(value);
+  if (!Number.isFinite(amount)) return 1;
+  return Math.max(0.25, Math.round(amount * 4) / 4);
+}
+
+function formatKgAmount(value) {
+  const amount = sanitizeKgAmount(value);
+  return `${amount.toFixed(2).replace(/\.00$/, "").replace(/0$/, "")}kg`;
+}
+
+function displayUnit(product) {
+  return isKgAmountProduct(product) ? "preço por kg" : product.unit;
+}
+
+function cartLineTotal(item) {
+  if (item.option) return optionPrice(item.product, item.option) * item.quantity;
+  if (isKgAmountProduct(item.product)) return derivedPricePerKg(item.product) * item.quantity;
+  if (!isVariableWeight(item.product)) return item.product.price * item.quantity;
+  return 0;
 }
 
 function cartKey(productId, optionId = "") {
@@ -196,15 +880,11 @@ function cartItems() {
 }
 
 function cartSubtotal() {
-  return cartItems().reduce((total, item) => {
-    if (item.option) return total + optionPrice(item.product, item.option) * item.quantity;
-    if (!isVariableWeight(item.product)) return total + item.product.price * item.quantity;
-    return total;
-  }, 0);
+  return cartItems().reduce((total, item) => total + cartLineTotal(item), 0);
 }
 
 function cartHasVariableWeight() {
-  return cartItems().some((item) => isVariableWeight(item.product) && !item.option);
+  return cartItems().some((item) => isVariableWeight(item.product) && !item.option && !isKgAmountProduct(item.product));
 }
 
 function cartSubtotalLabel() {
@@ -613,7 +1293,7 @@ function updatéDeliveryUi() {
 }
 
 function cartCount() {
-  return cartItems().reduce((total, item) => total + item.quantity, 0);
+  return cartItems().reduce((total, item) => total + (isKgAmountProduct(item.product) ? 1 : item.quantity), 0);
 }
 
 function productSectionOffset() {
@@ -664,6 +1344,10 @@ function addToCart(productId, quantity = 1, optionId = null) {
   const product = PRODUCTS.find((item) => item.id === productId);
   if (!product || !product.inStock) return;
   const option = optionId ? productOptions(product).find((item) => item.id === optionId) : null;
+  if (isKgAmountProduct(product) && optionId !== "kgAmount") {
+    openModal(productId);
+    return;
+  }
   if (hasOptions(product) && !option) {
     openModal(productId);
     return;
@@ -671,7 +1355,9 @@ function addToCart(productId, quantity = 1, optionId = null) {
   if (option && option.stock <= 0) return;
   const key = cartKey(productId, option?.id);
   const existing = state.cart.get(key);
-  const nextQuantity = (existing?.quantity || 0) + quantity;
+  const nextQuantity = isKgAmountProduct(product)
+    ? sanitizeKgAmount(quantity)
+    : (existing?.quantity || 0) + quantity;
   state.cart.set(key, { key, product, option, quantity: option ? Math.min(nextQuantity, option.stock) : nextQuantity });
   renderCart();
 }
@@ -682,7 +1368,9 @@ function setCartQuantity(key, quantity) {
   } else {
     const existing = state.cart.get(key);
     if (existing) {
-      const nextQuantity = existing.option ? Math.min(quantity, existing.option.stock) : quantity;
+      const nextQuantity = isKgAmountProduct(existing.product)
+        ? sanitizeKgAmount(quantity)
+        : existing.option ? Math.min(quantity, existing.option.stock) : quantity;
       state.cart.set(key, { ...existing, quantity: nextQuantity });
     }
   }
@@ -718,16 +1406,16 @@ function renderProducts() {
       <div class="product-body">
         ${product.badge ? `<span class="product-kicker">${product.badge}</span>` : `<span class="product-kicker">${product.category}</span>`}
         <h3>${product.name}</h3>
-        <div class="unit-stock"><span>${product.unit}</span><span class="${product.inStock ? "stock-ok" : "stock-out"}">${product.inStock ? "Disponivel" : "Indisponível"}</span></div>
+        <div class="unit-stock"><span>${displayUnit(product)}</span><span class="${product.inStock ? "stock-ok" : "stock-out"}">${product.inStock ? "Disponivel" : "Indisponível"}</span></div>
         <p>${product.description}</p>
         <div class="price-row">
           <div><strong>${priceLabel(product)}</strong>${oldPriceLabel(product) ? ` <del>${oldPriceLabel(product)}</del>` : ""}</div>
-          ${hasOptions(product) ? `<small>escolha o peso</small>` : isVariableWeight(product) ? `<small>final após pesagem</small>` : ""}
+          ${isKgAmountProduct(product) ? `<small>preço por kg</small>` : hasOptions(product) ? `<small>escolha a opção</small>` : isVariableWeight(product) ? `<small>final após pesagem</small>` : ""}
         </div>
         ${pricingNote(product) ? `<p class="pricing-note">${pricingNote(product)}</p>` : ""}
         <div class="card-actions">
           <button class="secondary-button" type="button" data-detail="${product.id}">Ver detalhes</button>
-          <button class="primary-button" type="button" data-add="${product.id}" ${product.inStock ? "" : "disabled"}>${product.inStock ? (hasOptions(product) ? "Escolher tamanho" : "Adicionar ao carrinho") : "Indisponível"}</button>
+          <button class="primary-button" type="button" data-add="${product.id}" ${product.inStock ? "" : "disabled"}>${product.inStock ? (isKgAmountProduct(product) ? "Escolher kg" : hasOptions(product) ? "Escolher tamanho" : "Adicionar ao carrinho") : "Indisponível"}</button>
         </div>
       </div>
     </article>
@@ -754,13 +1442,13 @@ function renderCart() {
     <article class="cart-item">
       <div>
         <h4>${product.name}</h4>
-        <p>${lineLabel(product, quantity, option)} - ${option ? option.label : product.unit} - ${option ? money(optionPrice(product, option)) : priceLabel(product)}</p>
-        ${option ? `<p class="cart-note">Opção selecionada pelo cliente.</p>` : isVariableWeight(product) ? `<p class="cart-note">Peso e preço final confirmados no WhatsApp.</p>` : ""}
+        <p>${lineLabel(product, quantity, option)} - ${option ? option.label : displayUnit(product)} - ${isKgAmountProduct(product) ? `${money(cartLineTotal({ product, option, quantity }))} (${priceLabel(product)})` : option ? money(optionPrice(product, option)) : priceLabel(product)}</p>
+        ${isKgAmountProduct(product) ? `<p class="cart-note">Quantidade em kg escolhida pelo cliente.</p>` : option ? `<p class="cart-note">Opção selecionada pelo cliente.</p>` : isVariableWeight(product) ? `<p class="cart-note">Peso e preço final confirmados no WhatsApp.</p>` : ""}
         <button class="remove-link" type="button" data-remove="${key}">Remover</button>
       </div>
       <div class="qty" aria-label="Quantidade de ${product.name}">
         <button type="button" data-dec="${key}">-</button>
-        <span>${quantity}</span>
+        <span>${isKgAmountProduct(product) ? formatKgAmount(quantity) : quantity}</span>
         <button type="button" data-inc="${key}">+</button>
       </div>
     </article>
@@ -782,15 +1470,16 @@ function openModal(productId) {
   if (!product) return;
   state.modalProduct = product;
   state.modalOptionId = productOptions(product).find((option) => option.stock > 0)?.id || productOptions(product)[0]?.id || null;
+  state.modalKgAmount = 1;
   elements.modalImage.src = product.image;
   elements.modalImage.alt = product.name;
   elements.modalCategory.textContent = product.category;
   elements.modalTitle.textContent = product.name;
   elements.modalDescription.textContent = product.description;
-  elements.modalUnit.textContent = product.unit;
+  elements.modalUnit.textContent = displayUnit(product);
   elements.modalNote.textContent = product.preparationNote || pricingNote(product) || "Fale pelo WhatsApp para combinar cortes, preparo e embalagem.";
   renderModalOptions();
-  elements.modalPrice.textContent = selectedModalOption() ? money(optionPrice(product, selectedModalOption())) : priceLabel(product);
+  elements.modalPrice.textContent = isKgAmountProduct(product) ? money(derivedPricePerKg(product) * state.modalKgAmount) : selectedModalOption() ? money(optionPrice(product, selectedModalOption())) : priceLabel(product);
   elements.modalStock.textContent = product.inStock ? "Disponivel" : "Indisponível";
   elements.modalStock.className = product.inStock ? "stock-ok" : "stock-out";
   elements.modalAdd.disabled = !product.inStock;
@@ -801,10 +1490,34 @@ function closeModal() {
   elements.productModal.hidden = true;
   state.modalProduct = null;
   state.modalOptionId = null;
+  state.modalKgAmount = 1;
 }
 
 function renderModalOptions() {
   const product = state.modalProduct;
+  if (product && isKgAmountProduct(product)) {
+    const pricePerKg = derivedPricePerKg(product);
+    const estimatedTotal = pricePerKg * state.modalKgAmount;
+    elements.modalOptions.hidden = false;
+    elements.modalOptions.innerHTML = `
+      <p>Escolha a quantidade desejada</p>
+      <div class="kg-amount-selector">
+        <button type="button" data-kg-dec aria-label="Diminuir quantidade">-</button>
+        <label>
+          <span>Quantidade em kg</span>
+          <input id="modalKgAmount" type="number" min="0.25" step="0.25" value="${state.modalKgAmount}" inputmode="decimal">
+        </label>
+        <button type="button" data-kg-inc aria-label="Aumentar quantidade">+</button>
+      </div>
+      <div class="kg-estimate">
+        <span>Preço por kg</span><strong>${money(pricePerKg)}/kg</strong>
+        <span>Total estimado</span><strong>${money(estimatedTotal)}</strong>
+      </div>
+      <small class="kg-note">O valor final pode variar apenas se a equipe precisar ajustar o peso separado.</small>
+    `;
+    elements.modalPrice.textContent = money(estimatedTotal);
+    return;
+  }
   if (!product || !hasOptions(product)) {
     elements.modalOptions.hidden = true;
     elements.modalOptions.innerHTML = "";
@@ -823,6 +1536,12 @@ function renderModalOptions() {
       `).join("")}
     </div>
   `;
+}
+
+function updateModalKgAmount(value) {
+  if (!state.modalProduct || !isKgAmountProduct(state.modalProduct)) return;
+  state.modalKgAmount = sanitizeKgAmount(value);
+  renderModalOptions();
 }
 
 function renderReviewCarousel() {
@@ -853,8 +1572,11 @@ function startReviewCarousel() {
 function creatéMessage(form) {
   const type = form.fulfilmentType === "delivery" ? "Entrega" : "Retirada";
   const products = cartItems().map(({ product, option, quantity }) => {
+    if (isKgAmountProduct(product)) {
+      return `- ${product.name} - ${formatKgAmount(quantity)} - ${money(cartLineTotal({ product, option, quantity }))} (${priceLabel(product)}) - quantidade em kg escolhida pelo cliente`;
+    }
     const price = option ? money(optionPrice(product, option)) : priceLabel(product);
-    const selected = option ? ` - ${option.label}` : ` - ${product.unit}`;
+    const selected = option ? ` - ${option.label}` : ` - ${displayUnit(product)}`;
     const note = option ? " - opção selecionada pelo cliente" : isVariableWeight(product) ? " - final peso/preço confirmado após pesagem" : "";
     return `- ${lineLabel(product, quantity, option)} ${product.name}${selected} - ${price}${note}`;
   }).join("\n");
@@ -863,7 +1585,7 @@ function creatéMessage(form) {
 Nome: ${form.name || "A informar"}
 Contato: ${form.contact || "A informar"}
 Tipo: ${type}
-${form.fulfilmentType === "delivery" ? `Endereço: ${form.address || "A informar"}\n${form.addressLine2 ? `Complemento: ${form.addressLine2}\n` : ""}Cidade: ${form.city || "A informar"}\nPostcode: ${form.postcode || "A informar"}\n` : ""}Data preferida: ${form.preferredDaté || "A combinar"}
+${form.fulfilmentType === "delivery" ? `Endereço: ${form.address || "A informar"}\n${form.addressLine2 ? `Complemento: ${form.addressLine2}\n` : ""}Cidade: ${form.city || "A informar"}\nPostcode: ${form.postcode || "A informar"}\n` : ""}Data preferida: ${form.preferredDate || "A combinar"}
 Horário: ${form.preferredTime || "Combinar pelo WhatsApp"}
 
 Produtos:
@@ -874,7 +1596,7 @@ ${form.fulfilmentType === "delivery" ? `Zona de entrega: ${DELIVERY_ZONES[form.d
 ${cartHasVariableWeight() ? "Obs: itens por kg podem variar conforme o peso real separado pela equipe." : ""}
 ${form.fulfilmentType === "delivery" && form.deliveryZone === "outside" ? "Obs entrega: endereço possívelmente fora do raio maximo de 15 milhas, confirmar disponibilidade.\n" : ""}
 
-Observações para o açougueiro:
+Observações para entrega:
 ${form.butcherNotes || "Sem observações."}
 
 Obrigado.`;
@@ -902,8 +1624,18 @@ function setupEvents() {
       renderModalOptions();
       elements.modalPrice.textContent = money(optionPrice(state.modalProduct, selectedModalOption()));
     }
-    if (target.dataset.inc) setCartQuantity(target.dataset.inc, (state.cart.get(target.dataset.inc)?.quantity || 0) + 1);
-    if (target.dataset.dec) setCartQuantity(target.dataset.dec, (state.cart.get(target.dataset.dec)?.quantity || 0) - 1);
+    if (target.dataset.kgInc && state.modalProduct) updateModalKgAmount(state.modalKgAmount + 0.25);
+    if (target.dataset.kgDec && state.modalProduct) updateModalKgAmount(state.modalKgAmount - 0.25);
+    if (target.dataset.inc) {
+      const existing = state.cart.get(target.dataset.inc);
+      const step = existing && isKgAmountProduct(existing.product) ? 0.25 : 1;
+      setCartQuantity(target.dataset.inc, (existing?.quantity || 0) + step);
+    }
+    if (target.dataset.dec) {
+      const existing = state.cart.get(target.dataset.dec);
+      const step = existing && isKgAmountProduct(existing.product) ? 0.25 : 1;
+      setCartQuantity(target.dataset.dec, (existing?.quantity || 0) - step);
+    }
     if (target.dataset.remove) setCartQuantity(target.dataset.remove, 0);
     if (target.dataset.reviewIndex) showReview(Number(target.dataset.reviewIndex));
   });
@@ -946,9 +1678,16 @@ function setupEvents() {
     if (event.target === elements.productModal) closeModal();
   });
   elements.modalAdd.addEventListener("click", () => {
-    if (state.modalProduct) addToCart(state.modalProduct.id, 1, state.modalOptionId);
+    if (state.modalProduct && isKgAmountProduct(state.modalProduct)) {
+      addToCart(state.modalProduct.id, state.modalKgAmount, "kgAmount");
+    } else if (state.modalProduct) {
+      addToCart(state.modalProduct.id, 1, state.modalOptionId);
+    }
     closeModal();
     openCart();
+  });
+  elements.modalOptions.addEventListener("input", (event) => {
+    if (event.target.id === "modalKgAmount") updateModalKgAmount(event.target.value);
   });
   if (elements.reviewPrev) {
     elements.reviewPrev.addEventListener("click", () => showReview(state.reviewIndex - 1));
@@ -966,6 +1705,8 @@ function setupEvents() {
     scheduleDeliveryQuote();
     renderCart();
   }));
+  const preferredDate = elements.checkoutForm.querySelector('input[name="preferredDate"]');
+  if (preferredDate) preferredDate.min = new Date().toISOString().slice(0, 10);
   initAddressAutocomplete();
   elements.checkoutForm.addEventListener("submit", (event) => {
     event.preventDefault();
