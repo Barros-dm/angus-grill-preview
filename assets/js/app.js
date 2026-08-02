@@ -6,7 +6,7 @@ const state = {
   cart: new Map(),
   modalProduct: null,
   modalOptionId: null,
-  modalKgAmount: 1,
+  modalKgAmount: 0,
   heroIndex: 0,
   reviewIndex: 0,
   deliveryQuote: {
@@ -750,15 +750,22 @@ function lineLabel(product, quantity, option = null) {
   return `${quantity} ${plural}`;
 }
 
-function sanitizeKgAmount(value) {
-  const amount = Number(value);
-  if (!Number.isFinite(amount)) return 1;
-  return Math.max(0.25, Math.round(amount * 4) / 4);
+function sanitizeKgAmount(value, options = {}) {
+  const { allowZero = false } = options;
+  const amount = Number(String(value).replace(",", "."));
+  if (!Number.isFinite(amount)) return allowZero ? 0 : 0.25;
+  const rounded = Math.round(amount * 100) / 100;
+  return Math.max(allowZero ? 0 : 0.25, rounded);
 }
 
 function formatKgAmount(value) {
-  const amount = sanitizeKgAmount(value);
+  const amount = sanitizeKgAmount(value, { allowZero: true });
   return `${amount.toFixed(2).replace(/\.00$/, "").replace(/0$/, "")}kg`;
+}
+
+function stepKgAmount(value, direction) {
+  const current = sanitizeKgAmount(value, { allowZero: true });
+  return Math.max(0, Math.round((current + direction * 0.25) * 100) / 100);
 }
 
 function displayUnit(product) {
@@ -1355,8 +1362,10 @@ function addToCart(productId, quantity = 1, optionId = null) {
   if (option && option.stock <= 0) return;
   const key = cartKey(productId, option?.id);
   const existing = state.cart.get(key);
+  const kgQuantity = isKgAmountProduct(product) ? sanitizeKgAmount(quantity, { allowZero: true }) : null;
+  if (isKgAmountProduct(product) && kgQuantity <= 0) return;
   const nextQuantity = isKgAmountProduct(product)
-    ? sanitizeKgAmount(quantity)
+    ? kgQuantity
     : (existing?.quantity || 0) + quantity;
   state.cart.set(key, { key, product, option, quantity: option ? Math.min(nextQuantity, option.stock) : nextQuantity });
   renderCart();
@@ -1470,7 +1479,7 @@ function openModal(productId) {
   if (!product) return;
   state.modalProduct = product;
   state.modalOptionId = productOptions(product).find((option) => option.stock > 0)?.id || productOptions(product)[0]?.id || null;
-  state.modalKgAmount = 1;
+  state.modalKgAmount = 0;
   elements.modalImage.src = product.image;
   elements.modalImage.alt = product.name;
   elements.modalCategory.textContent = product.category;
@@ -1482,7 +1491,7 @@ function openModal(productId) {
   elements.modalPrice.textContent = isKgAmountProduct(product) ? money(derivedPricePerKg(product) * state.modalKgAmount) : selectedModalOption() ? money(optionPrice(product, selectedModalOption())) : priceLabel(product);
   elements.modalStock.textContent = product.inStock ? "Disponivel" : "Indisponível";
   elements.modalStock.className = product.inStock ? "stock-ok" : "stock-out";
-  elements.modalAdd.disabled = !product.inStock;
+  elements.modalAdd.disabled = isKgAmountProduct(product) ? !product.inStock || state.modalKgAmount <= 0 : !product.inStock;
   elements.productModal.hidden = false;
 }
 
@@ -1490,7 +1499,7 @@ function closeModal() {
   elements.productModal.hidden = true;
   state.modalProduct = null;
   state.modalOptionId = null;
-  state.modalKgAmount = 1;
+  state.modalKgAmount = 0;
 }
 
 function renderModalOptions() {
@@ -1505,17 +1514,17 @@ function renderModalOptions() {
         <button type="button" data-kg-dec aria-label="Diminuir quantidade">-</button>
         <label>
           <span>Quantidade em kg</span>
-          <input id="modalKgAmount" type="number" min="0.25" step="0.25" value="${state.modalKgAmount}" inputmode="decimal">
+          <input id="modalKgAmount" type="number" min="0" step="0.25" value="${state.modalKgAmount}" inputmode="decimal">
         </label>
         <button type="button" data-kg-inc aria-label="Aumentar quantidade">+</button>
       </div>
       <div class="kg-estimate">
         <span>Preço por kg</span><strong>${money(pricePerKg)}/kg</strong>
-        <span>Total estimado</span><strong>${money(estimatedTotal)}</strong>
+        <span>Total estimado</span><strong data-kg-total>${money(estimatedTotal)}</strong>
       </div>
       <small class="kg-note">O valor final pode variar apenas se a equipe precisar ajustar o peso separado.</small>
     `;
-    elements.modalPrice.textContent = money(estimatedTotal);
+    updateModalKgEstimate();
     return;
   }
   if (!product || !hasOptions(product)) {
@@ -1540,8 +1549,23 @@ function renderModalOptions() {
 
 function updateModalKgAmount(value) {
   if (!state.modalProduct || !isKgAmountProduct(state.modalProduct)) return;
-  state.modalKgAmount = sanitizeKgAmount(value);
+  state.modalKgAmount = sanitizeKgAmount(value, { allowZero: true });
   renderModalOptions();
+}
+
+function updateModalKgDraft(value) {
+  if (!state.modalProduct || !isKgAmountProduct(state.modalProduct)) return;
+  state.modalKgAmount = sanitizeKgAmount(value, { allowZero: true });
+  updateModalKgEstimate();
+}
+
+function updateModalKgEstimate() {
+  if (!state.modalProduct || !isKgAmountProduct(state.modalProduct)) return;
+  const estimatedTotal = derivedPricePerKg(state.modalProduct) * state.modalKgAmount;
+  elements.modalPrice.textContent = money(estimatedTotal);
+  const total = elements.modalOptions.querySelector("[data-kg-total]");
+  if (total) total.textContent = money(estimatedTotal);
+  elements.modalAdd.disabled = !state.modalProduct.inStock || state.modalKgAmount <= 0;
 }
 
 function renderReviewCarousel() {
@@ -1624,8 +1648,8 @@ function setupEvents() {
       renderModalOptions();
       elements.modalPrice.textContent = money(optionPrice(state.modalProduct, selectedModalOption()));
     }
-    if (target.dataset.kgInc && state.modalProduct) updateModalKgAmount(state.modalKgAmount + 0.25);
-    if (target.dataset.kgDec && state.modalProduct) updateModalKgAmount(state.modalKgAmount - 0.25);
+    if ("kgInc" in target.dataset && state.modalProduct) updateModalKgAmount(stepKgAmount(state.modalKgAmount, 1));
+    if ("kgDec" in target.dataset && state.modalProduct) updateModalKgAmount(stepKgAmount(state.modalKgAmount, -1));
     if (target.dataset.inc) {
       const existing = state.cart.get(target.dataset.inc);
       const step = existing && isKgAmountProduct(existing.product) ? 0.25 : 1;
@@ -1687,6 +1711,9 @@ function setupEvents() {
     openCart();
   });
   elements.modalOptions.addEventListener("input", (event) => {
+    if (event.target.id === "modalKgAmount") updateModalKgDraft(event.target.value);
+  });
+  elements.modalOptions.addEventListener("change", (event) => {
     if (event.target.id === "modalKgAmount") updateModalKgAmount(event.target.value);
   });
   if (elements.reviewPrev) {

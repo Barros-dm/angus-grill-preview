@@ -806,6 +806,9 @@ a {
   color: var(--charcoal);
   font-size: 1.2rem;
   font-weight: 900;
+  cursor: pointer;
+  min-height: 48px;
+  touch-action: manipulation;
 }
 
 .kg-amount-selector label {
@@ -832,6 +835,13 @@ a {
   font-size: 1.2rem;
   font-weight: 900;
   outline: 0;
+  appearance: textfield;
+}
+
+.kg-amount-selector input::-webkit-outer-spin-button,
+.kg-amount-selector input::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
 }
 
 .kg-estimate {
@@ -2961,13 +2971,45 @@ body {
     padding: 18px;
   }
 
+  .modal-backdrop {
+    align-items: end;
+    padding: 0;
+  }
+
   .product-modal {
+    width: 100%;
     max-height: 92vh;
+    overflow-y: auto;
+    border-radius: 18px 18px 0 0;
     padding: 16px;
+    gap: 14px;
   }
 
   .product-modal img {
-    min-height: 260px;
+    min-height: 190px;
+    max-height: 240px;
+  }
+
+  .kg-amount-selector {
+    grid-template-columns: 56px minmax(0, 1fr) 56px;
+  }
+
+  .kg-amount-selector button {
+    min-height: 56px;
+    font-size: 1.45rem;
+  }
+
+  .kg-amount-selector label {
+    padding: 9px 12px;
+  }
+
+  .kg-amount-selector input {
+    min-height: 34px;
+    font-size: 1.35rem;
+  }
+
+  .kg-estimate {
+    padding: 12px;
   }
 
   .floating-whatsapp {
