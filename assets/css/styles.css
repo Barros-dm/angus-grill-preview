@@ -2864,12 +2864,12 @@ body {
 
   .mobile-menu-toggle {
     display: inline-flex;
-    grid-column: 3;
+    grid-column: 4;
   }
 
   .mobile-language-toggle {
     display: inline-flex;
-    grid-column: 4;
+    grid-column: 3;
   }
 
   .mobile-menu-toggle,
@@ -2877,15 +2877,23 @@ body {
     align-items: center;
     justify-content: center;
     width: 44px;
-    min-height: 42px;
+    height: 44px;
+    min-height: 44px;
     padding: 0;
     border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 14px;
     background: rgba(255, 255, 255, 0.06);
     color: var(--white);
     font: inherit;
     font-weight: 900;
     touch-action: manipulation;
+  }
+
+  .mobile-menu-toggle {
+    border-radius: 14px;
+  }
+
+  .mobile-language-toggle {
+    border-radius: 10px;
   }
 
   .mobile-menu-toggle strong,
