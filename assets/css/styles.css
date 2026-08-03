@@ -135,6 +135,7 @@ a {
   letter-spacing: 0.14em;
 }
 
+.mobile-header-controls,
 .mobile-menu-toggle,
 .mobile-language-toggle,
 .mobile-language-menu,
@@ -2847,6 +2848,7 @@ body {
   }
 
   .site-header {
+    position: sticky;
     grid-template-columns: 54px minmax(0, 1fr) 44px 44px;
     gap: 10px 12px;
     padding: 10px 14px;
@@ -2862,18 +2864,18 @@ body {
     height: 50px;
   }
 
-  .mobile-menu-toggle {
-    display: inline-flex;
-    grid-column: 4;
-  }
-
-  .mobile-language-toggle {
-    display: inline-flex;
-    grid-column: 3;
+  .mobile-header-controls {
+    display: flex;
+    grid-column: 3 / 5;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    align-self: start;
   }
 
   .mobile-menu-toggle,
   .mobile-language-toggle {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 44px;
@@ -2893,6 +2895,7 @@ body {
   }
 
   .mobile-language-toggle {
+    gap: 2px;
     border-radius: 10px;
   }
 
@@ -2909,11 +2912,20 @@ body {
   }
 
   .mobile-category-menu {
-    grid-column: 1 / -1;
+    position: absolute;
+    top: 76px;
+    right: 14px;
+    z-index: 6;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 8px;
-    padding: 8px 0 2px;
+    width: min(250px, calc(100vw - 28px));
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    background:
+      linear-gradient(180deg, rgba(20, 20, 20, 0.98), rgba(9, 9, 9, 0.98));
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
   }
 
   .mobile-category-menu[hidden] {
@@ -2921,11 +2933,20 @@ body {
   }
 
   .mobile-language-menu {
-    grid-column: 1 / -1;
+    position: absolute;
+    top: 76px;
+    right: 66px;
+    z-index: 6;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 8px;
-    padding: 8px 0 2px;
+    width: min(190px, calc(100vw - 80px));
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    background:
+      linear-gradient(180deg, rgba(20, 20, 20, 0.98), rgba(9, 9, 9, 0.98));
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
   }
 
   .mobile-language-menu[hidden] {

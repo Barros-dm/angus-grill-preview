@@ -159,6 +159,67 @@ const I18N = {
     priceToConfirm: "Preço a confirmar",
     finalPriceAfterWeighing: "Preço final confirmado após pesagem.",
     selectionFallback: "Seleção Angus Grill.",
+    menu: "Menu",
+    language: "Idioma",
+    actions: "Ações",
+    heroAria: "Destaques Angus Grill",
+    heroRatingAria: "Avaliação e serviços",
+    groceryCategoriesAria: "Categorias de mercearia",
+    deliveryConditionsAria: "Condições de entrega",
+    selectHighlightAria: "Selecionar destaque",
+    differentialsAria: "Diferenciais",
+    allProducts: "Todos os produtos",
+    postcode: "Postcode",
+    deliveryOrCollection: "Entrega ou retirada",
+    deliveryQuoteKicker: "Entrega Angus Grill",
+    pricePerKg: "preço por kg",
+    chooseOption: "escolha a opção",
+    chooseKg: "Escolher kg",
+    kgRequested: "solicitados",
+    kgSelectedByCustomer: "Quantidade em kg escolhida pelo cliente.",
+    itemsToWeigh: "itens a pesar",
+    toConfirm: "A confirmar",
+    free: "Grátis",
+    consult: "Consultar",
+    collectionNoFee: "Retirada na loja sem taxa de entrega",
+    deliveryQuoteCollectionTitle: "Retirada na loja",
+    deliveryQuoteCollectionText: "Sem taxa de entrega. O horário será confirmado pelo WhatsApp.",
+    deliveryQuoteIdleTitle: "Digite o endereço para calcular",
+    deliveryQuoteIdleText: "Selecione o endereço sugerido. Grátis acima de £40.",
+    deliveryQuoteCalculatingTitle: "Calculando entrega",
+    deliveryQuoteCalculatingText: "Verificando a distância a partir da loja Angus Grill.",
+    deliveryQuoteOutOfRangeTitle: "Fora do raio de entrega",
+    deliveryQuoteOutOfRangeText: "Este endereço parece ficar acima de 15 milhas. Finalize pelo WhatsApp para a equipe confirmar.",
+    deliveryQuoteFreeTitle: "Entrega grátis aplicada",
+    deliveryQuoteFreeText: "Pedido acima de £40 dentro da área de entrega.",
+    deliveryQuoteFreeTextMiles: "Distância estimada: {miles} milhas. Pedido acima de £40.",
+    deliveryQuoteNearTitle: "Entrega £2.50",
+    deliveryQuoteNearText: "Postcode dentro da zona até 7.5 milhas.",
+    deliveryQuoteNearTextMiles: "Distância estimada: {miles} milhas, dentro do raio de 7.5 milhas.",
+    deliveryQuoteFarTitle: "Entrega £5.00",
+    deliveryQuoteFarText: "Postcode dentro da zona de 7.5 a 15 milhas.",
+    deliveryQuoteFarTextMiles: "Distância estimada: {miles} milhas, dentro do raio máximo de 15 milhas.",
+    deliveryQuoteManualTitle: "Confirmar entrega pelo WhatsApp",
+    deliveryQuoteManualText: "Não conseguimos calcular automaticamente. A equipe confirma a taxa antes de preparar o pedido.",
+    deliveryQuoteNeedsSuggestedTitle: "Selecione o endereço sugerido",
+    deliveryQuoteNeedsSuggestedText: "Com o endereço completo conseguimos calcular a entrega.",
+    deliveryQuoteDefaultText: "Até 7.5 milhas: £2.50. De 7.5 a 15 milhas: £5.00. Grátis acima de £40.",
+    deliverySummaryCollection: "Retirada na loja sem taxa de entrega. Horário será confirmado pelo WhatsApp.",
+    deliverySummaryOutOfRange: "Endereço fora do raio máximo de 15 milhas. A entrega precisa ser confirmada pelo WhatsApp.",
+    deliverySummaryFree: "Entrega grátis aplicada para pedidos acima de £40. Distância máxima para entrega: 15 milhas.",
+    deliverySummaryDefault: "Entrega: até 7.5 milhas £2.50, de 7.5 a 15 milhas £5.00. Grátis acima de £40.",
+    chooseDesiredQuantity: "Escolha a quantidade desejada",
+    kgAmountHelp: "Informe quantos kg deseja. O total é estimado pela quantidade selecionada.",
+    kgAmountLabel: "Quantidade em kg",
+    decreaseQuantity: "Diminuir quantidade",
+    increaseQuantity: "Aumentar quantidade",
+    totalEstimated: "Total estimado",
+    kgEstimateNote: "O valor final pode variar apenas se a equipe precisar ajustar o peso separado.",
+    quantityOf: "Quantidade de",
+    decreaseQuantityOf: "Diminuir quantidade de",
+    increaseQuantityOf: "Aumentar quantidade de",
+    showHighlight: "Mostrar destaque",
+    showReview: "Mostrar avaliação",
     title: "Angus Grill Premium Meat | Açougue e Mercearia"
   },
   en: {
@@ -290,6 +351,67 @@ const I18N = {
     priceToConfirm: "Price to confirm",
     finalPriceAfterWeighing: "Final price confirmed after weighing.",
     selectionFallback: "Angus Grill selection.",
+    menu: "Menu",
+    language: "Language",
+    actions: "Actions",
+    heroAria: "Angus Grill highlights",
+    heroRatingAria: "Rating and services",
+    groceryCategoriesAria: "Grocery categories",
+    deliveryConditionsAria: "Delivery conditions",
+    selectHighlightAria: "Select highlight",
+    differentialsAria: "Key services",
+    allProducts: "All products",
+    postcode: "Postcode",
+    deliveryOrCollection: "Delivery or collection",
+    deliveryQuoteKicker: "Angus Grill delivery",
+    pricePerKg: "price per kg",
+    chooseOption: "choose option",
+    chooseKg: "Choose kg",
+    kgRequested: "requested",
+    kgSelectedByCustomer: "Quantity in kg chosen by the customer.",
+    itemsToWeigh: "items to weigh",
+    toConfirm: "To confirm",
+    free: "Free",
+    consult: "Check",
+    collectionNoFee: "Store collection with no delivery fee",
+    deliveryQuoteCollectionTitle: "Store collection",
+    deliveryQuoteCollectionText: "No delivery fee. The time will be confirmed on WhatsApp.",
+    deliveryQuoteIdleTitle: "Enter the address to calculate",
+    deliveryQuoteIdleText: "Select the suggested address. Free over £40.",
+    deliveryQuoteCalculatingTitle: "Calculating delivery",
+    deliveryQuoteCalculatingText: "Checking the distance from Angus Grill.",
+    deliveryQuoteOutOfRangeTitle: "Outside the delivery radius",
+    deliveryQuoteOutOfRangeText: "This address appears to be over 15 miles away. Finish on WhatsApp so the team can confirm.",
+    deliveryQuoteFreeTitle: "Free delivery applied",
+    deliveryQuoteFreeText: "Order over £40 inside the delivery area.",
+    deliveryQuoteFreeTextMiles: "Estimated distance: {miles} miles. Order over £40.",
+    deliveryQuoteNearTitle: "Delivery £2.50",
+    deliveryQuoteNearText: "Postcode inside the zone up to 7.5 miles.",
+    deliveryQuoteNearTextMiles: "Estimated distance: {miles} miles, inside the 7.5 mile radius.",
+    deliveryQuoteFarTitle: "Delivery £5.00",
+    deliveryQuoteFarText: "Postcode inside the 7.5 to 15 mile zone.",
+    deliveryQuoteFarTextMiles: "Estimated distance: {miles} miles, inside the 15 mile maximum radius.",
+    deliveryQuoteManualTitle: "Confirm delivery on WhatsApp",
+    deliveryQuoteManualText: "We could not calculate automatically. The team will confirm the fee before preparing the order.",
+    deliveryQuoteNeedsSuggestedTitle: "Select the suggested address",
+    deliveryQuoteNeedsSuggestedText: "With the full address we can calculate delivery.",
+    deliveryQuoteDefaultText: "Up to 7.5 miles: £2.50. From 7.5 to 15 miles: £5.00. Free over £40.",
+    deliverySummaryCollection: "Store collection with no delivery fee. Time will be confirmed on WhatsApp.",
+    deliverySummaryOutOfRange: "Address outside the 15 mile maximum radius. Delivery needs to be confirmed on WhatsApp.",
+    deliverySummaryFree: "Free delivery applied for orders over £40. Maximum delivery distance: 15 miles.",
+    deliverySummaryDefault: "Delivery: up to 7.5 miles £2.50, from 7.5 to 15 miles £5.00. Free over £40.",
+    chooseDesiredQuantity: "Choose the desired quantity",
+    kgAmountHelp: "Enter how many kg you want. The total is estimated from the selected quantity.",
+    kgAmountLabel: "Quantity in kg",
+    decreaseQuantity: "Decrease quantity",
+    increaseQuantity: "Increase quantity",
+    totalEstimated: "Estimated total",
+    kgEstimateNote: "The final value may vary only if the team needs to adjust the prepared weight.",
+    quantityOf: "Quantity of",
+    decreaseQuantityOf: "Decrease quantity of",
+    increaseQuantityOf: "Increase quantity of",
+    showHighlight: "Show highlight",
+    showReview: "Show review",
     title: "Angus Grill Premium Meat | Butcher and Grocery"
   },
   es: {
@@ -421,6 +543,67 @@ const I18N = {
     priceToConfirm: "Precio a confirmar",
     finalPriceAfterWeighing: "Precio final confirmado tras pesaje.",
     selectionFallback: "Selección Angus Grill.",
+    menu: "Menú",
+    language: "Idioma",
+    actions: "Acciones",
+    heroAria: "Destacados Angus Grill",
+    heroRatingAria: "Valoración y servicios",
+    groceryCategoriesAria: "Categorías de tienda brasileña",
+    deliveryConditionsAria: "Condiciones de entrega",
+    selectHighlightAria: "Seleccionar destacado",
+    differentialsAria: "Diferenciales",
+    allProducts: "Todos los productos",
+    postcode: "Código postal",
+    deliveryOrCollection: "Entrega o recogida",
+    deliveryQuoteKicker: "Entrega Angus Grill",
+    pricePerKg: "precio por kg",
+    chooseOption: "elige la opción",
+    chooseKg: "Elegir kg",
+    kgRequested: "solicitados",
+    kgSelectedByCustomer: "Cantidad en kg elegida por el cliente.",
+    itemsToWeigh: "productos por pesar",
+    toConfirm: "A confirmar",
+    free: "Gratis",
+    consult: "Consultar",
+    collectionNoFee: "Recogida en tienda sin coste de entrega",
+    deliveryQuoteCollectionTitle: "Recogida en tienda",
+    deliveryQuoteCollectionText: "Sin coste de entrega. El horario se confirmará por WhatsApp.",
+    deliveryQuoteIdleTitle: "Introduce la dirección para calcular",
+    deliveryQuoteIdleText: "Selecciona la dirección sugerida. Gratis desde £40.",
+    deliveryQuoteCalculatingTitle: "Calculando entrega",
+    deliveryQuoteCalculatingText: "Verificando la distancia desde Angus Grill.",
+    deliveryQuoteOutOfRangeTitle: "Fuera del radio de entrega",
+    deliveryQuoteOutOfRangeText: "Esta dirección parece estar a más de 15 millas. Finaliza por WhatsApp para que el equipo confirme.",
+    deliveryQuoteFreeTitle: "Entrega gratis aplicada",
+    deliveryQuoteFreeText: "Pedido superior a £40 dentro del área de entrega.",
+    deliveryQuoteFreeTextMiles: "Distancia estimada: {miles} millas. Pedido superior a £40.",
+    deliveryQuoteNearTitle: "Entrega £2.50",
+    deliveryQuoteNearText: "Código postal dentro de la zona hasta 7.5 millas.",
+    deliveryQuoteNearTextMiles: "Distancia estimada: {miles} millas, dentro del radio de 7.5 millas.",
+    deliveryQuoteFarTitle: "Entrega £5.00",
+    deliveryQuoteFarText: "Código postal dentro de la zona de 7.5 a 15 millas.",
+    deliveryQuoteFarTextMiles: "Distancia estimada: {miles} millas, dentro del radio máximo de 15 millas.",
+    deliveryQuoteManualTitle: "Confirmar entrega por WhatsApp",
+    deliveryQuoteManualText: "No pudimos calcular automáticamente. El equipo confirma la tarifa antes de preparar el pedido.",
+    deliveryQuoteNeedsSuggestedTitle: "Selecciona la dirección sugerida",
+    deliveryQuoteNeedsSuggestedText: "Con la dirección completa podemos calcular la entrega.",
+    deliveryQuoteDefaultText: "Hasta 7.5 millas: £2.50. De 7.5 a 15 millas: £5.00. Gratis desde £40.",
+    deliverySummaryCollection: "Recogida en tienda sin coste de entrega. El horario se confirmará por WhatsApp.",
+    deliverySummaryOutOfRange: "Dirección fuera del radio máximo de 15 millas. La entrega debe confirmarse por WhatsApp.",
+    deliverySummaryFree: "Entrega gratis aplicada para pedidos superiores a £40. Distancia máxima de entrega: 15 millas.",
+    deliverySummaryDefault: "Entrega: hasta 7.5 millas £2.50, de 7.5 a 15 millas £5.00. Gratis desde £40.",
+    chooseDesiredQuantity: "Elige la cantidad deseada",
+    kgAmountHelp: "Indica cuántos kg quieres. El total se estima según la cantidad seleccionada.",
+    kgAmountLabel: "Cantidad en kg",
+    decreaseQuantity: "Disminuir cantidad",
+    increaseQuantity: "Aumentar cantidad",
+    totalEstimated: "Total estimado",
+    kgEstimateNote: "El valor final puede variar solo si el equipo necesita ajustar el peso preparado.",
+    quantityOf: "Cantidad de",
+    decreaseQuantityOf: "Disminuir cantidad de",
+    increaseQuantityOf: "Aumentar cantidad de",
+    showHighlight: "Mostrar destacado",
+    showReview: "Mostrar reseña",
     title: "Angus Grill Premium Meat | Carnicería y Mercería"
   },
   ro: {
@@ -552,6 +735,67 @@ const I18N = {
     priceToConfirm: "Preț de confirmat",
     finalPriceAfterWeighing: "Prețul final se confirmă după cântărire.",
     selectionFallback: "Selecție Angus Grill.",
+    menu: "Meniu",
+    language: "Limbă",
+    actions: "Acțiuni",
+    heroAria: "Recomandări Angus Grill",
+    heroRatingAria: "Evaluare și servicii",
+    groceryCategoriesAria: "Categorii alimentare",
+    deliveryConditionsAria: "Condiții de livrare",
+    selectHighlightAria: "Selectează recomandarea",
+    differentialsAria: "Servicii principale",
+    allProducts: "Toate produsele",
+    postcode: "Cod poștal",
+    deliveryOrCollection: "Livrare sau ridicare",
+    deliveryQuoteKicker: "Livrare Angus Grill",
+    pricePerKg: "preț per kg",
+    chooseOption: "alege opțiunea",
+    chooseKg: "Alege kg",
+    kgRequested: "solicitate",
+    kgSelectedByCustomer: "Cantitate în kg aleasă de client.",
+    itemsToWeigh: "produse de cântărit",
+    toConfirm: "De confirmat",
+    free: "Gratuit",
+    consult: "Verifică",
+    collectionNoFee: "Ridicare din magazin fără taxă de livrare",
+    deliveryQuoteCollectionTitle: "Ridicare din magazin",
+    deliveryQuoteCollectionText: "Fără taxă de livrare. Ora va fi confirmată pe WhatsApp.",
+    deliveryQuoteIdleTitle: "Introdu adresa pentru calcul",
+    deliveryQuoteIdleText: "Selectează adresa sugerată. Gratuit peste £40.",
+    deliveryQuoteCalculatingTitle: "Calculăm livrarea",
+    deliveryQuoteCalculatingText: "Verificăm distanța de la Angus Grill.",
+    deliveryQuoteOutOfRangeTitle: "În afara razei de livrare",
+    deliveryQuoteOutOfRangeText: "Această adresă pare să fie la peste 15 mile. Finalizează pe WhatsApp pentru confirmare.",
+    deliveryQuoteFreeTitle: "Livrare gratuită aplicată",
+    deliveryQuoteFreeText: "Comandă peste £40 în zona de livrare.",
+    deliveryQuoteFreeTextMiles: "Distanță estimată: {miles} mile. Comandă peste £40.",
+    deliveryQuoteNearTitle: "Livrare £2.50",
+    deliveryQuoteNearText: "Cod poștal în zona de până la 7.5 mile.",
+    deliveryQuoteNearTextMiles: "Distanță estimată: {miles} mile, în raza de 7.5 mile.",
+    deliveryQuoteFarTitle: "Livrare £5.00",
+    deliveryQuoteFarText: "Cod poștal în zona de la 7.5 la 15 mile.",
+    deliveryQuoteFarTextMiles: "Distanță estimată: {miles} mile, în raza maximă de 15 mile.",
+    deliveryQuoteManualTitle: "Confirmă livrarea pe WhatsApp",
+    deliveryQuoteManualText: "Nu am putut calcula automat. Echipa confirmă taxa înainte de pregătirea comenzii.",
+    deliveryQuoteNeedsSuggestedTitle: "Selectează adresa sugerată",
+    deliveryQuoteNeedsSuggestedText: "Cu adresa completă putem calcula livrarea.",
+    deliveryQuoteDefaultText: "Până la 7.5 mile: £2.50. De la 7.5 la 15 mile: £5.00. Gratuit peste £40.",
+    deliverySummaryCollection: "Ridicare din magazin fără taxă de livrare. Ora va fi confirmată pe WhatsApp.",
+    deliverySummaryOutOfRange: "Adresă în afara razei maxime de 15 mile. Livrarea trebuie confirmată pe WhatsApp.",
+    deliverySummaryFree: "Livrare gratuită aplicată pentru comenzi peste £40. Distanță maximă de livrare: 15 mile.",
+    deliverySummaryDefault: "Livrare: până la 7.5 mile £2.50, de la 7.5 la 15 mile £5.00. Gratuit peste £40.",
+    chooseDesiredQuantity: "Alege cantitatea dorită",
+    kgAmountHelp: "Introdu câte kg dorești. Totalul este estimat din cantitatea selectată.",
+    kgAmountLabel: "Cantitate în kg",
+    decreaseQuantity: "Scade cantitatea",
+    increaseQuantity: "Mărește cantitatea",
+    totalEstimated: "Total estimat",
+    kgEstimateNote: "Valoarea finală poate varia doar dacă echipa trebuie să ajusteze greutatea pregătită.",
+    quantityOf: "Cantitate pentru",
+    decreaseQuantityOf: "Scade cantitatea pentru",
+    increaseQuantityOf: "Mărește cantitatea pentru",
+    showHighlight: "Arată recomandarea",
+    showReview: "Arată recenzia",
     title: "Angus Grill Premium Meat | Măcelărie și Băcănie"
   }
 };
@@ -562,7 +806,10 @@ const CATEGORY_LABELS = {
     Ofertas: "Ofertas",
     "Mais Vendidos": "Mais Vendidos",
     Bovino: "Bovino",
+    Frango: "Frango",
+    Suíno: "Suíno",
     Linguiças: "Linguiças",
+    "Kits Churrasco": "Kits Churrasco",
     Mercearia: "Mercearia",
     Congelados: "Congelados",
     Temperos: "Temperos",
@@ -577,8 +824,11 @@ const CATEGORY_LABELS = {
     Ofertas: "Offers",
     "Mais Vendidos": "Best Sellers",
     Bovino: "Beef",
+    Frango: "Chicken",
+    Suíno: "Pork",
     Linguiças: "Sausages",
-    Mercearia: "Grocery",
+    "Kits Churrasco": "BBQ Kits",
+    Mercearia: "Brazilian Grocery",
     Congelados: "Frozen",
     Temperos: "Seasonings",
     Bebidas: "Drinks",
@@ -592,8 +842,11 @@ const CATEGORY_LABELS = {
     Ofertas: "Ofertas",
     "Mais Vendidos": "Más vendidos",
     Bovino: "Vacuno",
+    Frango: "Pollo",
+    Suíno: "Cerdo",
     Linguiças: "Linguiças",
-    Mercearia: "Mercería",
+    "Kits Churrasco": "Kits de barbacoa",
+    Mercearia: "Tienda brasileña",
     Congelados: "Congelados",
     Temperos: "Condimentos",
     Bebidas: "Bebidas",
@@ -607,7 +860,10 @@ const CATEGORY_LABELS = {
     Ofertas: "Oferte",
     "Mais Vendidos": "Cele mai vândute",
     Bovino: "Vită",
+    Frango: "Pui",
+    Suíno: "Porc",
     Linguiças: "Cârnați",
+    "Kits Churrasco": "Kituri grătar",
     Mercearia: "Băcănie",
     Congelados: "Congelate",
     Temperos: "Condimente",
@@ -633,6 +889,32 @@ const LANGUAGE_FLAGS = {
 function t(key) {
   const language = currentLanguage();
   return I18N[language]?.[key] || I18N.pt[key] || key;
+}
+
+function interpolate(key, values = {}) {
+  return t(key).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
+}
+
+function applyTranslations() {
+  const meta = LANGUAGE_META[currentLanguage()];
+  if (meta?.html) document.documentElement.lang = meta.html;
+  document.title = t("title");
+
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-html]").forEach((element) => {
+    element.innerHTML = t(element.dataset.i18nHtml);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    element.placeholder = t(element.dataset.i18nPlaceholder);
+  });
+  document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
+    element.setAttribute("aria-label", t(element.dataset.i18nAria));
+  });
+  document.querySelectorAll("[data-category-label]").forEach((element) => {
+    element.textContent = categoryLabel(element.dataset.categoryLabel);
+  });
 }
 
 function categoryLabel(category) {
@@ -730,9 +1012,9 @@ function selectedModalOption() {
 
 function priceLabel(product) {
   if (isKgAmountProduct(product)) return `${money(derivedPricePerKg(product))}/kg`;
-  if (hasOptions(product)) return `A partir de ${money(lowestOptionPrice(product))}`;
+  if (hasOptions(product)) return `${t("fromPrice")} ${money(lowestOptionPrice(product))}`;
   if (product.pricingType === "perKg") return `${money(product.price)}/kg`;
-  if (product.pricingType === "variable") return "Preço a confirmar";
+  if (product.pricingType === "variable") return t("priceToConfirm");
   return money(product.price);
 }
 
@@ -743,16 +1025,16 @@ function oldPriceLabel(product) {
 }
 
 function pricingNote(product) {
-  if (isKgAmountProduct(product)) return "Informe quantos kg deseja. O total é estimado pela quantidade selecionada.";
+  if (isKgAmountProduct(product)) return t("kgAmountHelp");
   if (product.pricingNote) return product.pricingNote;
-  if (isVariableWeight(product)) return "Preço final confirmado após pesagem.";
+  if (isVariableWeight(product)) return t("finalPriceAfterWeighing");
   return "";
 }
 
 function lineLabel(product, quantity, option = null) {
-  if (isKgAmountProduct(product)) return `${formatKgAmount(quantity)} solicitados`;
+  if (isKgAmountProduct(product)) return `${formatKgAmount(quantity)} ${t("kgRequested")}`;
   if (option) return `${quantity}x`;
-  const unit = option ? "opção" : product.orderUnit || "unidade";
+  const unit = option ? t("chooseOption") : productUnit(product) || "unidade";
   const invariantUnits = new Set(["kg", "g"]);
   const plural = quantity > 1 && !unit.endsWith("s") && !invariantUnits.has(unit) ? `${unit}s` : unit;
   return `${quantity} ${plural}`;
@@ -777,7 +1059,7 @@ function stepKgAmount(value, direction) {
 }
 
 function displayUnit(product) {
-  return isKgAmountProduct(product) ? "preço por kg" : product.unit;
+  return isKgAmountProduct(product) ? t("pricePerKg") : productUnit(product);
 }
 
 function cartLineTotal(item) {
@@ -861,7 +1143,7 @@ function renderHeroCarousel() {
   });
 
   elements.heroDots.innerHTML = elements.heroSlides.map((_, index) => (
-    `<button class="hero-dot ${index === state.heroIndex ? "is-active" : ""}" type="button" data-hero-index="${index}" aria-label="Mostrar destaque ${index + 1}" ${index === state.heroIndex ? 'aria-current="true"' : ""}></button>`
+    `<button class="hero-dot ${index === state.heroIndex ? "is-active" : ""}" type="button" data-hero-index="${index}" aria-label="${t("showHighlight")} ${index + 1}" ${index === state.heroIndex ? 'aria-current="true"' : ""}></button>`
   )).join("");
 }
 
@@ -878,22 +1160,79 @@ function startHeroCarousel() {
 }
 
 const CATEGORY_COPY = {
-  Ofertas: "Selecionados com preços especiais por tempo limitado.",
-  "Mais Vendidos": "Favoritos dos clientes para churrasco e semana.",
-  Bovino: "Cortes selecionados para o dia a dia e churrasco.",
-  Frango: "Opções frescas para grelha, forno e refeições.",
-  Suíno: "Cortes práticos, saborosos e bem preparados.",
-  Linguiças: "Linguiças saborosas, frescas e prontas para grelhar.",
-  "Kits Churrasco": "Combinações práticas para família e amigos.",
-  Mercearia: "Produtos brasileiros selecionados para completar sua compra.",
-  Congelados: "Produtos prontos para facilitar a rotina.",
-  Temperos: "Complementos para realçar o preparo das carnes.",
-  Bebidas: "Refrigerantes, sucos e bebidas brasileiras para acompanhar.",
-  Doces: "Biscoitos, chocolates, sobremesas e sabores do Brasil.",
-  Utilidades: "Itens práticos para cozinha, churrasco e rotina.",
-  Beleza: "Produtos de cuidado pessoal e marcas brasileiras.",
-  Livros: "Livros e itens especiais do catálogo brasileiro."
+  pt: {
+    Ofertas: "Selecionados com preços especiais por tempo limitado.",
+    "Mais Vendidos": "Favoritos dos clientes para churrasco e semana.",
+    Bovino: "Cortes selecionados para o dia a dia e churrasco.",
+    Frango: "Opções frescas para grelha, forno e refeições.",
+    Suíno: "Cortes práticos, saborosos e bem preparados.",
+    Linguiças: "Linguiças saborosas, frescas e prontas para grelhar.",
+    "Kits Churrasco": "Combinações práticas para família e amigos.",
+    Mercearia: "Produtos brasileiros selecionados para completar sua compra.",
+    Congelados: "Produtos prontos para facilitar a rotina.",
+    Temperos: "Complementos para realçar o preparo das carnes.",
+    Bebidas: "Refrigerantes, sucos e bebidas brasileiras para acompanhar.",
+    Doces: "Biscoitos, chocolates, sobremesas e sabores do Brasil.",
+    Utilidades: "Itens práticos para cozinha, churrasco e rotina.",
+    Beleza: "Produtos de cuidado pessoal e marcas brasileiras.",
+    Livros: "Livros e itens especiais do catálogo brasileiro."
+  },
+  en: {
+    Ofertas: "Selected products with limited-time special prices.",
+    "Mais Vendidos": "Customer favourites for barbecue and weekly shopping.",
+    Bovino: "Selected cuts for everyday meals and barbecue.",
+    Frango: "Fresh options for grilling, roasting and meals.",
+    Suíno: "Practical, tasty and well-prepared cuts.",
+    Linguiças: "Fresh, flavourful sausages ready for the grill.",
+    "Kits Churrasco": "Practical combinations for family and friends.",
+    Mercearia: "Selected Brazilian products to complete your shop.",
+    Congelados: "Ready products to make the week easier.",
+    Temperos: "Seasonings to enhance meats and meals.",
+    Bebidas: "Brazilian soft drinks, juices and drinks.",
+    Doces: "Biscuits, chocolates, desserts and Brazilian flavours.",
+    Utilidades: "Useful items for kitchen, barbecue and routine.",
+    Beleza: "Personal care products and Brazilian brands.",
+    Livros: "Books and special items from the Brazilian catalogue."
+  },
+  es: {
+    Ofertas: "Productos seleccionados con precios especiales por tiempo limitado.",
+    "Mais Vendidos": "Favoritos de los clientes para barbacoa y compras semanales.",
+    Bovino: "Cortes seleccionados para el día a día y la barbacoa.",
+    Frango: "Opciones frescas para parrilla, horno y comidas.",
+    Suíno: "Cortes prácticos, sabrosos y bien preparados.",
+    Linguiças: "Linguiças sabrosas, frescas y listas para la parrilla.",
+    "Kits Churrasco": "Combinaciones prácticas para familia y amigos.",
+    Mercearia: "Productos brasileños seleccionados para completar tu compra.",
+    Congelados: "Productos listos para facilitar la rutina.",
+    Temperos: "Condimentos para realzar carnes y comidas.",
+    Bebidas: "Refrescos, zumos y bebidas brasileñas.",
+    Doces: "Galletas, chocolates, postres y sabores de Brasil.",
+    Utilidades: "Artículos prácticos para cocina, barbacoa y rutina.",
+    Beleza: "Productos de cuidado personal y marcas brasileñas.",
+    Livros: "Libros y artículos especiales del catálogo brasileño."
+  },
+  ro: {
+    Ofertas: "Produse selectate cu prețuri speciale pe perioadă limitată.",
+    "Mais Vendidos": "Favoritele clienților pentru grătar și cumpărături săptămânale.",
+    Bovino: "Bucăți selectate pentru mese zilnice și grătar.",
+    Frango: "Opțiuni proaspete pentru grătar, cuptor și mese.",
+    Suíno: "Bucăți practice, gustoase și bine pregătite.",
+    Linguiças: "Cârnați gustoși, proaspeți și gata pentru grătar.",
+    "Kits Churrasco": "Combinații practice pentru familie și prieteni.",
+    Mercearia: "Produse braziliene selectate pentru cumpărăturile tale.",
+    Congelados: "Produse gata pentru a ușura rutina.",
+    Temperos: "Condimente pentru carne și preparate.",
+    Bebidas: "Sucuri și băuturi braziliene.",
+    Doces: "Biscuiți, ciocolată, deserturi și arome braziliene.",
+    Utilidades: "Articole utile pentru bucătărie, grătar și rutină.",
+    Beleza: "Produse de îngrijire personală și mărci braziliene.",
+    Livros: "Cărți și articole speciale din catalogul brazilian."
+  }
 };
+
+function categoryCopy(category) {
+  return CATEGORY_COPY[currentLanguage()]?.[category] || CATEGORY_COPY.pt[category] || t("selectionFallback");
+}
 
 function cartItems() {
   return [...state.cart.values()];
@@ -910,7 +1249,7 @@ function cartHasVariableWeight() {
 function cartSubtotalLabel() {
   const fixedSubtotal = cartSubtotal();
   if (cartHasVariableWeight()) {
-    return fixedSubtotal ? `${money(fixedSubtotal)} + itens a pesar` : "A confirmar";
+    return fixedSubtotal ? `${money(fixedSubtotal)} + ${t("itemsToWeigh")}` : t("toConfirm");
   }
   return money(fixedSubtotal);
 }
@@ -1234,41 +1573,41 @@ function updatéDeliveryQuoteCard() {
   elements.deliveryQuoteCard.classList.toggle("is-outside", isDelivery && zone === "outside");
 
   if (!isDelivery) {
-    elements.deliveryQuoteTitle.textContent = "Retirada na loja";
-    elements.deliveryQuoteText.textContent = "Sem taxa de entrega. O horário sera confirmado pelo WhatsApp.";
+    elements.deliveryQuoteTitle.textContent = t("deliveryQuoteCollectionTitle");
+    elements.deliveryQuoteText.textContent = t("deliveryQuoteCollectionText");
   } else if (!address) {
-    elements.deliveryQuoteTitle.textContent = "Digite o endereço para calcular";
-    elements.deliveryQuoteText.textContent = "Selecione o endereço sugerido. Gratis acima de £40.";
+    elements.deliveryQuoteTitle.textContent = t("deliveryQuoteIdleTitle");
+    elements.deliveryQuoteText.textContent = t("deliveryQuoteIdleText");
   } else if (state.deliveryQuote.status === "loading" && state.deliveryQuote.address === address) {
-    elements.deliveryQuoteTitle.textContent = "Calculando entrega";
-    elements.deliveryQuoteText.textContent = "Verificando a distancia a partir da loja Angus Grill.";
+    elements.deliveryQuoteTitle.textContent = t("deliveryQuoteCalculatingTitle");
+    elements.deliveryQuoteText.textContent = t("deliveryQuoteCalculatingText");
   } else if (zone === "outside") {
-    elements.deliveryQuoteTitle.textContent = "Fora do raio de entrega";
-    elements.deliveryQuoteText.textContent = "Este endereço parece ficar acima de 15 milhas. Finalize pelo WhatsApp para a equipe confirmar.";
+    elements.deliveryQuoteTitle.textContent = t("deliveryQuoteOutOfRangeTitle");
+    elements.deliveryQuoteText.textContent = t("deliveryQuoteOutOfRangeText");
   } else if (isFree) {
-    elements.deliveryQuoteTitle.textContent = "Entrega grátis aplicada";
+    elements.deliveryQuoteTitle.textContent = t("deliveryQuoteFreeTitle");
     elements.deliveryQuoteText.textContent = quote?.miles
-      ? `Distância estimada: ${quote.miles.toFixed(1)} milhas. Pedido acima de £40.`
-      : "Pedido acima de £40 dentro da área de entrega.";
+      ? interpolate("deliveryQuoteFreeTextMiles", { miles: quote.miles.toFixed(1) })
+      : t("deliveryQuoteFreeText");
   } else if (zone === "local") {
-    elements.deliveryQuoteTitle.textContent = "Entrega £2.50";
+    elements.deliveryQuoteTitle.textContent = t("deliveryQuoteNearTitle");
     elements.deliveryQuoteText.textContent = quote?.miles
-      ? `Distância estimada: ${quote.miles.toFixed(1)} milhas, dentro do raio de 7.5 milhas.`
-      : "Postcode dentro da zona até 7.5 milhas.";
+      ? interpolate("deliveryQuoteNearTextMiles", { miles: quote.miles.toFixed(1) })
+      : t("deliveryQuoteNearText");
   } else if (zone === "extended") {
-    elements.deliveryQuoteTitle.textContent = "Entrega £5.00";
+    elements.deliveryQuoteTitle.textContent = t("deliveryQuoteFarTitle");
     elements.deliveryQuoteText.textContent = quote?.miles
-      ? `Distância estimada: ${quote.miles.toFixed(1)} milhas, dentro do raio maximo de 15 milhas.`
-      : "Postcode dentro da zona de 7.5 a 15 milhas.";
+      ? interpolate("deliveryQuoteFarTextMiles", { miles: quote.miles.toFixed(1) })
+      : t("deliveryQuoteFarText");
   } else if (mapsResultApplies && state.deliveryQuote.status === "error") {
-    elements.deliveryQuoteTitle.textContent = "Confirmar entrega pelo WhatsApp";
-    elements.deliveryQuoteText.textContent = "não conseguimos calcular automaticamente. A equipe confirma a taxa antes de preparar o pedido.";
+    elements.deliveryQuoteTitle.textContent = t("deliveryQuoteManualTitle");
+    elements.deliveryQuoteText.textContent = t("deliveryQuoteManualText");
   } else if (fallback?.confidence === "unknown") {
-    elements.deliveryQuoteTitle.textContent = "Selecione o endereço sugerido";
-    elements.deliveryQuoteText.textContent = "Com o endereço completo conseguimos calcular a entrega.";
+    elements.deliveryQuoteTitle.textContent = t("deliveryQuoteNeedsSuggestedTitle");
+    elements.deliveryQuoteText.textContent = t("deliveryQuoteNeedsSuggestedText");
   } else if (fallback?.confidence === "empty") {
-    elements.deliveryQuoteTitle.textContent = "Digite o endereço para calcular";
-    elements.deliveryQuoteText.textContent = "Ate 7.5 milhas: £2.50. De 7.5 a 15 milhas: £5.00. Gratis acima de £40.";
+    elements.deliveryQuoteTitle.textContent = t("deliveryQuoteIdleTitle");
+    elements.deliveryQuoteText.textContent = t("deliveryQuoteDefaultText");
   }
 }
 
@@ -1282,15 +1621,15 @@ function deliveryFeeAmount() {
 }
 
 function deliveryFeeLabel() {
-  if (selectedFulfilmentType() !== "delivery") return "Retirada";
-  if (selectedDeliveryZone() === "outside") return "Consultar";
-  if (cartSubtotal() >= FREE_DELIVERY_THRESHOLD && !cartHasVariableWeight()) return "Gratis";
+  if (selectedFulfilmentType() !== "delivery") return t("collection");
+  if (selectedDeliveryZone() === "outside") return t("consult");
+  if (cartSubtotal() >= FREE_DELIVERY_THRESHOLD && !cartHasVariableWeight()) return t("free");
   return money(deliveryFeeAmount());
 }
 
 function orderTotalLabel() {
-  if (selectedFulfilmentType() === "delivery" && selectedDeliveryZone() === "outside") return "A confirmar";
-  if (cartHasVariableWeight()) return cartSubtotal() ? `${money(cartSubtotal() + deliveryFeeAmount())} + itens a pesar` : "A confirmar";
+  if (selectedFulfilmentType() === "delivery" && selectedDeliveryZone() === "outside") return t("toConfirm");
+  if (cartHasVariableWeight()) return cartSubtotal() ? `${money(cartSubtotal() + deliveryFeeAmount())} + ${t("itemsToWeigh")}` : t("toConfirm");
   return money(cartSubtotal() + deliveryFeeAmount());
 }
 
@@ -1302,13 +1641,13 @@ function updatéDeliveryUi() {
   updatéDeliveryQuoteCard();
   if (!elements.deliveryNote) return;
   if (!isDelivery) {
-    elements.deliveryNote.textContent = "Retirada na loja sem taxa de entrega. Horário sera confirmado pelo WhatsApp.";
+    elements.deliveryNote.textContent = t("deliverySummaryCollection");
   } else if (selectedDeliveryZone() === "outside") {
-    elements.deliveryNote.textContent = "Endereço fora do raio maximo de 15 milhas. A entrega precisa ser confirmada pelo WhatsApp.";
+    elements.deliveryNote.textContent = t("deliverySummaryOutOfRange");
   } else if (cartSubtotal() >= FREE_DELIVERY_THRESHOLD && !cartHasVariableWeight()) {
-    elements.deliveryNote.textContent = "Entrega grátis aplicada para pedidos acima de £40. Distância máxima para entrega: 15 milhas.";
+    elements.deliveryNote.textContent = t("deliverySummaryFree");
   } else {
-    elements.deliveryNote.textContent = "Entrega: até 7.5 milhas £2.50, de 7.5 a 15 milhas £5.00. Gratis acima de £40.";
+    elements.deliveryNote.textContent = t("deliverySummaryDefault");
   }
 }
 
@@ -1351,10 +1690,17 @@ function updateLanguageButtons() {
 function setLanguage(language) {
   if (!I18N[language]) return;
   state.language = language;
+  applyTranslations();
   updateLanguageButtons();
   renderCatégories();
   renderProducts();
   renderCart();
+  renderHeroCarousel();
+  renderReviewCarousel();
+  if (state.modalProduct) {
+    renderModalContent();
+    renderModalOptions();
+  }
 }
 
 function setCategory(category, options = {}) {
@@ -1375,7 +1721,7 @@ function productMatches(product) {
     product.category === state.selectedCategory ||
     (state.selectedCategory === "Ofertas" && product.oldPrice) ||
     (state.selectedCategory === "Mais Vendidos" && product.bestSeller);
-  const searchOk = !query || `${product.name} ${product.description} ${product.category}`.toLowerCase().includes(query);
+  const searchOk = !query || `${productName(product)} ${productDescription(product)} ${categoryLabel(product.category)}`.toLowerCase().includes(query);
   const stockOk = !state.stockOnly || product.inStock;
   return categoryOk && searchOk && stockOk;
 }
@@ -1384,7 +1730,7 @@ function sortedProducts() {
   return PRODUCTS.filter(productMatches).sort((a, b) => {
     if (state.sort === "price-asc") return a.price - b.price;
     if (state.sort === "price-desc") return b.price - a.price;
-    if (state.sort === "name") return a.name.localeCompare(b.name);
+    if (state.sort === "name") return productName(a).localeCompare(productName(b));
     return Number(Boolean(b.featured || b.bestSeller || b.oldPrice)) - Number(Boolean(a.featured || a.bestSeller || a.oldPrice));
   });
 }
@@ -1429,47 +1775,49 @@ function setCartQuantity(key, quantity) {
 }
 
 function renderCatégories() {
-  elements.headerCategory.innerHTML = CATEGORIES.map((category) => `<option value="${category}">${category === "Todos" ? "Todas as categorias" : category}</option>`).join("");
-  elements.categoryNav.innerHTML = CATEGORIES.map((category) => `<button type="button" class="${category === "Todos" ? "active" : ""}" data-category="${category}">${category === "Todos" ? "Todos os Produtos" : category}</button>`).join("");
+  elements.headerCategory.innerHTML = CATEGORIES.map((category) => `<option value="${category}">${category === "Todos" ? t("allCategories") : categoryLabel(category)}</option>`).join("");
+  elements.categoryNav.innerHTML = CATEGORIES.map((category) => `<button type="button" class="${category === state.selectedCategory ? "active" : ""}" data-category="${category}">${category === "Todos" ? t("allProductsNav") : categoryLabel(category)}</button>`).join("");
   if (elements.mobileCategoryMenu) {
-    elements.mobileCategoryMenu.innerHTML = CATEGORIES.map((category) => `<button type="button" class="${category === "Todos" ? "active" : ""}" data-category="${category}">${category === "Todos" ? "Todos os Produtos" : category}</button>`).join("");
+    elements.mobileCategoryMenu.innerHTML = CATEGORIES.map((category) => `<button type="button" class="${category === state.selectedCategory ? "active" : ""}" data-category="${category}">${category === "Todos" ? t("allProductsNav") : categoryLabel(category)}</button>`).join("");
   }
+  elements.headerCategory.value = state.selectedCategory;
   elements.categoryCards.innerHTML = CATEGORIES.filter((category) => category !== "Todos").map((category) => {
     const count = PRODUCTS.filter((product) => product.category === category || (category === "Ofertas" && product.oldPrice) || (category === "Mais Vendidos" && product.bestSeller)).length;
     const representative = PRODUCTS.find((product) => product.category === category || (category === "Ofertas" && product.oldPrice) || (category === "Mais Vendidos" && product.bestSeller)) || PRODUCTS[0];
-    return '<button class="category-card" type="button" data-category="' + category + '"><img src="' + representative.image + '" alt="' + category + '"><span>' + count + ' produtos</span><strong>' + category + '</strong><em>' + (CATEGORY_COPY[category] || "Seleção Angus Grill.") + '</em></button>';
+    const countLabel = count === 1 ? t("categoryItem") : t("categoryItems");
+    return '<button class="category-card" type="button" data-category="' + category + '"><img src="' + representative.image + '" alt="' + categoryLabel(category) + '"><span>' + count + ' ' + countLabel + '</span><strong>' + categoryLabel(category) + '</strong><em>' + categoryCopy(category) + '</em></button>';
   }).join("");
 }
 
 function renderProducts() {
   const products = sortedProducts();
   if (elements.productCount) {
-    elements.productCount.textContent = `${products.length} ${products.length === 1 ? "produto encontrado" : "produtos encontrados"}`;
+    elements.productCount.textContent = `${products.length} ${products.length === 1 ? t("productFound") : t("productsFound")}`;
   }
   if (!products.length) {
-    elements.productGrid.innerHTML = `<div class="product-card"><div class="product-body"><h3>Nenhum produto encontrado</h3><p>Tente outra categoria ou busca.</p></div></div>`;
+    elements.productGrid.innerHTML = `<div class="product-card"><div class="product-body"><h3>${t("noProductsTitle")}</h3><p>${t("noProductsText")}</p></div></div>`;
     return;
   }
 
   elements.productGrid.innerHTML = products.map((product) => `
     <article class="product-card">
       <figure>
-        <img src="${product.image}" alt="${product.name}">
+        <img src="${product.image}" alt="${productName(product)}">
         ${product.badge ? `<span class="badge">${product.badge}</span>` : ""}
       </figure>
       <div class="product-body">
-        ${product.badge ? `<span class="product-kicker">${product.badge}</span>` : `<span class="product-kicker">${product.category}</span>`}
-        <h3>${product.name}</h3>
-        <div class="unit-stock"><span>${displayUnit(product)}</span><span class="${product.inStock ? "stock-ok" : "stock-out"}">${product.inStock ? "Disponivel" : "Indisponível"}</span></div>
-        <p>${product.description}</p>
+        ${product.badge ? `<span class="product-kicker">${product.badge}</span>` : `<span class="product-kicker">${categoryLabel(product.category)}</span>`}
+        <h3>${productName(product)}</h3>
+        <div class="unit-stock"><span>${displayUnit(product)}</span><span class="${product.inStock ? "stock-ok" : "stock-out"}">${product.inStock ? t("available") : t("unavailable")}</span></div>
+        <p>${productDescription(product)}</p>
         <div class="price-row">
           <div><strong>${priceLabel(product)}</strong>${oldPriceLabel(product) ? ` <del>${oldPriceLabel(product)}</del>` : ""}</div>
-          ${isKgAmountProduct(product) ? `<small>preço por kg</small>` : hasOptions(product) ? `<small>escolha a opção</small>` : isVariableWeight(product) ? `<small>final após pesagem</small>` : ""}
+          ${isKgAmountProduct(product) ? `<small>${t("pricePerKg")}</small>` : hasOptions(product) ? `<small>${t("chooseOption")}</small>` : isVariableWeight(product) ? `<small>${t("finalAfterWeighing")}</small>` : ""}
         </div>
         ${pricingNote(product) ? `<p class="pricing-note">${pricingNote(product)}</p>` : ""}
         <div class="card-actions">
-          <button class="secondary-button" type="button" data-detail="${product.id}">Ver detalhes</button>
-          <button class="primary-button" type="button" data-add="${product.id}" ${product.inStock ? "" : "disabled"}>${product.inStock ? (isKgAmountProduct(product) ? "Escolher kg" : hasOptions(product) ? "Escolher tamanho" : "Adicionar ao carrinho") : "Indisponível"}</button>
+          <button class="secondary-button" type="button" data-detail="${product.id}">${t("viewDetails")}</button>
+          <button class="primary-button" type="button" data-add="${product.id}" ${product.inStock ? "" : "disabled"}>${product.inStock ? (isKgAmountProduct(product) ? t("chooseKg") : hasOptions(product) ? t("chooseSize") : t("addToCart")) : t("unavailable")}</button>
         </div>
       </div>
     </article>
@@ -1488,22 +1836,22 @@ function renderCart() {
   updatéDeliveryUi();
 
   if (!items.length) {
-    elements.cartItems.innerHTML = `<p>Seu carrinho está vazio. Adicione produtos para montar seu pedido.</p>`;
+    elements.cartItems.innerHTML = `<p>${t("emptyCart")}</p>`;
     return;
   }
 
   elements.cartItems.innerHTML = items.map(({ key, product, option, quantity }) => `
     <article class="cart-item">
       <div>
-        <h4>${product.name}</h4>
+        <h4>${productName(product)}</h4>
         <p>${lineLabel(product, quantity, option)} - ${option ? option.label : displayUnit(product)} - ${isKgAmountProduct(product) ? `${money(cartLineTotal({ product, option, quantity }))} (${priceLabel(product)})` : option ? money(optionPrice(product, option)) : priceLabel(product)}</p>
-        ${isKgAmountProduct(product) ? `<p class="cart-note">Quantidade em kg escolhida pelo cliente.</p>` : option ? `<p class="cart-note">Opção selecionada pelo cliente.</p>` : isVariableWeight(product) ? `<p class="cart-note">Peso e preço final confirmados no WhatsApp.</p>` : ""}
-        <button class="remove-link" type="button" data-remove="${key}">Remover</button>
+        ${isKgAmountProduct(product) ? `<p class="cart-note">${t("kgSelectedByCustomer")}</p>` : option ? `<p class="cart-note">${t("selectedOption")}</p>` : isVariableWeight(product) ? `<p class="cart-note">${t("weightFinalWhatsapp")}</p>` : ""}
+        <button class="remove-link" type="button" data-remove="${key}">${t("remove")}</button>
       </div>
-      <div class="qty" aria-label="Quantidade de ${product.name}">
-        <button type="button" data-dec="${key}" aria-label="Diminuir quantidade de ${product.name}">-</button>
+      <div class="qty" aria-label="${t("quantityOf")} ${productName(product)}">
+        <button type="button" data-dec="${key}" aria-label="${t("decreaseQuantityOf")} ${productName(product)}">-</button>
         <span>${isKgAmountProduct(product) ? formatKgAmount(quantity) : quantity}</span>
-        <button type="button" data-inc="${key}" aria-label="Aumentar quantidade de ${product.name}">+</button>
+        <button type="button" data-inc="${key}" aria-label="${t("increaseQuantityOf")} ${productName(product)}">+</button>
       </div>
     </article>
   `).join("");
@@ -1519,24 +1867,31 @@ function closeCart() {
   elements.cartDrawer.setAttribute("aria-hidden", "true");
 }
 
+function renderModalContent() {
+  const product = state.modalProduct;
+  if (!product) return;
+  elements.modalImage.src = product.image;
+  elements.modalImage.alt = productName(product);
+  elements.modalCategory.textContent = categoryLabel(product.category);
+  elements.modalTitle.textContent = productName(product);
+  elements.modalDescription.textContent = productDescription(product);
+  elements.modalUnit.textContent = displayUnit(product);
+  elements.modalNote.textContent = product.preparationNote || pricingNote(product) || t("talkWhatsappPrepare");
+  elements.modalPrice.textContent = isKgAmountProduct(product) ? money(derivedPricePerKg(product) * state.modalKgAmount) : selectedModalOption() ? money(optionPrice(product, selectedModalOption())) : priceLabel(product);
+  elements.modalStock.textContent = product.inStock ? t("available") : t("unavailable");
+  elements.modalStock.className = product.inStock ? "stock-ok" : "stock-out";
+  elements.modalAdd.textContent = t("addToCart");
+  elements.modalAdd.disabled = isKgAmountProduct(product) ? !product.inStock || state.modalKgAmount <= 0 : !product.inStock;
+}
+
 function openModal(productId) {
   const product = PRODUCTS.find((item) => item.id === productId);
   if (!product) return;
   state.modalProduct = product;
   state.modalOptionId = productOptions(product).find((option) => option.stock > 0)?.id || productOptions(product)[0]?.id || null;
   state.modalKgAmount = 0;
-  elements.modalImage.src = product.image;
-  elements.modalImage.alt = product.name;
-  elements.modalCategory.textContent = product.category;
-  elements.modalTitle.textContent = product.name;
-  elements.modalDescription.textContent = product.description;
-  elements.modalUnit.textContent = displayUnit(product);
-  elements.modalNote.textContent = product.preparationNote || pricingNote(product) || "Fale pelo WhatsApp para combinar cortes, preparo e embalagem.";
+  renderModalContent();
   renderModalOptions();
-  elements.modalPrice.textContent = isKgAmountProduct(product) ? money(derivedPricePerKg(product) * state.modalKgAmount) : selectedModalOption() ? money(optionPrice(product, selectedModalOption())) : priceLabel(product);
-  elements.modalStock.textContent = product.inStock ? "Disponivel" : "Indisponível";
-  elements.modalStock.className = product.inStock ? "stock-ok" : "stock-out";
-  elements.modalAdd.disabled = isKgAmountProduct(product) ? !product.inStock || state.modalKgAmount <= 0 : !product.inStock;
   elements.productModal.hidden = false;
 }
 
@@ -1554,20 +1909,20 @@ function renderModalOptions() {
     const estimatedTotal = pricePerKg * state.modalKgAmount;
     elements.modalOptions.hidden = false;
     elements.modalOptions.innerHTML = `
-      <p>Escolha a quantidade desejada</p>
+      <p>${t("chooseDesiredQuantity")}</p>
       <div class="kg-amount-selector">
-        <button type="button" data-kg-dec aria-label="Diminuir quantidade">-</button>
+        <button type="button" data-kg-dec aria-label="${t("decreaseQuantity")}">-</button>
         <label>
-          <span>Quantidade em kg</span>
+          <span>${t("kgAmountLabel")}</span>
           <input id="modalKgAmount" type="number" min="0" step="0.25" value="${state.modalKgAmount}" inputmode="decimal">
         </label>
-        <button type="button" data-kg-inc aria-label="Aumentar quantidade">+</button>
+        <button type="button" data-kg-inc aria-label="${t("increaseQuantity")}">+</button>
       </div>
       <div class="kg-estimate">
-        <span>Preço por kg</span><strong>${money(pricePerKg)}/kg</strong>
-        <span>Total estimado</span><strong data-kg-total>${money(estimatedTotal)}</strong>
+        <span>${t("pricePerKg")}</span><strong>${money(pricePerKg)}/kg</strong>
+        <span>${t("totalEstimated")}</span><strong data-kg-total>${money(estimatedTotal)}</strong>
       </div>
-      <small class="kg-note">O valor final pode variar apenas se a equipe precisar ajustar o peso separado.</small>
+      <small class="kg-note">${t("kgEstimateNote")}</small>
     `;
     updateModalKgEstimate();
     return;
@@ -1579,13 +1934,13 @@ function renderModalOptions() {
   }
   elements.modalOptions.hidden = false;
   elements.modalOptions.innerHTML = `
-    <p>Escolha o peso disponível</p>
+    <p>${t("chooseAvailableWeight")}</p>
     <div class="weight-option-grid">
       ${productOptions(product).map((option) => `
         <button class="weight-option ${state.modalOptionId === option.id ? "selected" : ""}" type="button" data-option="${option.id}" ${option.stock > 0 ? "" : "disabled"}>
           <span>${option.label}</span>
           <strong>${money(optionPrice(product, option))}</strong>
-          <em>${option.stock > 0 ? `${option.stock} disponíveis` : "Esgotado"}</em>
+          <em>${option.stock > 0 ? `${option.stock} ${t("availablePlural")}` : t("soldOut")}</em>
         </button>
       `).join("")}
     </div>
@@ -1623,7 +1978,7 @@ function renderReviewCarousel() {
   });
 
   elements.reviewDots.innerHTML = elements.reviewSlides.map((_, index) => (
-    `<button class="review-dot ${index === state.reviewIndex ? "is-active" : ""}" type="button" data-review-index="${index}" aria-label="Mostrar avaliação ${index + 1}" ${index === state.reviewIndex ? 'aria-current="true"' : ""}></button>`
+    `<button class="review-dot ${index === state.reviewIndex ? "is-active" : ""}" type="button" data-review-index="${index}" aria-label="${t("showReview")} ${index + 1}" ${index === state.reviewIndex ? 'aria-current="true"' : ""}></button>`
   )).join("");
 }
 
@@ -1826,6 +2181,8 @@ function setupEvents() {
   });
 }
 
+applyTranslations();
+updateLanguageButtons();
 renderCatégories();
 renderProducts();
 renderCart();
