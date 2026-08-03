@@ -2203,13 +2203,22 @@ function setupEvents() {
   });
 }
 
-applyTranslations();
-updateLanguageButtons();
-renderCatégories();
-renderProducts();
-renderCart();
-renderHeroCarousel();
-startHeroCarousel();
-renderReviewCarousel();
-startReviewCarousel();
-setupEvents();
+async function initApp() {
+  try {
+    await loadProductsFromSupabaseIntoStore();
+  } catch (error) {
+    console.warn("Supabase products unavailable; using local catalogue.", error);
+  }
+  applyTranslations();
+  updateLanguageButtons();
+  renderCatégories();
+  renderProducts();
+  renderCart();
+  renderHeroCarousel();
+  startHeroCarousel();
+  renderReviewCarousel();
+  startReviewCarousel();
+  setupEvents();
+}
+
+initApp();

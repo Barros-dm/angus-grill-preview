@@ -20,7 +20,7 @@
       </div>
       <nav class="header-actions">
         <a href="index.html">Ver loja</a>
-        <button class="cart-button" type="button">Login futuro</button>
+        <button class="cart-button" type="button" id="logoutButton" hidden>Sair</button>
       </nav>
     </header>
 
@@ -28,7 +28,28 @@
       <section class="section-heading">
         <p class="eyebrow">Gestão do catálogo</p>
         <h1>Painel Angus Grill</h1>
-        <p>Preview da área administrativa para gerenciar carnes, mercearia, preços, categorias, disponibilidade, destaques e ofertas.</p>
+        <p>Área administrativa para gerir produtos, preços, estoque, disponibilidade e imagens. O cliente usa apenas este painel; o armazenamento fica no Supabase.</p>
+      </section>
+
+      <section class="admin-status" id="adminStatus" role="status"></section>
+
+      <section class="admin-login" id="adminLogin">
+        <article>
+          <p class="eyebrow">Acesso seguro</p>
+          <h2>Entrar no painel</h2>
+          <p>Use o e-mail e senha do administrador cadastrado no Supabase Auth.</p>
+        </article>
+        <form id="loginForm" class="admin-form">
+          <label>
+            E-mail
+            <input type="email" name="email" autocomplete="email" required>
+          </label>
+          <label>
+            Senha
+            <input type="password" name="password" autocomplete="current-password" required>
+          </label>
+          <button class="primary-button" type="submit">Entrar</button>
+        </form>
       </section>
 
       <section class="summary-grid" id="summaryGrid" aria-label="Resumo"></section>
@@ -56,10 +77,80 @@
           <div>
             <p class="eyebrow">Produtos</p>
             <h2>Gerenciamento de produtos</h2>
-            <p class="admin-note">Preview visual: alterações nesta tabela não são salvas até a fase com backend.</p>
+            <p class="admin-note">Edite produtos, preços, estoque, imagens e visibilidade. As alterações salvas aparecem automaticamente na loja.</p>
           </div>
-          <button class="primary-button" type="button" id="addProduct">Adicionar produto preview</button>
+          <div class="admin-toolbar-actions">
+            <button class="secondary-button" type="button" id="importLocalProducts">Importar catálogo atual</button>
+            <button class="primary-button" type="button" id="addProduct">Adicionar produto</button>
+          </div>
         </div>
+
+        <form class="admin-product-form" id="productForm" hidden>
+          <input type="hidden" name="id">
+          <div class="admin-form-grid">
+            <label>
+              Nome do produto
+              <input name="name" required>
+            </label>
+            <label>
+              Categoria
+              <select name="category" required></select>
+            </label>
+            <label>
+              Preço final
+              <input name="price" type="number" min="0" step="0.01" required>
+            </label>
+            <label>
+              Preço antigo
+              <input name="oldPrice" type="number" min="0" step="0.01">
+            </label>
+            <label>
+              Unidade
+              <input name="unit" placeholder="Ex: 1kg, unidade, pacote 500g">
+            </label>
+            <label>
+              Tipo de preço
+              <select name="pricingType">
+                <option value="">Preço fixo</option>
+                <option value="perKg">Preço por kg</option>
+                <option value="variable">A confirmar</option>
+              </select>
+            </label>
+            <label>
+              Badge
+              <input name="badge" placeholder="Ex: Oferta, Fornecedor, Premium">
+            </label>
+            <label>
+              Estoque
+              <input name="stock" type="number" min="0" step="1" value="0">
+            </label>
+            <label class="admin-wide">
+              Descrição
+              <textarea name="description" rows="3"></textarea>
+            </label>
+            <label class="admin-wide">
+              Imagem atual / URL
+              <input name="image" type="url" placeholder="https://... ou caminho local">
+            </label>
+            <label class="admin-wide">
+              Upload de imagem
+              <input name="imageFile" type="file" accept="image/*">
+            </label>
+            <label class="admin-wide">
+              Opções de peso/tamanho em JSON
+              <textarea name="weightOptions" rows="4" placeholder='[{"id":"picanha-1kg","label":"1kg","price":17,"stock":5}]'></textarea>
+            </label>
+            <label class="check-row"><input name="inStock" type="checkbox" checked> Disponível</label>
+            <label class="check-row"><input name="featured" type="checkbox"> Destaque</label>
+            <label class="check-row"><input name="bestSeller" type="checkbox"> Mais vendido</label>
+            <label class="check-row"><input name="isActive" type="checkbox" checked> Visível na loja</label>
+          </div>
+          <div class="admin-form-actions">
+            <button class="primary-button" type="submit">Salvar produto</button>
+            <button class="secondary-button" type="button" id="cancelProduct">Cancelar</button>
+          </div>
+        </form>
+
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead>
@@ -69,6 +160,7 @@
                 <th>Preço</th>
                 <th>Estoque</th>
                 <th>Destaque</th>
+                <th>Imagem</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -85,8 +177,10 @@
       </aside>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js?v=supabase-admin"></script>
     <script src="assets/js/brasilinbox-products.js"></script>
-    <script src="assets/js/data.js"></script>
-    <script src="assets/js/admin.js"></script>
+    <script src="assets/js/data.js?v=supabase-admin"></script>
+    <script src="assets/js/admin.js?v=supabase-admin"></script>
   </body>
 </html>

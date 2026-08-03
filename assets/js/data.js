@@ -270,4 +270,104 @@ const ANGUS_GRILL_PRODUCTS = [
 ];
 
 const SUPPLIER_PRODUCTS = window.BRASIL_INBOX_PRODUCTS || [];
-const PRODUCTS = [...SUPPLIER_PRODUCTS];
+let PRODUCTS = [...SUPPLIER_PRODUCTS];
+
+function supabaseConfig() {
+  return window.ANGUS_SUPABASE_CONFIG || {};
+}
+
+function isSupabaseConfigured() {
+  const config = supabaseConfig();
+  return Boolean(config.url && config.anonKey && window.supabase?.createClient);
+}
+
+function angusSupabase() {
+  if (!isSupabaseConfigured()) return null;
+  if (!window.angusSupabaseClient) {
+    const config = supabaseConfig();
+    window.angusSupabaseClient = window.supabase.createClient(config.url, config.anonKey);
+  }
+  return window.angusSupabaseClient;
+}
+
+function toNumberOrNull(value) {
+  if (value === "" || value === null || value === undefined) return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function normalizeSupabaseProduct(row) {
+  return {
+    id: row.id,
+    name: row.name || "",
+    category: row.category || "Mercearia",
+    description: row.description || "",
+    price: Number(row.price || 0),
+    oldPrice: toNumberOrNull(row.old_price),
+    pricingType: row.pricing_type || "",
+    orderUnit: row.order_unit || "",
+    estimatedWeight: row.estimated_weight || "",
+    unit: row.unit || "",
+    pricingNote: row.pricing_note || "",
+    weightOptions: Array.isArray(row.weight_options) ? row.weight_options : [],
+    image: row.image_url || "assets/images/product-assortment.png",
+    badge: row.badge || "",
+    supplier: row.supplier || "",
+    supplierPrice: toNumberOrNull(row.supplier_price),
+    sourceUrl: row.source_url || "",
+    featured: Boolean(row.featured),
+    bestSeller: Boolean(row.best_seller),
+    inStock: Boolean(row.in_stock),
+    stock: Number(row.stock || 0),
+    isActive: row.is_active !== false,
+    pricePerKg: toNumberOrNull(row.price_per_kg),
+    preparationNote: row.preparation_note || "",
+    translations: row.translations || {}
+  };
+}
+
+function productToSupabaseRow(product) {
+  return {
+    id: product.id,
+    name: product.name || "",
+    category: product.category || "Mercearia",
+    description: product.description || "",
+    price: Number(product.price || 0),
+    old_price: toNumberOrNull(product.oldPrice),
+    pricing_type: product.pricingType || null,
+    order_unit: product.orderUnit || null,
+    estimated_weight: product.estimatedWeight || null,
+    unit: product.unit || null,
+    pricing_note: product.pricingNote || null,
+    weight_options: Array.isArray(product.weightOptions) ? product.weightOptions : [],
+    image_url: product.image || null,
+    badge: product.badge || null,
+    supplier: product.supplier || null,
+    supplier_price: toNumberOrNull(product.supplierPrice),
+    source_url: product.sourceUrl || null,
+    featured: Boolean(product.featured),
+    best_seller: Boolean(product.bestSeller),
+    in_stock: Boolean(product.inStock),
+    stock: Number(product.stock || 0),
+    price_per_kg: toNumberOrNull(product.pricePerKg),
+    preparation_note: product.preparationNote || null,
+    translations: product.translations || {},
+    is_active: product.isActive !== false
+  };
+}
+
+async function loadSupabaseProducts({ includeInactive = false } = {}) {
+  const client = angusSupabase();
+  if (!client) return null;
+  let query = client.from("products").select("*").order("category").order("name");
+  if (!includeInactive) query = query.eq("is_active", true);
+  const { data, error } = await query;
+  if (error) throw error;
+  return (data || []).map(normalizeSupabaseProduct);
+}
+
+async function loadProductsFromSupabaseIntoStore() {
+  const products = await loadSupabaseProducts();
+  if (products?.length) PRODUCTS = products;
+  return PRODUCTS;
+}
