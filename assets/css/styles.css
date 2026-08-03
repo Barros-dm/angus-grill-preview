@@ -138,6 +138,7 @@ a {
 .mobile-header-controls,
 .mobile-menu-toggle,
 .mobile-language-toggle,
+.desktop-language-switcher,
 .mobile-language-menu,
 .mobile-category-menu {
   display: none;
@@ -223,6 +224,78 @@ a {
   font-size: 0.95rem;
   font-weight: 800;
   white-space: nowrap;
+}
+
+.language-switcher {
+  position: relative;
+  display: inline-flex;
+}
+
+.desktop-language-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 48px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--white);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.desktop-language-toggle span {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.desktop-language-toggle strong {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.desktop-language-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  width: 178px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(20, 20, 20, 0.98), rgba(9, 9, 9, 0.98));
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+}
+
+.desktop-language-menu[hidden] {
+  display: none;
+}
+
+.desktop-language-menu button {
+  min-height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.86);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 900;
+  text-align: left;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.desktop-language-menu button.active {
+  border-color: rgba(176, 22, 33, 0.82);
+  background: rgba(176, 22, 33, 0.18);
+  color: var(--white);
 }
 
 .cart-button {

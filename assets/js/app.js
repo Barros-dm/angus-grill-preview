@@ -1083,6 +1083,9 @@ const elements = {
   mobileLanguageToggle: byId("mobileLanguageToggle"),
   mobileLanguageMenu: byId("mobileLanguageMenu"),
   mobileLanguageFlag: byId("mobileLanguageFlag"),
+  desktopLanguageToggle: byId("desktopLanguageToggle"),
+  desktopLanguageMenu: byId("desktopLanguageMenu"),
+  desktopLanguageFlag: byId("desktopLanguageFlag"),
   categoryCards: byId("categoryCards"),
   productGrid: byId("productGrid"),
   sortSelect: byId("sortSelect"),
@@ -1679,9 +1682,16 @@ function closeMobileLanguageMenu() {
   elements.mobileLanguageToggle.setAttribute("aria-expanded", "false");
 }
 
+function closeDesktopLanguageMenu() {
+  if (!elements.desktopLanguageMenu || !elements.desktopLanguageToggle) return;
+  elements.desktopLanguageMenu.hidden = true;
+  elements.desktopLanguageToggle.setAttribute("aria-expanded", "false");
+}
+
 function updateLanguageButtons() {
   const language = currentLanguage();
   if (elements.mobileLanguageFlag) elements.mobileLanguageFlag.textContent = LANGUAGE_FLAGS[language] || LANGUAGE_FLAGS.pt;
+  if (elements.desktopLanguageFlag) elements.desktopLanguageFlag.textContent = LANGUAGE_FLAGS[language] || LANGUAGE_FLAGS.pt;
   document.querySelectorAll("[data-language]").forEach((button) => {
     button.classList.toggle("active", button.dataset.language === language);
   });
@@ -2034,6 +2044,9 @@ function setupEvents() {
     if (elements.mobileLanguageMenu && !elements.mobileLanguageMenu.hidden && !event.target.closest(".site-header")) {
       closeMobileLanguageMenu();
     }
+    if (elements.desktopLanguageMenu && !elements.desktopLanguageMenu.hidden && !event.target.closest(".site-header")) {
+      closeDesktopLanguageMenu();
+    }
     const target = event.target.closest("button, a");
     if (!target) return;
 
@@ -2051,9 +2064,18 @@ function setupEvents() {
       closeMobileCategoryMenu();
       return;
     }
+    if (target === elements.desktopLanguageToggle) {
+      const isOpen = elements.desktopLanguageMenu.hidden;
+      elements.desktopLanguageMenu.hidden = !isOpen;
+      elements.desktopLanguageToggle.setAttribute("aria-expanded", String(isOpen));
+      closeMobileLanguageMenu();
+      closeMobileCategoryMenu();
+      return;
+    }
     if (target.dataset.language) {
       setLanguage(target.dataset.language);
       closeMobileLanguageMenu();
+      closeDesktopLanguageMenu();
       return;
     }
     if (target.dataset.category) {

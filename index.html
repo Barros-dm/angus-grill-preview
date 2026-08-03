@@ -38,11 +38,17 @@
       <nav class="header-actions" aria-label="Ações" data-i18n-aria="actions">
         <a href="#como-funciona" data-i18n="howToBuy">Como comprar</a>
         <a href="tel:01227781164" data-i18n="call">Ligar</a>
-        <div class="language-switcher" aria-label="Idioma" data-i18n-aria="language">
-          <button type="button" data-language="pt" aria-label="Português"><span>🇧🇷</span></button>
-          <button type="button" data-language="en" aria-label="English"><span>🇬🇧</span></button>
-          <button type="button" data-language="es" aria-label="Español"><span>🇪🇸</span></button>
-          <button type="button" data-language="ro" aria-label="Română"><span>🇷🇴</span></button>
+        <div class="language-switcher desktop-language-switcher" aria-label="Idioma" data-i18n-aria="language">
+          <button class="desktop-language-toggle" id="desktopLanguageToggle" type="button" aria-controls="desktopLanguageMenu" aria-expanded="false" aria-label="Idioma" data-i18n-aria="language">
+            <span id="desktopLanguageFlag">🇧🇷</span>
+            <strong aria-hidden="true">⌄</strong>
+          </button>
+          <div class="desktop-language-menu" id="desktopLanguageMenu" hidden>
+            <button type="button" data-language="pt" aria-label="Português"><span>🇧🇷</span> Português</button>
+            <button type="button" data-language="en" aria-label="English"><span>🇬🇧</span> English</button>
+            <button type="button" data-language="es" aria-label="Español"><span>🇪🇸</span> Español</button>
+            <button type="button" data-language="ro" aria-label="Română"><span>🇷🇴</span> Română</button>
+          </div>
         </div>
         <button class="cart-button" id="openCart" type="button"><span data-i18n="cart">Carrinho</span> <span id="cartCount">0</span></button>
       </nav>
