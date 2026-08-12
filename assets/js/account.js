@@ -270,7 +270,15 @@ function setupAccountEvents() {
         return;
       }
       accountElements.forgotPasswordForm.reset();
-      setAccountStatus("Se este e-mail estiver cadastrado, você receberá um link para redefinir a senha.", "success");
+      const recoveryTitle = document.getElementById("forgotPasswordTitle");
+      const recoveryHelp = document.getElementById("forgotPasswordHelp");
+      if (recoveryTitle) recoveryTitle.textContent = "E-mail enviado";
+      if (recoveryHelp) recoveryHelp.textContent = "Verifique sua caixa de entrada e spam para abrir o link de recuperação de senha.";
+      if (submitButton) {
+        submitButton.textContent = "E-mail enviado";
+        submitButton.disabled = true;
+      }
+      setAccountStatus("E-mail enviado. Verifique sua caixa de entrada.", "success");
     });
   }
 
