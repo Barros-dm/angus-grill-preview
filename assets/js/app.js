@@ -1247,6 +1247,22 @@ function categoryCopy(category) {
   return CATEGORY_COPY[currentLanguage()]?.[category] || CATEGORY_COPY.pt[category] || t("selectionFallback");
 }
 
+const CATEGORY_IMAGE_PRODUCT_NAMES = {
+  Linguiças: "Linguiça Toscana Gourmet TOP KING - 1kg",
+  Mercearia: "Café Tradicional PILÃO 500g",
+  Temperos: "Azeite Gallo Dia-a-Dia Subtil 750ml",
+  Bebidas: "Refrigerante Guaraná em Lata ANTARCTICA - 330ml"
+};
+
+function categoryImage(category, representative) {
+  if (category === "Mais Vendidos") {
+    return "assets/images/product-picanha.png";
+  }
+  const preferredProductName = CATEGORY_IMAGE_PRODUCT_NAMES[category];
+  const preferredProduct = preferredProductName ? PRODUCTS.find((product) => product.name === preferredProductName) : null;
+  return preferredProduct?.image || representative?.image || "assets/images/product-assortment.png";
+}
+
 function cartItems() {
   return [...state.cart.values()];
 }
@@ -1804,7 +1820,7 @@ function renderCatégories() {
   elements.categoryCards.innerHTML = CATEGORIES.filter((category) => category !== "Todos").map((category) => {
     const count = PRODUCTS.filter((product) => product.category === category || (category === "Ofertas" && product.oldPrice) || (category === "Mais Vendidos" && product.bestSeller)).length;
     const representative = PRODUCTS.find((product) => product.category === category || (category === "Ofertas" && product.oldPrice) || (category === "Mais Vendidos" && product.bestSeller)) || PRODUCTS[0];
-    const image = category === "Mais Vendidos" ? "assets/images/product-picanha.png" : representative.image;
+    const image = categoryImage(category, representative);
     const countLabel = count === 1 ? t("categoryItem") : t("categoryItems");
     return '<button class="category-card" type="button" data-category="' + category + '"><img src="' + image + '" alt="' + categoryLabel(category) + '"><span>' + count + ' ' + countLabel + '</span><strong>' + categoryLabel(category) + '</strong><em>' + categoryCopy(category) + '</em></button>';
   }).join("");
