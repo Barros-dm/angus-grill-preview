@@ -1804,8 +1804,9 @@ function renderCatégories() {
   elements.categoryCards.innerHTML = CATEGORIES.filter((category) => category !== "Todos").map((category) => {
     const count = PRODUCTS.filter((product) => product.category === category || (category === "Ofertas" && product.oldPrice) || (category === "Mais Vendidos" && product.bestSeller)).length;
     const representative = PRODUCTS.find((product) => product.category === category || (category === "Ofertas" && product.oldPrice) || (category === "Mais Vendidos" && product.bestSeller)) || PRODUCTS[0];
+    const image = category === "Mais Vendidos" ? "assets/images/product-picanha.png" : representative.image;
     const countLabel = count === 1 ? t("categoryItem") : t("categoryItems");
-    return '<button class="category-card" type="button" data-category="' + category + '"><img src="' + representative.image + '" alt="' + categoryLabel(category) + '"><span>' + count + ' ' + countLabel + '</span><strong>' + categoryLabel(category) + '</strong><em>' + categoryCopy(category) + '</em></button>';
+    return '<button class="category-card" type="button" data-category="' + category + '"><img src="' + image + '" alt="' + categoryLabel(category) + '"><span>' + count + ' ' + countLabel + '</span><strong>' + categoryLabel(category) + '</strong><em>' + categoryCopy(category) + '</em></button>';
   }).join("");
 }
 
