@@ -2214,36 +2214,96 @@ async function attachCustomerSession(order) {
   return order;
 }
 
+function whatsappPreferredTimeLabel(value) {
+  const labels = {
+    morning: "Manhã",
+    afternoon: "Tarde",
+    lateDay: "Final do dia"
+  };
+  return labels[value] || value || "Combinar pelo WhatsApp";
+}
+
+function whatsappPreferredDateLabel(value) {
+  if (!value) return "A combinar";
+  const parts = value.split("-");
+  if (parts.length !== 3) return value;
+  const [, month, day] = parts;
+  return `${day}/${month}/${year}`;
+}
+
+function whatsappAddressBlock(form) {
+  if (form.fulfilmentType !== "delivery") {
+    return [
+      "Retirada",
+      "Tipo: Retirada na loja",
+      "Taxa: sem taxa de entrega"
+    ].join("\n");
+  }
+
+  const addressParts = [
+    form.address || "A informar",
+    form.addressLine2 || "",
+    form.city || "A informar",
+    form.postcode || "A informar"
+  ].filter(Boolean);
+
+  return [
+    "Entrega",
+    `Tipo: Entrega`,
+    `Endereço: ${addressParts.join(", ")}`,
+    `Zona: ${DELIVERY_ZONES[form.deliveryZone]?.label || "A confirmar"}`,
+    `Taxa: ${deliveryFeeLabel()}`
+  ].join("\n");
+}
+
 function creatéMessage(form, orderReference) {
   const type = form.fulfilmentType === "delivery" ? "Entrega" : "Retirada";
-  const products = cartItems().map(({ product, option, quantity }) => {
+  const products = cartItems().map(({ product, option, quantity }, index) => {
     if (isKgAmountProduct(product)) {
-      return `- ${product.name} - ${formatKgAmount(quantity)} - ${money(cartLineTotal({ product, option, quantity }))} (${priceLabel(product)}) - quantidade em kg escolhida pelo cliente`;
+      return `${index + 1}. ${product.name}
+   Quantidade: ${formatKgAmount(quantity)}
+   Total: ${money(cartLineTotal({ product, option, quantity }))} (${priceLabel(product)})
+   Observação: quantidade em kg escolhida pelo cliente`;
     }
     const price = option ? money(optionPrice(product, option)) : priceLabel(product);
     const selected = option ? ` - ${option.label}` : ` - ${displayUnit(product)}`;
     const note = option ? " - opção selecionada pelo cliente" : isVariableWeight(product) ? " - final peso/preço confirmado após pesagem" : "";
-    return `- ${lineLabel(product, quantity, option)} ${product.name}${selected} - ${price}${note}`;
-  }).join("\n");
-  return `Ola Angus Grill, gostaria de fazer um pedido:
+    return `${index + 1}. ${product.name}
+   Quantidade: ${lineLabel(product, quantity, option)}
+   Opção: ${selected.replace(" - ", "")}
+   Total: ${price}${note}`;
+  }).join("\n\n");
+
+  const variableWeightNote = cartHasVariableWeight()
+    ? "\nObservação: itens por kg podem variar conforme o peso real separado pela equipe."
+    : "";
+  const outsideDeliveryNote = form.fulfilmentType === "delivery" && form.deliveryZone === "outside"
+    ? "\nObservação entrega: endereço possivelmente fora do raio máximo de 15 milhas. Confirmar disponibilidade."
+    : "";
+
+  return `Olá Angus Grill, gostaria de fazer um pedido.
 
 Pedido: ${orderReference}
 
+Cliente
 Nome: ${form.name || "A informar"}
 Contato: ${form.contact || "A informar"}
-Tipo: ${type}
-${form.fulfilmentType === "delivery" ? `Endereço: ${form.address || "A informar"}\n${form.addressLine2 ? `Complemento: ${form.addressLine2}\n` : ""}Cidade: ${form.city || "A informar"}\nPostcode: ${form.postcode || "A informar"}\n` : ""}Data preferida: ${form.preferredDate || "A combinar"}
-Horário: ${form.preferredTime || "Combinar pelo WhatsApp"}
 
-Produtos:
+${whatsappAddressBlock(form)}
+
+Produtos
 ${products}
 
+Resumo
 Subtotal produtos: ${cartSubtotalLabel()}
-${form.fulfilmentType === "delivery" ? `Zona de entrega: ${DELIVERY_ZONES[form.deliveryZone]?.label || "A confirmar"}\nTaxa de entrega: ${deliveryFeeLabel()}\n` : "Retirada na loja: sem taxa de entrega\n"}Total/estimativa: ${orderTotalLabel()}
-${cartHasVariableWeight() ? "Obs: itens por kg podem variar conforme o peso real separado pela equipe." : ""}
-${form.fulfilmentType === "delivery" && form.deliveryZone === "outside" ? "Obs entrega: endereço possívelmente fora do raio maximo de 15 milhas, confirmar disponibilidade.\n" : ""}
+${type === "Entrega" ? `Entrega: ${deliveryFeeLabel()}` : "Retirada: sem taxa de entrega"}
+Total estimado: ${orderTotalLabel()}${variableWeightNote}${outsideDeliveryNote}
 
-Observações para entrega:
+Preferência
+Data: ${whatsappPreferredDateLabel(form.preferredDate)}
+Horário: ${whatsappPreferredTimeLabel(form.preferredTime)}
+
+Observações para entrega
 ${form.butcherNotes || "Sem observações."}
 
 Obrigado.`;
