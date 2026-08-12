@@ -8,15 +8,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css?v=checkout-refresh-20260812">
+    <link rel="stylesheet" href="assets/css/styles.css?v=visible-bull-logo-20260813">
   </head>
   <body>
     <a class="skip-link" href="#produtos" data-i18n="skipLink">Pular para produtos</a>
-    <div class="announcement" data-i18n="announcement">Entrega rápida em Canterbury • Retirada na loja disponível • Carnes e mercearia brasileira selecionadas</div>
+    <div class="announcement"><span class="announcement-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 17h4V5H2v12h3"/><path d="M14 17h1"/><path d="M19 17h3v-5l-3-4h-5v9h2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></span><span data-i18n="announcement">Entrega rápida em Canterbury • Retirada na loja disponível • Carnes e mercearia brasileira selecionadas</span></div>
 
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Voltar para a página inicial">
-        <img src="assets/images/angus-logo-new.png" alt="Angus Grill Premium Meat">
+        <img src="assets/images/angus-logo-header-visible-bull.png" alt="Angus Grill Premium Meat">
       </a>
       <div class="mobile-header-controls">
         <button class="mobile-language-toggle" id="mobileLanguageToggle" type="button" aria-controls="mobileLanguageMenu" aria-expanded="false" aria-label="Idioma" data-i18n-aria="language">
@@ -33,15 +33,14 @@
           <span class="sr-only" data-i18n="searchSr">Buscar produto</span>
           <input id="searchInput" type="search" placeholder="O que você está procurando?" data-i18n-placeholder="searchPlaceholder">
         </label>
-        <button class="icon-button red" id="searchButton" type="button" aria-label="Buscar" data-i18n="searchButton" data-i18n-aria="searchButton">Buscar</button>
+        <button class="icon-button red" id="searchButton" type="button" aria-label="Buscar" data-i18n-aria="searchButton"><span class="header-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span></button>
       </div>
       <nav class="header-actions" aria-label="Ações" data-i18n-aria="actions">
-        <a href="#como-funciona" data-i18n="howToBuy">Como comprar</a>
-        <a href="tel:01227781164" data-i18n="call">Ligar</a>
-        <a href="account.html" data-i18n="account">Entrar</a>
+        <a class="login-link" href="account.html"><span class="header-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span><span data-i18n="account">Login</span></a>
         <div class="language-switcher desktop-language-switcher" aria-label="Idioma" data-i18n-aria="language">
           <button class="desktop-language-toggle" id="desktopLanguageToggle" type="button" aria-controls="desktopLanguageMenu" aria-expanded="false" aria-label="Idioma" data-i18n-aria="language">
             <span id="desktopLanguageFlag">🇧🇷</span>
+            <span class="language-code" id="desktopLanguageCode">PT</span>
             <strong aria-hidden="true">⌄</strong>
           </button>
           <div class="desktop-language-menu" id="desktopLanguageMenu" hidden>
@@ -51,7 +50,7 @@
             <button type="button" data-language="ro" aria-label="Română"><span>🇷🇴</span> Română</button>
           </div>
         </div>
-        <button class="cart-button" id="openCart" type="button"><span data-i18n="cart">Carrinho</span> <span id="cartCount">0</span></button>
+        <button class="cart-button" id="openCart" type="button"><span class="header-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h8.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></span><span data-i18n="cart">Carrinho</span> <span id="cartCount">0</span></button>
       </nav>
       <div class="mobile-category-menu" id="mobileCategoryMenu" hidden></div>
       <div class="mobile-language-menu" id="mobileLanguageMenu" hidden>
@@ -135,12 +134,11 @@
         <div class="category-cards" id="categoryCards"></div>
       </section>
 
-      <section class="section product-section" id="produtos">
+      <section class="section product-section" id="produtos" hidden>
         <div class="section-heading row">
           <div>
-            <p class="eyebrow" data-i18n="catalogEyebrow">Catálogo</p>
-            <h2 data-i18n="weeklyPopular">Mais pedidos da semana</h2>
-            <p><span id="productCount">0 produtos encontrados</span> <span data-i18n="productCountSuffix">com seleção especial para churrasco, família e compras do dia a dia.</span></p>
+            <h2 data-i18n="catalogEyebrow">CATÁLOGO</h2>
+            <p class="catalog-count" hidden><span id="productCount">0 produtos encontrados</span> <span data-i18n="productCountSuffix">com seleção especial para churrasco, família e compras do dia a dia.</span></p>
           </div>
           <label class="sort-label"><span data-i18n="sortBy">Organizar por</span>
             <select id="sortSelect">
@@ -157,7 +155,6 @@
             <button class="filter-chip active" data-filter="Todos" type="button" data-category-label="Todos">Todos</button>
             <button class="filter-chip" data-filter="Ofertas" type="button" data-category-label="Ofertas">Ofertas</button>
             <button class="filter-chip" data-filter="Mais Vendidos" type="button" data-category-label="Mais Vendidos">Mais Vendidos</button>
-            <button class="filter-chip" data-filter="Mercearia" type="button" data-category-label="Mercearia">Mercearia</button>
             <label class="check-line"><input id="stockOnly" type="checkbox"> <span data-i18n="stockOnly">Somente disponíveis</span></label>
           </aside>
           <div class="product-grid" id="productGrid" aria-live="polite"></div>
@@ -322,7 +319,12 @@ distância máxima para entrega: 15 milhas da loja de Canterbury.</p>
       </div>
     </aside>
 
-    <a class="floating-whatsapp" href="https://wa.me/447923832005" target="_blank" rel="noreferrer" aria-label="Abrir WhatsApp">WhatsApp</a>
+    <a class="floating-whatsapp" href="https://wa.me/447923832005" target="_blank" rel="noreferrer" aria-label="Abrir WhatsApp">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M16.03 4.5A11.43 11.43 0 0 0 6.2 21.75L5 27.5l5.87-1.14A11.43 11.43 0 1 0 16.03 4.5Z"/>
+        <path d="M12.35 10.62c-.25-.56-.52-.57-.76-.58h-.64c-.22 0-.58.08-.88.42-.3.33-1.16 1.13-1.16 2.75s1.19 3.2 1.35 3.42c.17.22 2.3 3.68 5.67 5.01 2.8 1.1 3.37.88 3.98.83.61-.06 1.97-.8 2.25-1.58.28-.78.28-1.45.2-1.59-.09-.14-.31-.22-.64-.39-.33-.17-1.97-.97-2.28-1.08-.31-.11-.53-.17-.75.17-.22.33-.86 1.08-1.06 1.3-.19.22-.39.25-.72.08-.33-.16-1.4-.52-2.67-1.65-.99-.88-1.65-1.97-1.84-2.3-.19-.33-.02-.51.15-.68.15-.15.33-.39.5-.58.17-.2.22-.34.33-.56.11-.22.06-.42-.03-.58-.08-.17-.72-1.79-1-2.4Z"/>
+      </svg>
+    </a>
     <button class="mobile-cart" id="mobileCart" type="button" hidden><span data-i18n="viewOrder">Ver pedido</span> <span id="mobileCartTotal">£0.00</span></button>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -330,6 +332,6 @@ distância máxima para entrega: 15 milhas da loja de Canterbury.</p>
     <script src="assets/js/brasilinbox-products.js?v=supplier-catalogue"></script>
     <script src="assets/js/data.js?v=supabase-admin"></script>
     <script src="assets/js/maps-config.local.js"></script>
-    <script src="assets/js/app.js?v=checkout-refresh-20260812"></script>
+    <script src="assets/js/app.js?v=category-pages-20260812b"></script>
   </body>
 </html>
