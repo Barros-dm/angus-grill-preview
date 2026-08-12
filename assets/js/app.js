@@ -69,8 +69,8 @@ const I18N = {
     categoriesEyebrow: "Categorias",
     shopByCategory: "Compre por categoria",
     categoryIntro: "Encontre cortes selecionados, linguiças, temperos, congelados, bebidas e produtos brasileiros para completar sua compra.",
-    catalogEyebrow: "Catálogo",
-    weeklyPopular: "Mais pedidos da semana",
+    catalogEyebrow: "CATÁLOGO",
+    weeklyPopular: "CATÁLOGO",
     productCountSuffix: "com seleção especial para churrasco, família e compras do dia a dia.",
     sortBy: "Organizar por",
     sortFeatured: "Destaques",
@@ -263,8 +263,8 @@ const I18N = {
     categoriesEyebrow: "Categories",
     shopByCategory: "Shop by category",
     categoryIntro: "Find selected cuts, sausages, seasonings, frozen foods, drinks and Brazilian products to complete your shop.",
-    catalogEyebrow: "Catalogue",
-    weeklyPopular: "Most ordered this week",
+    catalogEyebrow: "CATALOGUE",
+    weeklyPopular: "CATALOGUE",
     productCountSuffix: "with a special selection for barbecue, family and everyday shopping.",
     sortBy: "Sort by",
     sortFeatured: "Featured",
@@ -457,8 +457,8 @@ const I18N = {
     categoriesEyebrow: "Categorías",
     shopByCategory: "Comprar por categoría",
     categoryIntro: "Encuentra cortes seleccionados, linguiças, condimentos, congelados, bebidas y productos brasileños.",
-    catalogEyebrow: "Catálogo",
-    weeklyPopular: "Más pedidos de la semana",
+    catalogEyebrow: "CATÁLOGO",
+    weeklyPopular: "CATÁLOGO",
     productCountSuffix: "con selección especial para barbacoa, familia y compras del día a día.",
     sortBy: "Ordenar por",
     sortFeatured: "Destacados",
@@ -651,8 +651,8 @@ const I18N = {
     categoriesEyebrow: "Categorii",
     shopByCategory: "Cumpără pe categorii",
     categoryIntro: "Găsește carne selectată, cârnați, condimente, congelate, băuturi și produse braziliene.",
-    catalogEyebrow: "Catalog",
-    weeklyPopular: "Cele mai comandate ale săptămânii",
+    catalogEyebrow: "CATALOG",
+    weeklyPopular: "CATALOG",
     productCountSuffix: "cu selecție specială pentru grătar, familie și cumpărături zilnice.",
     sortBy: "Sortează după",
     sortFeatured: "Recomandate",
@@ -895,6 +895,13 @@ const LANGUAGE_FLAGS = {
   ro: "🇷🇴"
 };
 
+const LANGUAGE_CODES = {
+  pt: "PT",
+  en: "EN",
+  es: "ES",
+  ro: "RO"
+};
+
 function t(key) {
   const language = currentLanguage();
   return I18N[language]?.[key] || I18N.pt[key] || key;
@@ -1103,6 +1110,7 @@ const elements = {
   desktopLanguageToggle: byId("desktopLanguageToggle"),
   desktopLanguageMenu: byId("desktopLanguageMenu"),
   desktopLanguageFlag: byId("desktopLanguageFlag"),
+  desktopLanguageCode: byId("desktopLanguageCode"),
   categoryCards: byId("categoryCards"),
   productGrid: byId("productGrid"),
   sortSelect: byId("sortSelect"),
@@ -1704,6 +1712,59 @@ function scrollToProducts() {
   window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
 }
 
+const CATEGORY_ROUTE_PARAM = "categoria";
+
+function slugifyCategory(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, "e")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function categoryFromRoute(value) {
+  const normalized = slugifyCategory(value);
+  return CATEGORIES.find((category) => slugifyCategory(category) === normalized) || "Todos";
+}
+
+function setCatalogPageMode(isCatalogPage) {
+  document.body.classList.toggle("category-page", isCatalogPage);
+  document.body.classList.toggle("home-categories-only", !isCatalogPage);
+  const productSection = byId("produtos");
+  if (productSection) productSection.hidden = !isCatalogPage;
+}
+
+function setCategoryRoute(category, replace = false) {
+  const url = new URL(window.location.href);
+  url.searchParams.set(CATEGORY_ROUTE_PARAM, slugifyCategory(category));
+  url.hash = "";
+  window.history[replace ? "replaceState" : "pushState"]({ category }, "", url);
+}
+
+function openCategoryPage(category, options = {}) {
+  const nextCategory = CATEGORIES.includes(category) ? category : "Todos";
+  setCatalogPageMode(true);
+  setCategory(nextCategory);
+  if (!options.skipRoute) setCategoryRoute(nextCategory, Boolean(options.replace));
+  if (options.scroll !== false) {
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: options.instant ? "auto" : "smooth" });
+    });
+  }
+}
+
+function syncCategoryRoute() {
+  const categoryValue = new URLSearchParams(window.location.search).get(CATEGORY_ROUTE_PARAM);
+  if (!categoryValue) {
+    setCatalogPageMode(false);
+    setCategory("Todos");
+    return;
+  }
+  openCategoryPage(categoryFromRoute(categoryValue), { skipRoute: true, scroll: false });
+}
+
 function closeMobileCategoryMenu() {
   if (!elements.mobileCategoryMenu || !elements.mobileMenuToggle) return;
   elements.mobileCategoryMenu.hidden = true;
@@ -1726,6 +1787,7 @@ function updateLanguageButtons() {
   const language = currentLanguage();
   if (elements.mobileLanguageFlag) elements.mobileLanguageFlag.textContent = LANGUAGE_FLAGS[language] || LANGUAGE_FLAGS.pt;
   if (elements.desktopLanguageFlag) elements.desktopLanguageFlag.textContent = LANGUAGE_FLAGS[language] || LANGUAGE_FLAGS.pt;
+  if (elements.desktopLanguageCode) elements.desktopLanguageCode.textContent = LANGUAGE_CODES[language] || LANGUAGE_CODES.pt;
   document.querySelectorAll("[data-language]").forEach((button) => {
     button.classList.toggle("active", button.dataset.language === language);
   });
@@ -1738,6 +1800,7 @@ function setLanguage(language) {
   updateLanguageButtons();
   renderCatégories();
   renderProducts();
+  syncCategoryRoute();
   renderCart();
   renderHeroCarousel();
   renderReviewCarousel();
@@ -2328,7 +2391,7 @@ function setupEvents() {
     if (elements.desktopLanguageMenu && !elements.desktopLanguageMenu.hidden && !event.target.closest(".site-header")) {
       closeDesktopLanguageMenu();
     }
-    const target = event.target.closest("button, a");
+    const target = event.target.closest("[data-category], [data-filter], [data-category-link], button, a");
     if (!target) return;
 
     if (target === elements.mobileMenuToggle) {
@@ -2361,13 +2424,22 @@ function setupEvents() {
     }
     if (target.dataset.category) {
       event.preventDefault();
-      setCategory(target.dataset.category, { scrollToProducts: true });
+      openCategoryPage(target.dataset.category);
       closeMobileCategoryMenu();
+      return;
     }
-    if (target.dataset.filter) setCategory(target.dataset.filter);
+    if (target.dataset.filter) {
+      if (document.body.classList.contains("category-page")) {
+        setCategory(target.dataset.filter);
+      } else {
+        openCategoryPage(target.dataset.filter);
+      }
+      return;
+    }
     if (target.dataset.categoryLink) {
       event.preventDefault();
-      setCategory(target.dataset.categoryLink, { scrollToProducts: true });
+      openCategoryPage(target.dataset.categoryLink);
+      return;
     }
     if (target.dataset.heroIndex) showHero(Number(target.dataset.heroIndex));
     if (target.dataset.add) addToCart(target.dataset.add);
@@ -2393,12 +2465,12 @@ function setupEvents() {
     if (target.dataset.reviewIndex) showReview(Number(target.dataset.reviewIndex));
   });
 
-  elements.headerCategory.addEventListener("change", (event) => setCategory(event.target.value, { scrollToProducts: true }));
+  elements.headerCategory.addEventListener("change", (event) => openCategoryPage(event.target.value));
   elements.searchInput.addEventListener("input", (event) => {
     state.search = event.target.value;
     renderProducts();
   });
-  elements.searchButton.addEventListener("click", renderProducts);
+  elements.searchButton.addEventListener("click", () => openCategoryPage(state.selectedCategory || "Todos"));
   elements.sortSelect.addEventListener("change", (event) => {
     state.sort = event.target.value;
     renderProducts();
@@ -2492,6 +2564,8 @@ function setupEvents() {
     elements.confirmation.hidden = false;
     window.open(url, "_blank", "noopener,noreferrer");
   });
+  window.addEventListener("popstate", syncCategoryRoute);
+
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeModal();
@@ -2510,6 +2584,7 @@ async function initApp() {
   updateLanguageButtons();
   renderCatégories();
   renderProducts();
+  syncCategoryRoute();
   renderCart();
   renderHeroCarousel();
   startHeroCarousel();
