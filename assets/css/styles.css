@@ -109,6 +109,8 @@ a {
   align-items: center;
   gap: 12px;
   min-width: 210px;
+  color: inherit;
+  text-decoration: none;
 }
 
 .brand img {

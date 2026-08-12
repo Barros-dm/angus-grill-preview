@@ -965,7 +965,7 @@ function productOptions(product) {
   return product.weightOptions || [];
 }
 
-const KG_AMOUNT_CATEGORIES = new Set(["Bovino", "Frango", "Suíno"]);
+const KG_AMOUNT_CATEGORIES = new Set(["Bovino", "Frango", "Suíno", "Linguiças"]);
 
 function parseKgValue(rawValue, rawUnit = "") {
   const value = Number(String(rawValue).replace(",", "."));
