@@ -9,7 +9,7 @@ const accountState = {
 const accountElements = {
   status: document.getElementById("accountStatus"),
   loginForm: document.getElementById("customerLoginForm"),
-  forgotPassword: document.getElementById("forgotPasswordButton"),
+  forgotPasswordForm: document.getElementById("forgotPasswordForm"),
   registerForm: document.getElementById("customerRegisterForm"),
   authCard: document.getElementById("customerAuthCard"),
   registerCard: document.getElementById("customerRegisterCard"),
@@ -244,30 +244,32 @@ function setupAccountEvents() {
     });
   }
 
-  if (accountElements.forgotPassword) {
-    accountElements.forgotPassword.addEventListener("click", async () => {
+  if (accountElements.forgotPasswordForm) {
+    accountElements.forgotPasswordForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
       const client = angusSupabase();
       if (!client) {
         setAccountStatus("Recuperação de senha ainda não está ativa. Tente novamente mais tarde.", "warning");
         return;
       }
-      const emailInput = accountElements.loginForm?.querySelector('input[name="email"]');
-      const email = String(emailInput?.value || "").trim();
+      const formData = new FormData(accountElements.forgotPasswordForm);
+      const email = String(formData.get("email") || "").trim();
       if (!email) {
-        setAccountStatus("Digite seu e-mail acima para receber o link de recuperação.", "warning");
-        emailInput?.focus();
+        setAccountStatus("Digite seu e-mail para receber o link de recuperação.", "warning");
         return;
       }
-      accountElements.forgotPassword.disabled = true;
+      const submitButton = accountElements.forgotPasswordForm.querySelector('button[type="submit"]');
+      if (submitButton) submitButton.disabled = true;
       setAccountStatus("Enviando link de recuperação...", "info");
       const { error } = await client.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/account.html`
       });
-      accountElements.forgotPassword.disabled = false;
+      if (submitButton) submitButton.disabled = false;
       if (error) {
         setAccountStatus(friendlyAuthMessage(error.message), "error");
         return;
       }
+      accountElements.forgotPasswordForm.reset();
       setAccountStatus("Se este e-mail estiver cadastrado, você receberá um link para redefinir a senha.", "success");
     });
   }
