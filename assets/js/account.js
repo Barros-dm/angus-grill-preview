@@ -9,6 +9,7 @@ const accountState = {
 const accountElements = {
   status: document.getElementById("accountStatus"),
   loginForm: document.getElementById("customerLoginForm"),
+  forgotPassword: document.getElementById("forgotPasswordButton"),
   registerForm: document.getElementById("customerRegisterForm"),
   authCard: document.getElementById("customerAuthCard"),
   registerCard: document.getElementById("customerRegisterCard"),
@@ -240,6 +241,34 @@ function setupAccountEvents() {
       accountElements.loginForm.reset();
       await refreshAccount();
       setAccountStatus("Login efetuado com sucesso.", "success");
+    });
+  }
+
+  if (accountElements.forgotPassword) {
+    accountElements.forgotPassword.addEventListener("click", async () => {
+      const client = angusSupabase();
+      if (!client) {
+        setAccountStatus("Recuperação de senha ainda não está ativa. Tente novamente mais tarde.", "warning");
+        return;
+      }
+      const emailInput = accountElements.loginForm?.querySelector('input[name="email"]');
+      const email = String(emailInput?.value || "").trim();
+      if (!email) {
+        setAccountStatus("Digite seu e-mail acima para receber o link de recuperação.", "warning");
+        emailInput?.focus();
+        return;
+      }
+      accountElements.forgotPassword.disabled = true;
+      setAccountStatus("Enviando link de recuperação...", "info");
+      const { error } = await client.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/account.html`
+      });
+      accountElements.forgotPassword.disabled = false;
+      if (error) {
+        setAccountStatus(friendlyAuthMessage(error.message), "error");
+        return;
+      }
+      setAccountStatus("Se este e-mail estiver cadastrado, você receberá um link para redefinir a senha.", "success");
     });
   }
 

@@ -1699,6 +1699,24 @@ a {
   text-underline-offset: 4px;
 }
 
+.forgot-password-link {
+  justify-self: center;
+  border: 0;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--premium-red);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.forgot-password-link:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
 .account-orders {
   display: grid;
   gap: 14px;
