@@ -209,8 +209,8 @@ const I18N = {
     deliveryQuoteDefaultText: "Até 7.5 milhas: £2.50. De 7.5 a 15 milhas: £5.00. Grátis acima de £40.",
     deliverySummaryCollection: "Retirada na loja sem taxa de entrega. Horário será confirmado pelo WhatsApp.",
     deliverySummaryOutOfRange: "Endereço fora do raio máximo de 15 milhas. A entrega precisa ser confirmada pelo WhatsApp.",
-    deliverySummaryFree: "Entrega grátis aplicada para pedidos acima de £40. Distância máxima para entrega: 15 milhas.",
-    deliverySummaryDefault: "Entrega: até 7.5 milhas £2.50, de 7.5 a 15 milhas £5.00. Grátis acima de £40.",
+    deliverySummaryFree: "ENTREGA GRÁTIS PARA COMPRAS ACIMA DE £40.\ndistância máxima para entrega: 15 milhas da loja de Canterbury.",
+    deliverySummaryDefault: "ENTREGA GRÁTIS PARA COMPRAS ACIMA DE £40.\ndistância máxima para entrega: 15 milhas da loja de Canterbury.",
     chooseDesiredQuantity: "Escolha a quantidade desejada",
     kgAmountHelp: "Informe quantos kg deseja. O total é estimado pela quantidade selecionada.",
     kgAmountLabel: "Quantidade em kg",
@@ -1105,6 +1105,7 @@ const elements = {
   continueShopping: byId("continueShopping"),
   cartDrawer: byId("cartDrawer"),
   cartItems: byId("cartItems"),
+  checkoutItemCount: byId("checkoutItemCount"),
   subtotal: byId("subtotal"),
   deliveryFee: byId("deliveryFee"),
   orderTotal: byId("orderTotal"),
@@ -1846,7 +1847,9 @@ function renderProducts() {
 function renderCart() {
   const items = cartItems();
   syncDeliveryZoneFromAddress();
-  elements.cartCount.textContent = String(cartCount());
+  const itemCount = cartCount();
+  elements.cartCount.textContent = String(itemCount);
+  if (elements.checkoutItemCount) elements.checkoutItemCount.textContent = `${itemCount} ${itemCount === 1 ? "item" : "itens"}`;
   elements.subtotal.textContent = cartSubtotalLabel();
   elements.deliveryFee.textContent = deliveryFeeLabel();
   elements.orderTotal.textContent = orderTotalLabel();

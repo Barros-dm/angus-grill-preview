@@ -13,9 +13,12 @@ const accountElements = {
   authCard: document.getElementById("customerAuthCard"),
   registerCard: document.getElementById("customerRegisterCard"),
   logout: document.getElementById("customerLogout"),
+  history: document.getElementById("accountHistory"),
   intro: document.getElementById("accountIntro"),
   orders: document.getElementById("customerOrders")
 };
+
+const accountMode = document.body?.dataset.accountMode || "login";
 
 function accountMoney(value) {
   if (value === null || value === undefined || value === "") return "A confirmar";
@@ -23,6 +26,7 @@ function accountMoney(value) {
 }
 
 function setAccountStatus(message, tone = "info") {
+  if (!accountElements.status) return;
   accountElements.status.textContent = message;
   accountElements.status.dataset.tone = tone;
   accountElements.status.hidden = !message;
@@ -106,6 +110,7 @@ function friendlyAuthMessage(message = "") {
 }
 
 function renderOrders() {
+  if (!accountElements.orders) return;
   const orders = [
     ...accountState.supabaseOrders.map(normalizeSupabaseOrder),
     ...accountState.localOrders.map(normalizeLocalOrder)
@@ -161,12 +166,15 @@ async function loadSupabaseOrders() {
 
 function renderAuthState() {
   const signedIn = Boolean(accountState.session);
-  accountElements.authCard.hidden = signedIn;
-  accountElements.registerCard.hidden = signedIn;
-  accountElements.logout.hidden = !signedIn;
-  accountElements.intro.textContent = signedIn
-    ? `Pedidos salvos para ${accountState.session.user.email}.`
-    : "Entre para ver pedidos salvos na sua conta. Pedidos recentes deste navegador também podem aparecer aqui.";
+  if (accountElements.authCard) accountElements.authCard.hidden = signedIn;
+  if (accountElements.registerCard) accountElements.registerCard.hidden = signedIn;
+  if (accountElements.logout) accountElements.logout.hidden = !signedIn;
+  if (accountElements.history) accountElements.history.hidden = !signedIn;
+  if (accountElements.intro) {
+    accountElements.intro.textContent = signedIn
+      ? `Pedidos salvos para ${accountState.session.user.email}.`
+      : "Pedidos salvos na sua conta aparecerão aqui.";
+  }
 }
 
 async function refreshAccount() {
@@ -183,11 +191,17 @@ async function refreshAccount() {
 
   const { data } = await client.auth.getSession();
   accountState.session = data.session;
+
+  if (accountState.session && accountMode === "register") {
+    window.location.href = "account.html";
+    return;
+  }
+
   renderAuthState();
 
   if (!accountState.session) {
     accountState.supabaseOrders = [];
-    renderOrders();
+    if (accountElements.orders) accountElements.orders.innerHTML = "";
     setAccountStatus("");
     return;
   }
@@ -204,65 +218,73 @@ async function refreshAccount() {
 }
 
 function setupAccountEvents() {
-  accountElements.loginForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const client = angusSupabase();
-    if (!client) {
-      setAccountStatus("Login online ainda não está ativo. Tente novamente mais tarde.", "warning");
-      return;
-    }
-    const formData = new FormData(accountElements.loginForm);
-    setAccountStatus("Entrando...", "info");
-    const { data, error } = await client.auth.signInWithPassword({
-      email: String(formData.get("email") || ""),
-      password: String(formData.get("password") || "")
-    });
-    if (error) {
-      setAccountStatus(friendlyAuthMessage(error.message), "error");
-      return;
-    }
-    accountState.session = data.session;
-    accountElements.loginForm.reset();
-    await refreshAccount();
-    setAccountStatus("Login efetuado com sucesso.", "success");
-  });
-
-  accountElements.registerForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const client = angusSupabase();
-    if (!client) {
-      setAccountStatus("Criação de conta ainda não está ativa. Tente novamente mais tarde.", "warning");
-      return;
-    }
-    const formData = new FormData(accountElements.registerForm);
-    setAccountStatus("Criando conta...", "info");
-    const { data, error } = await client.auth.signUp({
-      email: String(formData.get("email") || ""),
-      password: String(formData.get("password") || ""),
-      options: {
-        data: { name: String(formData.get("name") || "") }
+  if (accountElements.loginForm) {
+    accountElements.loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const client = angusSupabase();
+      if (!client) {
+        setAccountStatus("Login online ainda não está ativo. Tente novamente mais tarde.", "warning");
+        return;
       }
-    });
-    if (error) {
-      setAccountStatus(friendlyAuthMessage(error.message), "error");
-      return;
-    }
-    accountElements.registerForm.reset();
-    if (data.session) {
+      const formData = new FormData(accountElements.loginForm);
+      setAccountStatus("Entrando...", "info");
+      const { data, error } = await client.auth.signInWithPassword({
+        email: String(formData.get("email") || ""),
+        password: String(formData.get("password") || "")
+      });
+      if (error) {
+        setAccountStatus(friendlyAuthMessage(error.message), "error");
+        return;
+      }
       accountState.session = data.session;
+      accountElements.loginForm.reset();
       await refreshAccount();
-      setAccountStatus("Conta criada e login efetuado com sucesso.", "success");
-      return;
-    }
-    await refreshAccount();
-    setAccountStatus("Conta criada. Confirme o e-mail antes de fazer login.", "success");
-  });
+      setAccountStatus("Login efetuado com sucesso.", "success");
+    });
+  }
 
-  accountElements.logout.addEventListener("click", async () => {
-    await angusSupabase()?.auth.signOut();
-    accountState.session = null;
-    await refreshAccount();
-  });
+  if (accountElements.registerForm) {
+    accountElements.registerForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const client = angusSupabase();
+      if (!client) {
+        setAccountStatus("Criação de conta ainda não está ativa. Tente novamente mais tarde.", "warning");
+        return;
+      }
+      const formData = new FormData(accountElements.registerForm);
+      setAccountStatus("Criando conta...", "info");
+      const { data, error } = await client.auth.signUp({
+        email: String(formData.get("email") || ""),
+        password: String(formData.get("password") || ""),
+        options: {
+          emailRedirectTo: `${window.location.origin}/account.html`,
+          data: { name: String(formData.get("name") || "") }
+        }
+      });
+      if (error) {
+        setAccountStatus(friendlyAuthMessage(error.message), "error");
+        return;
+      }
+      accountElements.registerForm.reset();
+      if (data.session) {
+        accountState.session = data.session;
+        setAccountStatus("Conta criada com sucesso. Abrindo sua área do cliente...", "success");
+        window.setTimeout(() => {
+          window.location.href = "account.html";
+        }, 500);
+        return;
+      }
+      setAccountStatus("Conta criada. Confirme o e-mail antes de fazer login.", "success");
+    });
+  }
+
+  if (accountElements.logout) {
+    accountElements.logout.addEventListener("click", async () => {
+      await angusSupabase()?.auth.signOut();
+      accountState.session = null;
+      await refreshAccount();
+    });
+  }
 }
 
 setupAccountEvents();

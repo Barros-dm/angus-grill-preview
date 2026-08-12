@@ -259,40 +259,66 @@
           <h2 data-i18n="yourOrder">Seu pedido</h2>
           <button class="close-button" id="closeCart" type="button" aria-label="Fechar carrinho" data-i18n-aria="closeCart">x</button>
         </div>
-        <div id="cartItems" class="cart-items"></div>
-        <div class="cart-summary" aria-label="Resumo do pedido">
-          <div class="cart-total"><span data-i18n="productsSubtotal">Subtotal produtos</span><strong id="subtotal">£0.00</strong></div>
-          <div class="cart-total"><span data-i18n="delivery">Entrega</span><strong id="deliveryFee">£0.00</strong></div>
-          <div class="cart-total grand-total"><span data-i18n="estimatedTotal">Total estimado</span><strong id="orderTotal">£0.00</strong></div>
+        <div class="checkout-layout">
+          <div class="checkout-main">
+            <form class="checkout" id="checkoutForm">
+              <h3 data-i18n="checkout">Finalizar pedido</h3>
+              <fieldset class="checkout-section">
+                <legend>Contato</legend>
+                <div class="checkout-field-grid">
+                  <label><span data-i18n="name">Nome</span><input name="name" autocomplete="name" required></label>
+                  <label><span data-i18n="phoneOrEmail">Telefone ou e-mail</span><input name="contact" autocomplete="email"></label>
+                </div>
+              </fieldset>
+              <fieldset class="checkout-section">
+                <legend>Entrega ou retirada</legend>
+                <div class="toggle-group" role="group" aria-label="Entrega ou retirada" data-i18n-aria="deliveryOrCollection">
+                  <label><input type="radio" name="fulfilmentType" value="delivery" checked> <span data-i18n="delivery">Entrega</span></label>
+                  <label><input type="radio" name="fulfilmentType" value="collection"> <span data-i18n="collection">Retirada</span></label>
+                </div>
+                <p class="delivery-note" id="deliveryNote">ENTREGA GRÁTIS PARA COMPRAS ACIMA DE £40.
+distância máxima para entrega: 15 milhas da loja de Canterbury.</p>
+                <input type="hidden" name="deliveryZone" id="deliveryZone" value="local">
+                <label id="addressLabel"><span data-i18n="address">Endereço</span><input name="address" id="addressInput" autocomplete="street-address" inputmode="text"></label>
+                <label id="addressLine2Label"><span data-i18n="addressLine2">Apartamento, bloco etc. (opcional)</span><input name="addressLine2" id="addressLine2Input" autocomplete="address-line2"></label>
+                <div class="address-grid" id="addressGrid">
+                  <label><span data-i18n="city">Cidade</span><input name="city" id="cityInput" autocomplete="address-level2"></label>
+                  <label><span data-i18n="postcode">Postcode</span><input name="postcode" id="postcodeInput" autocomplete="postal-code" inputmode="text"></label>
+                </div>
+                <div class="delivery-quote-card" id="deliveryQuoteCard" aria-live="polite">
+                  <span class="quote-kicker" data-i18n="deliveryQuoteKicker">Entrega Angus Grill</span>
+                  <strong id="deliveryQuoteTitle">Digite o endereço para calcular</strong>
+                  <p id="deliveryQuoteText">Selecione o endereço sugerido para calcular a entrega.</p>
+                </div>
+              </fieldset>
+              <fieldset class="checkout-section">
+                <legend>Preferências</legend>
+                <div class="checkout-field-grid">
+                  <label><span data-i18n="preferredDate">Data preferida</span><input name="preferredDate" type="date"></label>
+                  <label><span data-i18n="preferredTime">Horário preferido</span><select name="preferredTime"><option value="morning" data-i18n="morning">Manhã</option><option value="afternoon" data-i18n="afternoon">Tarde</option><option value="lateDay" data-i18n="lateDay">Final do dia</option><option value="arrangeWhatsapp" data-i18n="arrangeWhatsapp">Combinar pelo WhatsApp</option></select></label>
+                </div>
+                <label><span data-i18n="deliveryNotes">Observações para entrega</span><textarea name="butcherNotes" placeholder="Ex: deixar na recepção, tocar campainha, separar produtos congelados..." data-i18n-placeholder="deliveryNotesPlaceholder"></textarea></label>
+              </fieldset>
+              <button class="whatsapp-submit checkout-mobile-submit" type="submit" data-i18n="finishWhatsapp">Finalizar pedido no WhatsApp</button>
+              <p class="confirmation" id="confirmation" hidden data-i18n="confirmation">Pedido preparado para envio no WhatsApp. Confira a mensagem antes de enviar.</p>
+            </form>
+            <button class="secondary-button full" id="continueShopping" type="button" data-i18n="continueShopping">Continuar comprando</button>
+          </div>
+          <aside class="checkout-summary-card" aria-label="Resumo do pedido">
+            <div class="checkout-summary-head">
+              <h3 data-i18n="yourOrder">Seu pedido</h3>
+              <span id="checkoutItemCount">0 itens</span>
+            </div>
+            <div id="cartItems" class="cart-items"></div>
+            <div class="cart-summary">
+              <div class="cart-total"><span data-i18n="productsSubtotal">Subtotal produtos</span><strong id="subtotal">£0.00</strong></div>
+              <div class="cart-total"><span data-i18n="delivery">Entrega</span><strong id="deliveryFee">£0.00</strong></div>
+              <div class="cart-total grand-total"><span data-i18n="estimatedTotal">Total estimado</span><strong id="orderTotal">£0.00</strong></div>
+            </div>
+            <button class="whatsapp-submit checkout-summary-submit" type="submit" form="checkoutForm" data-i18n="finishWhatsapp">Finalizar pedido no WhatsApp</button>
+            <p class="checkout-summary-note">Pedido preparado para WhatsApp. Revise a mensagem antes de enviar.</p>
+          </aside>
         </div>
-        <p class="delivery-note" id="deliveryNote">Entrega grátis acima de £40. Distância máxima para entrega: 15 milhas.</p>
-        <form class="checkout" id="checkoutForm">
-          <h3 data-i18n="checkout">Finalizar pedido</h3>
-          <label><span data-i18n="name">Nome</span><input name="name" autocomplete="name" required></label>
-          <label><span data-i18n="phoneOrEmail">Telefone ou e-mail</span><input name="contact" autocomplete="email"></label>
-          <div class="toggle-group" role="group" aria-label="Entrega ou retirada" data-i18n-aria="deliveryOrCollection">
-            <label><input type="radio" name="fulfilmentType" value="delivery" checked> <span data-i18n="delivery">Entrega</span></label>
-            <label><input type="radio" name="fulfilmentType" value="collection"> <span data-i18n="collection">Retirada</span></label>
-          </div>
-          <input type="hidden" name="deliveryZone" id="deliveryZone" value="local">
-          <label id="addressLabel"><span data-i18n="address">Endereço</span><input name="address" id="addressInput" autocomplete="street-address" inputmode="text"></label>
-          <label id="addressLine2Label"><span data-i18n="addressLine2">Apartamento, bloco etc. (opcional)</span><input name="addressLine2" id="addressLine2Input" autocomplete="address-line2"></label>
-          <div class="address-grid" id="addressGrid">
-            <label><span data-i18n="city">Cidade</span><input name="city" id="cityInput" autocomplete="address-level2"></label>
-            <label><span data-i18n="postcode">Postcode</span><input name="postcode" id="postcodeInput" autocomplete="postal-code" inputmode="text"></label>
-          </div>
-          <div class="delivery-quote-card" id="deliveryQuoteCard" aria-live="polite">
-            <span class="quote-kicker" data-i18n="deliveryQuoteKicker">Entrega Angus Grill</span>
-            <strong id="deliveryQuoteTitle">Digite o endereço para calcular</strong>
-            <p id="deliveryQuoteText">Selecione o endereço sugerido para calcular a entrega.</p>
-          </div>
-          <label><span data-i18n="preferredDate">Data preferida</span><input name="preferredDate" type="date"></label>
-          <label><span data-i18n="preferredTime">Horário preferido</span><select name="preferredTime"><option value="morning" data-i18n="morning">Manhã</option><option value="afternoon" data-i18n="afternoon">Tarde</option><option value="lateDay" data-i18n="lateDay">Final do dia</option><option value="arrangeWhatsapp" data-i18n="arrangeWhatsapp">Combinar pelo WhatsApp</option></select></label>
-          <label><span data-i18n="deliveryNotes">Observações para entrega</span><textarea name="butcherNotes" placeholder="Ex: deixar na recepção, tocar campainha, separar produtos congelados..." data-i18n-placeholder="deliveryNotesPlaceholder"></textarea></label>
-          <button class="whatsapp-submit" type="submit" data-i18n="finishWhatsapp">Finalizar pedido no WhatsApp</button>
-          <p class="confirmation" id="confirmation" hidden data-i18n="confirmation">Pedido preparado para envio no WhatsApp. Confira a mensagem antes de enviar.</p>
-        </form>
-        <button class="secondary-button full" id="continueShopping" type="button" data-i18n="continueShopping">Continuar comprando</button>
       </div>
     </aside>
 
