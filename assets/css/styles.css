@@ -1424,6 +1424,146 @@ a {
   background: var(--light-grey);
 }
 
+.account-shell {
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(5, 5, 5, 0.02), rgba(5, 5, 5, 0)),
+    var(--white);
+}
+
+.account-header {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(155, 17, 30, 0.24), transparent 34%),
+    linear-gradient(90deg, #180607, var(--black));
+  color: var(--white);
+}
+
+.account-main {
+  width: min(1180px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 64px) 0 72px;
+}
+
+.account-hero {
+  max-width: 780px;
+  margin-bottom: 28px;
+}
+
+.account-hero h1 {
+  margin: 8px 0 12px;
+  color: var(--charcoal);
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(2.5rem, 6vw, 5.4rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.account-hero p:last-child,
+.account-muted {
+  color: var(--muted);
+}
+
+.account-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 0 0 36px;
+}
+
+.account-card,
+.order-history-card,
+.account-empty {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 8px 24px rgba(17, 17, 17, 0.05);
+}
+
+.account-card {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+
+.account-card h2,
+.account-history h2,
+.account-empty h3 {
+  margin: 0;
+  color: var(--charcoal);
+  font-family: "Fraunces", Georgia, serif;
+}
+
+.account-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.account-orders {
+  display: grid;
+  gap: 14px;
+}
+
+.order-history-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) auto;
+  gap: 18px;
+  padding: 20px;
+}
+
+.order-history-card h3 {
+  margin: 4px 0;
+  color: var(--charcoal);
+  font-size: 1.25rem;
+}
+
+.order-history-card p,
+.order-history-card span,
+.order-history-card em {
+  color: var(--muted);
+  font-style: normal;
+}
+
+.order-history-card > div:nth-child(2) {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+  align-content: start;
+}
+
+.order-history-card > div:nth-child(2) strong {
+  color: var(--charcoal);
+  font-size: 1.35rem;
+}
+
+.order-history-card ul {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--border);
+  list-style: none;
+}
+
+.order-history-card li {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.order-history-card li span {
+  color: var(--charcoal);
+  font-weight: 800;
+}
+
+.account-empty {
+  padding: 24px;
+}
+
+.account-empty p {
+  color: var(--muted);
+}
+
 .info-panel {
   margin-top: 20px;
   padding: 22px;
@@ -3041,6 +3181,35 @@ body {
     overflow-x: hidden;
   }
 
+  .account-main {
+    width: min(100% - 28px, 1180px);
+    padding: 28px 0 52px;
+  }
+
+  .account-hero h1 {
+    font-size: clamp(2.3rem, 13vw, 4.3rem);
+  }
+
+  .account-grid,
+  .order-history-card {
+    grid-template-columns: 1fr;
+  }
+
+  .account-card,
+  .order-history-card,
+  .account-empty {
+    padding: 18px;
+  }
+
+  .order-history-card > div:nth-child(2) {
+    justify-items: start;
+  }
+
+  .order-history-card li {
+    display: grid;
+    gap: 2px;
+  }
+
   .announcement {
     padding: 8px 14px;
     font-size: 0.72rem;
@@ -3225,6 +3394,10 @@ body {
     border-radius: 999px;
     padding: 7px 10px;
     font-size: 0.82rem;
+  }
+
+  .site-header .header-actions a[href="account.html"] {
+    display: none;
   }
 
   .cart-button {

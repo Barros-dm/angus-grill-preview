@@ -1,0 +1,269 @@
+const CUSTOMER_ORDER_STORAGE_KEY = "angus_grill_order_history";
+
+const accountState = {
+  session: null,
+  localOrders: [],
+  supabaseOrders: []
+};
+
+const accountElements = {
+  status: document.getElementById("accountStatus"),
+  loginForm: document.getElementById("customerLoginForm"),
+  registerForm: document.getElementById("customerRegisterForm"),
+  authCard: document.getElementById("customerAuthCard"),
+  registerCard: document.getElementById("customerRegisterCard"),
+  logout: document.getElementById("customerLogout"),
+  intro: document.getElementById("accountIntro"),
+  orders: document.getElementById("customerOrders")
+};
+
+function accountMoney(value) {
+  if (value === null || value === undefined || value === "") return "A confirmar";
+  return new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(Number(value || 0));
+}
+
+function setAccountStatus(message, tone = "info") {
+  accountElements.status.textContent = message;
+  accountElements.status.dataset.tone = tone;
+  accountElements.status.hidden = !message;
+}
+
+function escapeAccountHtml(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function loadLocalOrders() {
+  try {
+    return JSON.parse(localStorage.getItem(CUSTOMER_ORDER_STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function orderDateLabel(value) {
+  if (!value) return "Data não registrada";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("pt-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(date);
+}
+
+function normalizeSupabaseOrder(row) {
+  return {
+    reference: row.order_reference || row.id,
+    status: row.status || "pending_whatsapp_confirmation",
+    createdAt: row.created_at,
+    total: row.total_estimate,
+    deliveryFee: row.delivery_fee,
+    fulfilmentType: row.fulfilment_type,
+    items: Array.isArray(row.items_snapshot) ? row.items_snapshot : []
+  };
+}
+
+function normalizeLocalOrder(order) {
+  return {
+    reference: order.orderReference || order.id,
+    status: order.status || "pending_whatsapp_confirmation",
+    createdAt: order.createdAt,
+    total: order.totalEstimate,
+    deliveryFee: order.deliveryFee,
+    fulfilmentType: order.fulfilmentType,
+    items: Array.isArray(order.items) ? order.items : [],
+    localOnly: true
+  };
+}
+
+function statusLabel(status) {
+  const labels = {
+    pending_whatsapp_confirmation: "Aguardando confirmação no WhatsApp",
+    confirmed: "Confirmado",
+    preparing: "Em preparo",
+    ready: "Pronto",
+    completed: "Concluído",
+    cancelled: "Cancelado"
+  };
+  return labels[status] || status || "A confirmar";
+}
+
+function friendlyAuthMessage(message = "") {
+  const text = String(message || "");
+  const lower = text.toLowerCase();
+  if (lower.includes("email not confirmed")) return "Confirme o e-mail antes de fazer login.";
+  if (lower.includes("invalid login credentials")) return "E-mail ou senha incorretos.";
+  if (lower.includes("user already registered")) return "Este e-mail já tem uma conta. Use o login.";
+  if (lower.includes("password should be at least")) return "A senha precisa ter pelo menos 6 caracteres.";
+  return text || "Não foi possível completar esta ação.";
+}
+
+function renderOrders() {
+  const orders = [
+    ...accountState.supabaseOrders.map(normalizeSupabaseOrder),
+    ...accountState.localOrders.map(normalizeLocalOrder)
+  ];
+
+  if (!orders.length) {
+    accountElements.orders.innerHTML = `
+      <article class="account-empty">
+        <h3>Nenhum pedido encontrado</h3>
+        <p>Quando o cliente finalizar pedidos com a conta ativa, o histórico aparecerá aqui.</p>
+        <a class="primary-button" href="index.html#produtos">Comprar agora</a>
+      </article>
+    `;
+    return;
+  }
+
+  accountElements.orders.innerHTML = orders.map((order) => `
+    <article class="order-history-card">
+      <div>
+        <span class="eyebrow">${order.localOnly ? "Rascunho local" : "Pedido"}</span>
+        <h3>${escapeAccountHtml(order.reference || "Sem referência")}</h3>
+        <p>${orderDateLabel(order.createdAt)}</p>
+      </div>
+      <div>
+        <strong>${accountMoney(order.total)}</strong>
+        <span>${statusLabel(order.status)}</span>
+      </div>
+      <ul>
+        ${order.items.slice(0, 4).map((item) => `
+          <li>
+            <span>${escapeAccountHtml(item.productName || item.name || "Produto")}</span>
+            <em>${escapeAccountHtml(item.quantityLabel || item.optionLabel || item.unit || "")}</em>
+          </li>
+        `).join("")}
+      </ul>
+      ${order.items.length > 4 ? `<p class="account-muted">+${order.items.length - 4} produto(s)</p>` : ""}
+    </article>
+  `).join("");
+}
+
+async function loadSupabaseOrders() {
+  const client = angusSupabase();
+  if (!client || !accountState.session) return [];
+  const { data, error } = await client
+    .from("orders")
+    .select("*")
+    .eq("customer_user_id", accountState.session.user.id)
+    .order("created_at", { ascending: false })
+    .limit(30);
+  if (error) throw error;
+  return data || [];
+}
+
+function renderAuthState() {
+  const signedIn = Boolean(accountState.session);
+  accountElements.authCard.hidden = signedIn;
+  accountElements.registerCard.hidden = signedIn;
+  accountElements.logout.hidden = !signedIn;
+  accountElements.intro.textContent = signedIn
+    ? `Pedidos salvos para ${accountState.session.user.email}.`
+    : "Entre para ver pedidos salvos na sua conta. Pedidos recentes deste navegador também podem aparecer aqui.";
+}
+
+async function refreshAccount() {
+  accountState.localOrders = loadLocalOrders();
+  const client = angusSupabase();
+
+  if (!client) {
+    renderAuthState();
+    accountState.supabaseOrders = [];
+    renderOrders();
+    setAccountStatus("");
+    return;
+  }
+
+  const { data } = await client.auth.getSession();
+  accountState.session = data.session;
+  renderAuthState();
+
+  if (!accountState.session) {
+    accountState.supabaseOrders = [];
+    renderOrders();
+    setAccountStatus("");
+    return;
+  }
+
+  try {
+    accountState.supabaseOrders = await loadSupabaseOrders();
+    renderOrders();
+    setAccountStatus("");
+  } catch (error) {
+    accountState.supabaseOrders = [];
+    renderOrders();
+    setAccountStatus(error.message || "Não foi possível carregar pedidos.", "error");
+  }
+}
+
+function setupAccountEvents() {
+  accountElements.loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const client = angusSupabase();
+    if (!client) {
+      setAccountStatus("Login online ainda não está ativo. Tente novamente mais tarde.", "warning");
+      return;
+    }
+    const formData = new FormData(accountElements.loginForm);
+    setAccountStatus("Entrando...", "info");
+    const { data, error } = await client.auth.signInWithPassword({
+      email: String(formData.get("email") || ""),
+      password: String(formData.get("password") || "")
+    });
+    if (error) {
+      setAccountStatus(friendlyAuthMessage(error.message), "error");
+      return;
+    }
+    accountState.session = data.session;
+    accountElements.loginForm.reset();
+    await refreshAccount();
+    setAccountStatus("Login efetuado com sucesso.", "success");
+  });
+
+  accountElements.registerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const client = angusSupabase();
+    if (!client) {
+      setAccountStatus("Criação de conta ainda não está ativa. Tente novamente mais tarde.", "warning");
+      return;
+    }
+    const formData = new FormData(accountElements.registerForm);
+    setAccountStatus("Criando conta...", "info");
+    const { data, error } = await client.auth.signUp({
+      email: String(formData.get("email") || ""),
+      password: String(formData.get("password") || ""),
+      options: {
+        data: { name: String(formData.get("name") || "") }
+      }
+    });
+    if (error) {
+      setAccountStatus(friendlyAuthMessage(error.message), "error");
+      return;
+    }
+    accountElements.registerForm.reset();
+    if (data.session) {
+      accountState.session = data.session;
+      await refreshAccount();
+      setAccountStatus("Conta criada e login efetuado com sucesso.", "success");
+      return;
+    }
+    await refreshAccount();
+    setAccountStatus("Conta criada. Confirme o e-mail antes de fazer login.", "success");
+  });
+
+  accountElements.logout.addEventListener("click", async () => {
+    await angusSupabase()?.auth.signOut();
+    accountState.session = null;
+    await refreshAccount();
+  });
+}
+
+setupAccountEvents();
+refreshAccount();

@@ -16,10 +16,14 @@ Open Supabase SQL Editor and run:
 This creates:
 
 - `products` table
+- `orders` table
+- `order_items` table
 - `admin_users` table
 - Row Level Security policies
 - public `product-images` Storage bucket
 - admin-only write permissions
+- admin-only order viewing and order status management
+- customer-only access to their own order history
 
 ## 3. Create The Admin User
 
@@ -44,7 +48,8 @@ Fill in:
 window.ANGUS_SUPABASE_CONFIG = {
   url: "https://YOUR_PROJECT.supabase.co",
   anonKey: "YOUR_PUBLIC_ANON_KEY",
-  productBucket: "product-images"
+  productBucket: "product-images",
+  orderEndpoint: ""
 };
 ```
 
@@ -77,3 +82,32 @@ After that, products are loaded from Supabase and can be edited from the admin p
 - Weight/size options as JSON
 
 The public website still falls back to the local catalogue if Supabase is not configured.
+
+## 7. Customer Login
+
+The customer account page is:
+
+`account.html`
+
+It uses Supabase Auth with e-mail and password. Customers do not need Supabase dashboard access.
+
+When the order-saving endpoint is connected, saved orders should include:
+
+`customer_user_id = auth user id`
+
+That lets the customer see their own order history while admin users can still manage orders through the admin side.
+
+Logged-in customers can also save their own pending WhatsApp orders directly through Supabase Row Level Security. Guest checkout still falls back to a local browser draft unless a protected server-side endpoint is added.
+
+## 8. WhatsApp Order Logging
+
+The checkout now creates an order reference before opening WhatsApp. If no protected order endpoint is configured, the browser stores the latest order draft locally so the customer can still send the WhatsApp message with the reference.
+
+To save guest orders into Supabase automatically, use a protected server-side endpoint or Supabase Edge Function that:
+
+- keeps the Supabase service-role key only in server-side secrets
+- validates the checkout payload
+- blocks abuse with customer login, CAPTCHA, or another bot-protection layer
+- inserts into `orders` and `order_items`
+
+Do not expose a public unauthenticated service-role write endpoint.

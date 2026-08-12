@@ -21,6 +21,7 @@ const state = {
 
 const money = (value) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 const byId = (id) => document.getElementById(id);
+const ORDER_STORAGE_KEY = "angus_grill_order_history";
 
 const LANGUAGE_META = {
   pt: { html: "pt-BR", label: "Português" },
@@ -38,6 +39,7 @@ const I18N = {
     searchButton: "Buscar",
     howToBuy: "Como comprar",
     call: "Ligar",
+    account: "Login",
     cart: "Carrinho",
     allCategories: "Todas as categorias",
     allProductsNav: "Todos os Produtos",
@@ -133,6 +135,7 @@ const I18N = {
     deliveryNotesPlaceholder: "Ex: deixar na recepção, tocar campainha, separar produtos congelados...",
     finishWhatsapp: "Finalizar pedido no WhatsApp",
     confirmation: "Pedido preparado para envio no WhatsApp. Confira a mensagem antes de enviar.",
+    orderSaveError: "Não foi possível registrar o pedido online. O pedido será enviado pelo WhatsApp com uma referência.",
     continueShopping: "Continuar comprando",
     viewOrder: "Ver pedido",
     categoryItems: "produtos",
@@ -230,6 +233,7 @@ const I18N = {
     searchButton: "Search",
     howToBuy: "How to buy",
     call: "Call",
+    account: "Login",
     cart: "Basket",
     allCategories: "All categories",
     allProductsNav: "All Products",
@@ -325,6 +329,7 @@ const I18N = {
     deliveryNotesPlaceholder: "E.g. leave at reception, ring bell, separate frozen products...",
     finishWhatsapp: "Finish order on WhatsApp",
     confirmation: "Order prepared for WhatsApp. Please check the message before sending.",
+    orderSaveError: "Could not register the order online. The order will be sent by WhatsApp with a reference.",
     continueShopping: "Continue shopping",
     viewOrder: "View order",
     categoryItems: "products",
@@ -422,6 +427,7 @@ const I18N = {
     searchButton: "Buscar",
     howToBuy: "Cómo comprar",
     call: "Llamar",
+    account: "Login",
     cart: "Carrito",
     allCategories: "Todas las categorías",
     allProductsNav: "Todos los productos",
@@ -517,6 +523,7 @@ const I18N = {
     deliveryNotesPlaceholder: "Ej: dejar en recepción, tocar el timbre, separar congelados...",
     finishWhatsapp: "Finalizar pedido por WhatsApp",
     confirmation: "Pedido preparado para WhatsApp. Revisa el mensaje antes de enviar.",
+    orderSaveError: "No se pudo registrar el pedido online. El pedido se enviará por WhatsApp con una referencia.",
     continueShopping: "Continuar comprando",
     viewOrder: "Ver pedido",
     categoryItems: "productos",
@@ -614,6 +621,7 @@ const I18N = {
     searchButton: "Caută",
     howToBuy: "Cum cumperi",
     call: "Sună",
+    account: "Login",
     cart: "Coș",
     allCategories: "Toate categoriile",
     allProductsNav: "Toate produsele",
@@ -709,6 +717,7 @@ const I18N = {
     deliveryNotesPlaceholder: "Ex: lăsați la recepție, sunați la sonerie, separați produsele congelate...",
     finishWhatsapp: "Finalizează pe WhatsApp",
     confirmation: "Comanda este pregătită pentru WhatsApp. Verifică mesajul înainte de trimitere.",
+    orderSaveError: "Comanda nu a putut fi înregistrată online. Va fi trimisă pe WhatsApp cu o referință.",
     continueShopping: "Continuă cumpărăturile",
     viewOrder: "Vezi comanda",
     categoryItems: "produse",
@@ -2003,7 +2012,189 @@ function startReviewCarousel() {
   window.setInterval(() => showReview(state.reviewIndex + 1), 6500);
 }
 
-function creatéMessage(form) {
+function orderItemsPayload() {
+  return cartItems().map(({ product, option, quantity }) => ({
+    productId: product.id,
+    productName: product.name,
+    category: product.category,
+    quantity,
+    quantityLabel: lineLabel(product, quantity, option),
+    unit: option ? option.label : displayUnit(product),
+    optionId: option?.id || null,
+    optionLabel: option?.label || null,
+    unitPrice: option ? optionPrice(product, option) : isKgAmountProduct(product) ? derivedPricePerKg(product) : product.price,
+    lineTotal: cartLineTotal({ product, option, quantity }),
+    pricingType: isKgAmountProduct(product) ? "kg_amount" : product.pricingType || "fixed",
+    note: isKgAmountProduct(product)
+      ? "Quantidade em kg escolhida pelo cliente."
+      : option
+        ? "Opção selecionada pelo cliente."
+        : isVariableWeight(product)
+          ? "Peso/preço final confirmado após pesagem."
+          : ""
+  }));
+}
+
+function generateOrderReference() {
+  const now = new Date();
+  const date = now.toISOString().slice(0, 10).replaceAll("-", "");
+  const time = now.toTimeString().slice(0, 8).replaceAll(":", "");
+  const suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `AG-${date}-${time}-${suffix}`;
+}
+
+function localOrderHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(ORDER_STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveOrderLocally(order) {
+  const history = localOrderHistory();
+  history.unshift(order);
+  localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(history.slice(0, 30)));
+}
+
+function orderPayloadFromForm(form, orderReference, whatsappMessage) {
+  const items = orderItemsPayload();
+  const subtotal = cartSubtotal();
+  const deliveryFee = deliveryFeeAmount();
+  const totalEstimate = selectedFulfilmentType() === "delivery" && selectedDeliveryZone() === "outside"
+    ? null
+    : subtotal + deliveryFee;
+  return {
+    id: orderReference,
+    orderReference,
+    status: "pending_whatsapp_confirmation",
+    createdAt: new Date().toISOString(),
+    customerName: form.name || "",
+    contact: form.contact || "",
+    fulfilmentType: form.fulfilmentType || "delivery",
+    address: form.address || "",
+    addressLine2: form.addressLine2 || "",
+    city: form.city || "",
+    postcode: form.postcode || "",
+    deliveryZone: form.deliveryZone || selectedDeliveryZone(),
+    deliveryMiles: state.deliveryQuote?.miles || null,
+    deliveryFee,
+    subtotal,
+    totalEstimate,
+    totalLabel: orderTotalLabel(),
+    hasVariableWeight: cartHasVariableWeight(),
+    preferredDate: form.preferredDate || "",
+    preferredTime: form.preferredTime || "",
+    notes: form.butcherNotes || "",
+    language: state.language,
+    source: "whatsapp_checkout",
+    whatsappMessage,
+    items
+  };
+}
+
+function orderToSupabaseRow(order) {
+  return {
+    id: order.id,
+    order_reference: order.orderReference,
+    customer_user_id: order.customerUserId || null,
+    status: order.status || "pending_whatsapp_confirmation",
+    customer_name: order.customerName || null,
+    contact: order.contact || null,
+    fulfilment_type: order.fulfilmentType || "delivery",
+    address: order.address || null,
+    address_line2: order.addressLine2 || null,
+    city: order.city || null,
+    postcode: order.postcode || null,
+    delivery_zone: order.deliveryZone || null,
+    delivery_miles: order.deliveryMiles ?? null,
+    delivery_fee: order.deliveryFee || 0,
+    subtotal: order.subtotal || 0,
+    total_estimate: order.totalEstimate ?? null,
+    total_label: order.totalLabel || null,
+    has_variable_weight: Boolean(order.hasVariableWeight),
+    preferred_date: order.preferredDate || null,
+    preferred_time: order.preferredTime || null,
+    notes: order.notes || null,
+    language: order.language || "pt",
+    source: order.source || "whatsapp_checkout",
+    whatsapp_message: order.whatsappMessage || null,
+    items_snapshot: order.items || []
+  };
+}
+
+function orderItemsToSupabaseRows(order) {
+  return (order.items || []).map((item, index) => ({
+    order_id: order.id,
+    product_id: item.productId || null,
+    product_name: item.productName || "Produto",
+    category: item.category || null,
+    quantity: Number(item.quantity || 1),
+    unit: item.unit || null,
+    selected_option_label: item.optionLabel || item.selectedOption || null,
+    unit_price: item.unitPrice ?? null,
+    price_per_kg: item.pricePerKg ?? null,
+    line_total: item.lineTotal || 0,
+    note: item.note || null,
+    sort_order: index
+  }));
+}
+
+async function saveAuthenticatedOrderToSupabase(order) {
+  const client = angusSupabase();
+  if (!client || !order.customerUserId) return null;
+  const { error: orderError } = await client.from("orders").insert(orderToSupabaseRow(order));
+  if (orderError) throw orderError;
+  const itemRows = orderItemsToSupabaseRows(order);
+  if (itemRows.length) {
+    const { error: itemsError } = await client.from("order_items").insert(itemRows);
+    if (itemsError) throw itemsError;
+  }
+  return { saved: true, mode: "supabase-authenticated" };
+}
+
+async function saveOrderBeforeWhatsapp(order) {
+  const authenticatedResult = await saveAuthenticatedOrderToSupabase(order);
+  if (authenticatedResult) return authenticatedResult;
+
+  const endpoint = supabaseConfig().orderEndpoint || window.ANGUS_GRILL_ORDER_ENDPOINT || "";
+  if (!endpoint) {
+    saveOrderLocally(order);
+    return { saved: false, mode: "local" };
+  }
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(order)
+  });
+  if (!response.ok) {
+    let message = "Order endpoint failed.";
+    try {
+      const body = await response.json();
+      message = body.error || message;
+    } catch {
+      // Keep the generic message when the endpoint does not return JSON.
+    }
+    throw new Error(message);
+  }
+  return { saved: true, mode: "edge-function" };
+}
+
+async function attachCustomerSession(order) {
+  const client = angusSupabase();
+  if (!client) return order;
+  try {
+    const { data } = await client.auth.getSession();
+    const userId = data?.session?.user?.id;
+    if (userId) return { ...order, customerUserId: userId };
+  } catch (error) {
+    console.warn("Could not read customer session.", error);
+  }
+  return order;
+}
+
+function creatéMessage(form, orderReference) {
   const type = form.fulfilmentType === "delivery" ? "Entrega" : "Retirada";
   const products = cartItems().map(({ product, option, quantity }) => {
     if (isKgAmountProduct(product)) {
@@ -2015,6 +2206,8 @@ function creatéMessage(form) {
     return `- ${lineLabel(product, quantity, option)} ${product.name}${selected} - ${price}${note}`;
   }).join("\n");
   return `Ola Angus Grill, gostaria de fazer um pedido:
+
+Pedido: ${orderReference}
 
 Nome: ${form.name || "A informar"}
 Contato: ${form.contact || "A informar"}
@@ -2183,7 +2376,7 @@ function setupEvents() {
   const preferredDate = elements.checkoutForm.querySelector('input[name="preferredDate"]');
   if (preferredDate) preferredDate.min = new Date().toISOString().slice(0, 10);
   initAddressAutocomplete();
-  elements.checkoutForm.addEventListener("submit", (event) => {
+  elements.checkoutForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!cartItems().length) {
       openCart();
@@ -2191,7 +2384,23 @@ function setupEvents() {
     }
     const formData = new FormData(elements.checkoutForm);
     const form = Object.fromEntries(formData.entries());
-    const url = `https://wa.me/447923832005?text=${encodeURIComponent(creatéMessage(form))}`;
+    const submitButton = elements.checkoutForm.querySelector(".whatsapp-submit");
+    const orderReference = generateOrderReference();
+    const message = creatéMessage(form, orderReference);
+    let order = orderPayloadFromForm(form, orderReference, message);
+    order = await attachCustomerSession(order);
+    if (submitButton) submitButton.disabled = true;
+    try {
+      await saveOrderBeforeWhatsapp(order);
+      elements.confirmation.textContent = `${t("confirmation")} Referência: ${orderReference}`;
+    } catch (error) {
+      console.warn("Order could not be saved before WhatsApp.", error);
+      saveOrderLocally(order);
+      elements.confirmation.textContent = `${t("orderSaveError")} Referência: ${orderReference}`;
+    } finally {
+      if (submitButton) submitButton.disabled = false;
+    }
+    const url = `https://wa.me/447923832005?text=${encodeURIComponent(message)}`;
     elements.confirmation.hidden = false;
     window.open(url, "_blank", "noopener,noreferrer");
   });
