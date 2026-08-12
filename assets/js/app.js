@@ -967,6 +967,12 @@ function productOptions(product) {
 
 const KG_AMOUNT_CATEGORIES = new Set(["Bovino", "Frango", "Suíno", "Linguiças"]);
 
+function isKnownKgAmountProduct(product) {
+  if (!product) return false;
+  const identity = `${product.id || ""} ${product.name || ""}`.toLowerCase();
+  return identity.includes("linguica-toscana-top-king") || /lingui[cç]a\s+toscana/.test(identity);
+}
+
 function parseKgValue(rawValue, rawUnit = "") {
   const value = Number(String(rawValue).replace(",", "."));
   if (!Number.isFinite(value)) return null;
@@ -985,7 +991,7 @@ function optionAverageKg(label = "") {
 
 function derivedPricePerKg(product) {
   if (product.pricePerKg) return product.pricePerKg;
-  if (product.pricingType === "perKg" && !productOptions(product).length) return product.price;
+  if ((product.pricingType === "perKg" || isKnownKgAmountProduct(product)) && !productOptions(product).length) return product.price;
   const derived = productOptions(product)
     .map((option) => {
       const kg = option.weightKg || optionAverageKg(option.label);
@@ -996,7 +1002,9 @@ function derivedPricePerKg(product) {
 }
 
 function isKgAmountProduct(product) {
-  if (!product || !KG_AMOUNT_CATEGORIES.has(product.category)) return false;
+  if (!product) return false;
+  if (isKnownKgAmountProduct(product)) return true;
+  if (!KG_AMOUNT_CATEGORIES.has(product.category)) return false;
   return product.pricingType === "perKg" || productOptions(product).some((option) => optionAverageKg(option.label));
 }
 
