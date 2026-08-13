@@ -24,7 +24,7 @@ const accountElements = {
 const accountMode = document.body?.dataset.accountMode || "login";
 const ACCOUNT_PRODUCTION_ORIGIN = "https://angusgrill.co.uk";
 
-function accountRedirectUrl(path = "account.html") {
+function accountRedirectUrl(path = "account") {
   const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
   const origin = isLocal ? ACCOUNT_PRODUCTION_ORIGIN : window.location.origin;
   return `${origin}/${path}`;
@@ -300,7 +300,7 @@ function setupAccountEvents() {
       if (submitButton) submitButton.disabled = true;
       setAccountStatus("Enviando link de recuperação...", "info");
       const { error } = await client.auth.resetPasswordForEmail(email, {
-        redirectTo: accountRedirectUrl("account.html")
+        redirectTo: accountRedirectUrl("account")
       });
       if (submitButton) submitButton.disabled = false;
       if (error) {
@@ -344,7 +344,7 @@ function setupAccountEvents() {
         return;
       }
       accountElements.passwordResetForm.reset();
-      window.history.replaceState({}, "", "account.html");
+      window.history.replaceState({}, "", "account");
       setAccountStatus("Senha atualizada com sucesso. Você já pode fazer login.", "success");
       accountState.session = null;
       await client.auth.signOut();
@@ -372,7 +372,7 @@ function setupAccountEvents() {
         email: String(formData.get("email") || ""),
         password,
         options: {
-          emailRedirectTo: accountRedirectUrl("account.html"),
+          emailRedirectTo: accountRedirectUrl("account"),
           data: { name: String(formData.get("name") || "") }
         }
       });
