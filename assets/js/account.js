@@ -10,6 +10,8 @@ const accountElements = {
   status: document.getElementById("accountStatus"),
   loginForm: document.getElementById("customerLoginForm"),
   forgotPasswordForm: document.getElementById("forgotPasswordForm"),
+  passwordResetForm: document.getElementById("passwordResetForm"),
+  passwordResetCard: document.getElementById("passwordResetCard"),
   registerForm: document.getElementById("customerRegisterForm"),
   authCard: document.getElementById("customerAuthCard"),
   registerCard: document.getElementById("customerRegisterCard"),
@@ -26,6 +28,26 @@ function accountRedirectUrl(path = "account.html") {
   const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
   const origin = isLocal ? ACCOUNT_PRODUCTION_ORIGIN : window.location.origin;
   return `${origin}/${path}`;
+}
+
+function isPasswordRecoveryRoute() {
+  const queryType = new URLSearchParams(window.location.search).get("type");
+  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  return queryType === "recovery" || hashParams.get("type") === "recovery" || hashParams.has("access_token");
+}
+
+function passwordPairFromForm(form) {
+  const formData = new FormData(form);
+  return {
+    password: String(formData.get("password") || ""),
+    passwordConfirm: String(formData.get("passwordConfirm") || "")
+  };
+}
+
+function validatePasswordPair(password, passwordConfirm) {
+  if (password.length < 6) return "A senha precisa ter pelo menos 6 caracteres.";
+  if (password !== passwordConfirm) return "As senhas não coincidem. Confira e tente novamente.";
+  return "";
 }
 
 function accountMoney(value) {
@@ -173,8 +195,10 @@ async function loadSupabaseOrders() {
 }
 
 function renderAuthState() {
+  const isRecovery = isPasswordRecoveryRoute();
   const signedIn = Boolean(accountState.session);
-  if (accountElements.authCard) accountElements.authCard.hidden = signedIn;
+  if (accountElements.authCard) accountElements.authCard.hidden = signedIn || isRecovery;
+  if (accountElements.passwordResetCard) accountElements.passwordResetCard.hidden = !isRecovery;
   if (accountElements.registerCard) accountElements.registerCard.hidden = signedIn;
   if (accountElements.logout) accountElements.logout.hidden = !signedIn;
   if (accountElements.history) accountElements.history.hidden = !signedIn;
@@ -207,10 +231,17 @@ async function refreshAccount() {
 
   renderAuthState();
 
-  if (!accountState.session) {
+  if (!accountState.session && !isPasswordRecoveryRoute()) {
     accountState.supabaseOrders = [];
     if (accountElements.orders) accountElements.orders.innerHTML = "";
     setAccountStatus("");
+    return;
+  }
+
+  if (isPasswordRecoveryRoute()) {
+    accountState.supabaseOrders = [];
+    if (accountElements.orders) accountElements.orders.innerHTML = "";
+    setAccountStatus("Digite sua nova senha para concluir a recuperação.", "info");
     return;
   }
 
@@ -289,6 +320,38 @@ function setupAccountEvents() {
     });
   }
 
+  if (accountElements.passwordResetForm) {
+    accountElements.passwordResetForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const client = angusSupabase();
+      if (!client) {
+        setAccountStatus("Atualização de senha ainda não está ativa. Tente novamente mais tarde.", "warning");
+        return;
+      }
+      const { password, passwordConfirm } = passwordPairFromForm(accountElements.passwordResetForm);
+      const validationMessage = validatePasswordPair(password, passwordConfirm);
+      if (validationMessage) {
+        setAccountStatus(validationMessage, "error");
+        return;
+      }
+      const submitButton = accountElements.passwordResetForm.querySelector('button[type="submit"]');
+      if (submitButton) submitButton.disabled = true;
+      setAccountStatus("Atualizando senha...", "info");
+      const { error } = await client.auth.updateUser({ password });
+      if (submitButton) submitButton.disabled = false;
+      if (error) {
+        setAccountStatus(friendlyAuthMessage(error.message), "error");
+        return;
+      }
+      accountElements.passwordResetForm.reset();
+      window.history.replaceState({}, "", "account.html");
+      setAccountStatus("Senha atualizada com sucesso. Você já pode fazer login.", "success");
+      accountState.session = null;
+      await client.auth.signOut();
+      renderAuthState();
+    });
+  }
+
   if (accountElements.registerForm) {
     accountElements.registerForm.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -298,10 +361,16 @@ function setupAccountEvents() {
         return;
       }
       const formData = new FormData(accountElements.registerForm);
+      const { password, passwordConfirm } = passwordPairFromForm(accountElements.registerForm);
+      const validationMessage = validatePasswordPair(password, passwordConfirm);
+      if (validationMessage) {
+        setAccountStatus(validationMessage, "error");
+        return;
+      }
       setAccountStatus("Criando conta...", "info");
       const { data, error } = await client.auth.signUp({
         email: String(formData.get("email") || ""),
-        password: String(formData.get("password") || ""),
+        password,
         options: {
           emailRedirectTo: accountRedirectUrl("account.html"),
           data: { name: String(formData.get("name") || "") }

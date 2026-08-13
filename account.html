@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css?v=account-live-redirect-20260813">
+    <link rel="stylesheet" href="assets/css/styles.css?v=account-reset-confirm-20260813">
   </head>
   <body class="account-shell" data-account-mode="login">
     <header class="admin-header account-header">
@@ -56,6 +56,23 @@
             <a href="register.html">Criar uma conta</a>
           </div>
         </article>
+
+        <article class="account-card account-single-card" id="passwordResetCard" hidden>
+          <p class="eyebrow">Recuperação</p>
+          <h2>Nova senha</h2>
+          <p>Digite sua nova senha e confirme para atualizar o acesso da sua conta.</p>
+          <form class="admin-form" id="passwordResetForm">
+            <label>
+              Nova senha
+              <input type="password" name="password" autocomplete="new-password" minlength="6" required>
+            </label>
+            <label>
+              Confirmar nova senha
+              <input type="password" name="passwordConfirm" autocomplete="new-password" minlength="6" required>
+            </label>
+            <button class="primary-button" type="submit">Atualizar senha</button>
+          </form>
+        </article>
       </section>
 
       <section class="account-history" id="accountHistory" hidden>
@@ -74,6 +91,6 @@
     <script src="assets/js/supabase-config.js?v=supabase-admin"></script>
     <script src="assets/js/brasilinbox-products.js?v=supplier-catalogue"></script>
     <script src="assets/js/data.js?v=supabase-admin"></script>
-    <script src="assets/js/account.js?v=account-live-redirect-20260813"></script>
+    <script src="assets/js/account.js?v=account-reset-confirm-20260813"></script>
   </body>
 </html>
