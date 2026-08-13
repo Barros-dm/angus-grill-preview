@@ -20,6 +20,13 @@ const accountElements = {
 };
 
 const accountMode = document.body?.dataset.accountMode || "login";
+const ACCOUNT_PRODUCTION_ORIGIN = "https://angusgrill.co.uk";
+
+function accountRedirectUrl(path = "account.html") {
+  const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  const origin = isLocal ? ACCOUNT_PRODUCTION_ORIGIN : window.location.origin;
+  return `${origin}/${path}`;
+}
 
 function accountMoney(value) {
   if (value === null || value === undefined || value === "") return "A confirmar";
@@ -262,7 +269,7 @@ function setupAccountEvents() {
       if (submitButton) submitButton.disabled = true;
       setAccountStatus("Enviando link de recuperação...", "info");
       const { error } = await client.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/account.html`
+        redirectTo: accountRedirectUrl("account.html")
       });
       if (submitButton) submitButton.disabled = false;
       if (error) {
@@ -296,7 +303,7 @@ function setupAccountEvents() {
         email: String(formData.get("email") || ""),
         password: String(formData.get("password") || ""),
         options: {
-          emailRedirectTo: `${window.location.origin}/account.html`,
+          emailRedirectTo: accountRedirectUrl("account.html"),
           data: { name: String(formData.get("name") || "") }
         }
       });
