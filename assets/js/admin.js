@@ -20,11 +20,8 @@ const adminState = {
     items: "",
     minTotal: "",
     maxTotal: "",
-    dateFrom: "",
-    dateTo: "",
     status: "",
-    payment: "",
-    notes: ""
+    payment: ""
   }
 };
 
@@ -217,30 +214,25 @@ function renderOrderRows() {
   }
   const orders = filteredOrders();
   if (!orders.length) {
-    adminElements.orderRows.innerHTML = '<tr><td colspan="9" class="admin-empty-row">Não há pedidos neste filtro.</td></tr>';
+    adminElements.orderRows.innerHTML = '<tr><td colspan="6" class="admin-empty-row">Não há pedidos neste filtro.</td></tr>';
     return;
   }
   adminElements.orderRows.innerHTML = orders.map((order) => `
     <tr>
-      <td data-label="Referência"><strong>${escapeHtml(order.order_reference)}</strong><br><small>${escapeHtml(order.source || "whatsapp_checkout")}</small></td>
+      <td data-label="Pedido"><strong>${escapeHtml(order.order_reference)}</strong><br><small>${orderDateLabel(order.created_at)}</small></td>
       <td data-label="Cliente"><strong>${escapeHtml(order.customer_name || "-")}</strong><br><small>${escapeHtml(order.contact || "-")}</small></td>
       <td data-label="Entrega">${escapeHtml(order.fulfilment_type === "collection" ? "Retirada" : "Entrega")}<br><small>${escapeHtml([order.address, order.address_line2, order.city, order.postcode].filter(Boolean).join(", ") || "-")}</small></td>
       <td class="admin-order-items" data-label="Itens">${orderItemLabel(order).split("<br>").map(escapeHtml).join("<br>")}</td>
       <td data-label="Total"><strong>${order.total_estimate === null ? "A confirmar" : adminMoney(order.total_estimate)}</strong><br><small>Subtotal ${adminMoney(order.subtotal)}</small></td>
-      <td data-label="Recebido">${orderDateLabel(order.created_at)}</td>
-      <td data-label="Status">
+      <td class="admin-order-actions" data-label="Gestão">
         <label class="visually-hidden" for="status-${escapeHtml(order.id)}">Status do pedido ${escapeHtml(order.order_reference)}</label>
         <select id="status-${escapeHtml(order.id)}" data-order-status="${escapeHtml(order.id)}">
           ${["pending_whatsapp_confirmation", "confirmed", "preparing", "ready", "completed", "cancelled"].map((status) => `<option value="${status}" ${order.status === status ? "selected" : ""}>${orderStatusLabel(status)}</option>`).join("")}
         </select>
-      </td>
-      <td data-label="Pagamento">
         <label class="visually-hidden" for="payment-${escapeHtml(order.id)}">Pagamento do pedido ${escapeHtml(order.order_reference)}</label>
         <select id="payment-${escapeHtml(order.id)}" data-order-payment="${escapeHtml(order.id)}">
           ${["pending", "paid", "cash_on_delivery", "not_required", "refunded"].map((status) => `<option value="${status}" ${(order.payment_status || "pending") === status ? "selected" : ""}>${orderPaymentLabel(status)}</option>`).join("")}
         </select>
-      </td>
-      <td class="admin-order-actions" data-label="Notas e ações">
         <label class="visually-hidden" for="notes-${escapeHtml(order.id)}">Notas internas do pedido ${escapeHtml(order.order_reference)}</label>
         <textarea id="notes-${escapeHtml(order.id)}" data-order-notes="${escapeHtml(order.id)}" rows="3" placeholder="Notas internas, confirmação, pagamento...">${escapeHtml(order.admin_notes || "")}</textarea>
         <div>
@@ -257,7 +249,6 @@ function filteredOrders() {
   const reference = filters.reference.trim().toLocaleLowerCase("pt-BR");
   const customer = filters.customer.trim().toLocaleLowerCase("pt-BR");
   const items = filters.items.trim().toLocaleLowerCase("pt-BR");
-  const notes = filters.notes.trim().toLocaleLowerCase("pt-BR");
   const minTotal = filters.minTotal === "" ? null : Number(filters.minTotal);
   const maxTotal = filters.maxTotal === "" ? null : Number(filters.maxTotal);
 
@@ -265,7 +256,6 @@ function filteredOrders() {
     const orderItems = order.order_items?.length ? order.order_items : order.items_snapshot || [];
     const itemText = orderItems.map((item) => item.product_name || item.productName || "").join(" ").toLocaleLowerCase("pt-BR");
     const contactText = `${order.customer_name || ""} ${order.contact || ""}`.toLocaleLowerCase("pt-BR");
-    const orderDate = order.created_at ? new Date(order.created_at).toISOString().slice(0, 10) : "";
     const total = Number(order.total_estimate ?? order.subtotal ?? 0);
     if (reference && !String(order.order_reference || "").toLocaleLowerCase("pt-BR").includes(reference)) return false;
     if (customer && !contactText.includes(customer)) return false;
@@ -273,11 +263,8 @@ function filteredOrders() {
     if (items && !itemText.includes(items)) return false;
     if (minTotal !== null && total < minTotal) return false;
     if (maxTotal !== null && total > maxTotal) return false;
-    if (filters.dateFrom && orderDate < filters.dateFrom) return false;
-    if (filters.dateTo && orderDate > filters.dateTo) return false;
     if (filters.status && order.status !== filters.status) return false;
     if (filters.payment && (order.payment_status || "pending") !== filters.payment) return false;
-    if (notes && !String(order.admin_notes || "").toLocaleLowerCase("pt-BR").includes(notes)) return false;
     return true;
   });
 }
@@ -675,11 +662,8 @@ function setupAdminEvents() {
       items: "",
       minTotal: "",
       maxTotal: "",
-      dateFrom: "",
-      dateTo: "",
       status: "",
-      payment: "",
-      notes: ""
+      payment: ""
     };
     adminElements.orderFilters.querySelectorAll("input, select").forEach((input) => {
       input.value = "";

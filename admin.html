@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css?v=admin-orders-cards-20260814">
+    <link rel="stylesheet" href="assets/css/styles.css?v=admin-orders-table-20260815">
   </head>
   <body class="admin-shell">
     <header class="admin-header">
@@ -233,17 +233,22 @@
         </div>
         <div class="admin-table-wrap">
           <table class="admin-table admin-orders-table">
+            <colgroup>
+              <col class="order-col-reference">
+              <col class="order-col-customer">
+              <col class="order-col-delivery">
+              <col class="order-col-items">
+              <col class="order-col-total">
+              <col class="order-col-management">
+            </colgroup>
             <thead>
               <tr>
-                <th>Referência</th>
+                <th>Pedido</th>
                 <th>Cliente</th>
                 <th>Entrega</th>
                 <th>Itens</th>
                 <th>Total</th>
-                <th>Recebido</th>
-                <th>Status</th>
-                <th>Pagamento</th>
-                <th>Notas e ações</th>
+                <th>Gestão</th>
               </tr>
               <tr class="admin-filter-row" id="orderFilters">
                 <th data-filter-label="Referência">
@@ -272,13 +277,7 @@
                   <label class="visually-hidden" for="filterOrderMaxTotal">Total máximo</label>
                   <input id="filterOrderMaxTotal" name="maxTotal" type="number" min="0" step="0.01" placeholder="Máx.">
                 </th>
-                <th data-filter-label="Data recebida">
-                  <label class="visually-hidden" for="filterOrderDateFrom">Data inicial</label>
-                  <input id="filterOrderDateFrom" name="dateFrom" type="date">
-                  <label class="visually-hidden" for="filterOrderDateTo">Data final</label>
-                  <input id="filterOrderDateTo" name="dateTo" type="date">
-                </th>
-                <th data-filter-label="Status">
+                <th data-filter-label="Gestão">
                   <label class="visually-hidden" for="filterOrderStatus">Filtrar por status</label>
                   <select id="filterOrderStatus" name="status">
                     <option value="">Todos</option>
@@ -289,8 +288,6 @@
                     <option value="completed">Concluídos</option>
                     <option value="cancelled">Cancelados</option>
                   </select>
-                </th>
-                <th data-filter-label="Pagamento">
                   <label class="visually-hidden" for="filterOrderPayment">Filtrar por pagamento</label>
                   <select id="filterOrderPayment" name="payment">
                     <option value="">Todos</option>
@@ -300,10 +297,6 @@
                     <option value="not_required">Não aplicável</option>
                     <option value="refunded">Reembolsado</option>
                   </select>
-                </th>
-                <th data-filter-label="Notas">
-                  <label class="visually-hidden" for="filterOrderNotes">Filtrar por notas</label>
-                  <input id="filterOrderNotes" name="notes" type="search" placeholder="Notas">
                   <button class="small-button muted" type="button" id="clearOrderFilters">Limpar</button>
                 </th>
               </tr>
@@ -320,6 +313,6 @@
     <script src="assets/js/supabase-config.js?v=supabase-admin"></script>
     <script src="assets/js/brasilinbox-products.js"></script>
     <script src="assets/js/data.js?v=supabase-admin"></script>
-    <script src="assets/js/admin.js?v=secured-operations-20260814"></script>
+    <script src="assets/js/admin.js?v=admin-orders-table-20260815"></script>
   </body>
 </html>

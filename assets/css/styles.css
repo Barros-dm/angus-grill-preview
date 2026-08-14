@@ -1589,14 +1589,13 @@ a {
 }
 
 #productFilters th:nth-child(3),
-#orderFilters th:nth-child(5),
-#orderFilters th:nth-child(6) {
+#orderFilters th:nth-child(5) {
   display: grid;
   grid-template-columns: repeat(2, minmax(78px, 1fr));
   gap: 6px;
 }
 
-#orderFilters th:nth-child(9) {
+#orderFilters th:nth-child(6) {
   display: grid;
   gap: 6px;
 }
@@ -1646,6 +1645,35 @@ a {
   min-width: 0;
 }
 
+.admin-orders-table .order-col-reference {
+  width: 15%;
+}
+
+.admin-orders-table .order-col-customer {
+  width: 16%;
+}
+
+.admin-orders-table .order-col-delivery {
+  width: 17%;
+}
+
+.admin-orders-table .order-col-items {
+  width: 20%;
+}
+
+.admin-orders-table .order-col-total {
+  width: 11%;
+}
+
+.admin-orders-table .order-col-management {
+  width: 21%;
+}
+
+.admin-orders-table td {
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
 .admin-order-items {
   min-width: 0;
   overflow-wrap: anywhere;
@@ -1677,95 +1705,6 @@ a {
   width: auto;
 }
 
-/* Orders are operational records, not a spreadsheet. Keep every field legible at any desktop width. */
-.admin-orders-table,
-.admin-orders-table thead,
-.admin-orders-table tbody {
-  display: block;
-  width: 100%;
-}
-
-.admin-orders-table thead > tr:first-child {
-  display: none;
-}
-
-.admin-orders-table .admin-filter-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: #f5f6f7;
-}
-
-.admin-orders-table .admin-filter-row th {
-  display: block;
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
-
-.admin-orders-table .admin-filter-row th::before {
-  content: attr(data-filter-label);
-  display: block;
-  margin-bottom: 6px;
-  color: var(--muted);
-  font-size: 0.76rem;
-  font-weight: 800;
-}
-
-#orderFilters th:nth-child(5),
-#orderFilters th:nth-child(6),
-#orderFilters th:nth-child(9) {
-  display: grid;
-}
-
-.admin-orders-table tbody {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
-  gap: 16px;
-}
-
-.admin-orders-table tbody tr {
-  display: grid;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--white);
-}
-
-.admin-orders-table tbody td {
-  display: grid;
-  grid-template-columns: minmax(105px, 34%) minmax(0, 1fr);
-  gap: 12px;
-  align-items: start;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
-  overflow-wrap: anywhere;
-}
-
-.admin-orders-table tbody td:last-child {
-  border-bottom: 0;
-}
-
-.admin-orders-table tbody td::before {
-  content: attr(data-label);
-  color: var(--muted);
-  font-size: 0.76rem;
-  font-weight: 800;
-}
-
-.admin-orders-table .admin-empty-row {
-  display: block;
-  border: 0;
-}
-
-.admin-orders-table .admin-empty-row::before {
-  content: none;
-}
-
 @media (max-width: 1100px) {
   .admin-table,
   .admin-table thead,
@@ -1789,10 +1728,6 @@ a {
     background: #f5f6f7;
   }
 
-  .admin-orders-table .admin-filter-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .admin-table .admin-filter-row th {
     display: block;
     padding: 0;
@@ -1801,8 +1736,7 @@ a {
 
   #productFilters th:nth-child(3),
   #orderFilters th:nth-child(5),
-  #orderFilters th:nth-child(6),
-  #orderFilters th:nth-child(9) {
+  #orderFilters th:nth-child(6) {
     display: grid;
   }
 
@@ -1859,10 +1793,6 @@ a {
 
 @media (max-width: 560px) {
   .admin-table .admin-filter-row {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-orders-table .admin-filter-row {
     grid-template-columns: 1fr;
   }
 
