@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=admin-orders-cards-20260814">
   </head>
   <body class="admin-shell">
     <header class="admin-header">
@@ -168,23 +168,23 @@
                 <th>Ações</th>
               </tr>
               <tr class="admin-filter-row" id="productFilters">
-                <th>
+                <th data-filter-label="Produto">
                   <label class="visually-hidden" for="filterProductName">Filtrar por produto</label>
                   <input id="filterProductName" name="name" type="search" placeholder="Buscar produto">
                 </th>
-                <th>
+                <th data-filter-label="Categoria">
                   <label class="visually-hidden" for="filterProductCategory">Filtrar por categoria</label>
                   <select id="filterProductCategory" name="category">
                     <option value="">Todas</option>
                   </select>
                 </th>
-                <th>
+                <th data-filter-label="Preço">
                   <label class="visually-hidden" for="filterMinPrice">Preço mínimo</label>
                   <input id="filterMinPrice" name="minPrice" type="number" min="0" step="0.01" placeholder="Mín.">
                   <label class="visually-hidden" for="filterMaxPrice">Preço máximo</label>
                   <input id="filterMaxPrice" name="maxPrice" type="number" min="0" step="0.01" placeholder="Máx.">
                 </th>
-                <th>
+                <th data-filter-label="Estoque">
                   <label class="visually-hidden" for="filterProductStock">Filtrar por estoque</label>
                   <select id="filterProductStock" name="stock">
                     <option value="">Todos</option>
@@ -194,7 +194,7 @@
                     <option value="zero">Quantidade 0</option>
                   </select>
                 </th>
-                <th>
+                <th data-filter-label="Destaque">
                   <label class="visually-hidden" for="filterProductHighlight">Filtrar por destaque</label>
                   <select id="filterProductHighlight" name="highlight">
                     <option value="">Todos</option>
@@ -204,7 +204,7 @@
                     <option value="none">Sem destaque</option>
                   </select>
                 </th>
-                <th>
+                <th data-filter-label="Imagem">
                   <label class="visually-hidden" for="filterProductImage">Filtrar por imagem</label>
                   <select id="filterProductImage" name="image">
                     <option value="">Todas</option>
@@ -246,15 +246,15 @@
                 <th>Notas e ações</th>
               </tr>
               <tr class="admin-filter-row" id="orderFilters">
-                <th>
+                <th data-filter-label="Referência">
                   <label class="visually-hidden" for="filterOrderReference">Filtrar por referência</label>
                   <input id="filterOrderReference" name="reference" type="search" placeholder="Referência">
                 </th>
-                <th>
+                <th data-filter-label="Cliente">
                   <label class="visually-hidden" for="filterOrderCustomer">Filtrar por cliente</label>
                   <input id="filterOrderCustomer" name="customer" type="search" placeholder="Cliente ou contato">
                 </th>
-                <th>
+                <th data-filter-label="Entrega">
                   <label class="visually-hidden" for="filterOrderDelivery">Filtrar por entrega</label>
                   <select id="filterOrderDelivery" name="fulfilment">
                     <option value="">Todos</option>
@@ -262,23 +262,23 @@
                     <option value="collection">Retirada</option>
                   </select>
                 </th>
-                <th>
+                <th data-filter-label="Itens">
                   <label class="visually-hidden" for="filterOrderItems">Filtrar por itens</label>
                   <input id="filterOrderItems" name="items" type="search" placeholder="Produto">
                 </th>
-                <th>
+                <th data-filter-label="Total">
                   <label class="visually-hidden" for="filterOrderMinTotal">Total mínimo</label>
                   <input id="filterOrderMinTotal" name="minTotal" type="number" min="0" step="0.01" placeholder="Mín.">
                   <label class="visually-hidden" for="filterOrderMaxTotal">Total máximo</label>
                   <input id="filterOrderMaxTotal" name="maxTotal" type="number" min="0" step="0.01" placeholder="Máx.">
                 </th>
-                <th>
+                <th data-filter-label="Data recebida">
                   <label class="visually-hidden" for="filterOrderDateFrom">Data inicial</label>
                   <input id="filterOrderDateFrom" name="dateFrom" type="date">
                   <label class="visually-hidden" for="filterOrderDateTo">Data final</label>
                   <input id="filterOrderDateTo" name="dateTo" type="date">
                 </th>
-                <th>
+                <th data-filter-label="Status">
                   <label class="visually-hidden" for="filterOrderStatus">Filtrar por status</label>
                   <select id="filterOrderStatus" name="status">
                     <option value="">Todos</option>
@@ -290,7 +290,7 @@
                     <option value="cancelled">Cancelados</option>
                   </select>
                 </th>
-                <th>
+                <th data-filter-label="Pagamento">
                   <label class="visually-hidden" for="filterOrderPayment">Filtrar por pagamento</label>
                   <select id="filterOrderPayment" name="payment">
                     <option value="">Todos</option>
@@ -301,7 +301,7 @@
                     <option value="refunded">Reembolsado</option>
                   </select>
                 </th>
-                <th>
+                <th data-filter-label="Notas">
                   <label class="visually-hidden" for="filterOrderNotes">Filtrar por notas</label>
                   <input id="filterOrderNotes" name="notes" type="search" placeholder="Notas">
                   <button class="small-button muted" type="button" id="clearOrderFilters">Limpar</button>
@@ -313,12 +313,6 @@
         </div>
         </section>
 
-        <aside class="info-panel">
-        <p class="eyebrow">Pedidos pelo WhatsApp</p>
-        <h2>Registro antes da conversa</h2>
-        <p>O cliente preenche os dados, o pedido é salvo no Supabase e só então segue para o WhatsApp com a referência do pedido.</p>
-        <p><strong>Fora desta fase:</strong> pagamentos online, rastreamento ao vivo, push notifications, automação avançada de estoque, múltiplas funções de equipe e integração com POS ou contabilidade.</p>
-        </aside>
       </div>
     </main>
 
