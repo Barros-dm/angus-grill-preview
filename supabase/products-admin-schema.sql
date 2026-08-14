@@ -72,6 +72,10 @@ create table if not exists public.orders (
   total_estimate numeric(10,2),
   total_label text,
   has_variable_weight boolean not null default false,
+  payment_status text not null default 'pending',
+  admin_notes text,
+  confirmed_at timestamptz,
+  completed_at timestamptz,
   preferred_date date,
   preferred_time text,
   notes text,
@@ -102,6 +106,12 @@ create table if not exists public.order_items (
 
 alter table public.orders
 add column if not exists customer_user_id uuid references auth.users(id) on delete set null;
+
+alter table public.orders
+add column if not exists payment_status text not null default 'pending',
+add column if not exists admin_notes text,
+add column if not exists confirmed_at timestamptz,
+add column if not exists completed_at timestamptz;
 
 create index if not exists orders_customer_user_id_idx
 on public.orders (customer_user_id, created_at desc);

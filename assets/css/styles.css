@@ -1441,6 +1441,24 @@ a {
   align-items: center;
 }
 
+.admin-filter {
+  display: grid;
+  gap: 5px;
+  color: var(--charcoal);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.admin-filter select {
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 8px 30px 8px 10px;
+  background: var(--white);
+  color: var(--charcoal);
+  font: inherit;
+}
+
 .admin-status {
   margin: 0 0 22px;
   padding: 14px 16px;
@@ -1572,6 +1590,33 @@ a {
 .admin-order-items {
   min-width: 210px;
   line-height: 1.5;
+}
+
+.admin-order-actions {
+  min-width: 240px;
+}
+
+.admin-order-actions textarea {
+  width: 100%;
+  min-height: 72px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  resize: vertical;
+  font: inherit;
+}
+
+.admin-order-actions > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-product-form small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .admin-empty-row {

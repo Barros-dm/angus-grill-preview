@@ -1,9 +1,10 @@
 const adminState = {
-  products: [...PRODUCTS],
+  products: [],
   orders: [],
   session: null,
   editingId: null,
-  ready: false
+  ready: false,
+  orderFilter: "all"
 };
 
 const adminElements = {
@@ -11,6 +12,7 @@ const adminElements = {
   login: document.getElementById("adminLogin"),
   loginForm: document.getElementById("loginForm"),
   logoutButton: document.getElementById("logoutButton"),
+  workspace: document.getElementById("adminWorkspace"),
   summaryGrid: document.getElementById("summaryGrid"),
   productRows: document.getElementById("productRows"),
   addProduct: document.getElementById("addProduct"),
@@ -19,6 +21,7 @@ const adminElements = {
   cancelProduct: document.getElementById("cancelProduct"),
   ordersSection: document.getElementById("ordersSection"),
   orderRows: document.getElementById("orderRows"),
+  orderFilter: document.getElementById("orderFilter"),
   refreshOrders: document.getElementById("refreshOrders")
 };
 
@@ -68,9 +71,13 @@ function adminPriceLabel(product) {
 }
 
 function renderSummary() {
+  if (!adminState.ready) {
+    adminElements.summaryGrid.innerHTML = "";
+    return;
+  }
   const active = adminState.products.filter((product) => product.inStock).length;
   const categories = new Set(adminState.products.map((product) => product.category)).size;
-  const offers = adminState.products.filter((product) => product.oldPrice || product.featured).length;
+  const offers = adminState.products.filter((product) => Number(product.oldPrice) > Number(product.price)).length;
   const images = adminState.products.filter((product) => product.image).length;
   const pendingOrders = adminState.orders.filter((order) => order.status === "pending_whatsapp_confirmation").length;
   const summary = [
@@ -90,13 +97,21 @@ function renderSummary() {
 }
 
 function renderRows() {
+  if (!adminState.ready) {
+    adminElements.productRows.innerHTML = "";
+    return;
+  }
+  if (!adminState.products.length) {
+    adminElements.productRows.innerHTML = '<tr><td colspan="7" class="admin-empty-row">Nenhum produto encontrado. Importe o catálogo atual ou adicione o primeiro produto.</td></tr>';
+    return;
+  }
   adminElements.productRows.innerHTML = adminState.products.map((product) => `
     <tr>
       <td><strong>${escapeHtml(product.name)}</strong><br><small>${escapeHtml(product.unit || product.id)}</small></td>
       <td>${escapeHtml(product.category)}</td>
       <td>${adminPriceLabel(product)}</td>
       <td><span class="${product.inStock ? "stock-ok" : "stock-out"}">${product.inStock ? "Disponível" : "Indisponível"}</span>${product.stock ? `<br><small>${product.stock} em estoque</small>` : ""}</td>
-      <td>${product.featured ? "Sim" : "Não"}</td>
+      <td>${Number(product.oldPrice) > Number(product.price) ? "Oferta" : (product.featured ? "Destaque" : "-")}</td>
       <td>${product.image ? `<img class="admin-product-thumb" src="${escapeHtml(product.image)}" alt="">` : "<small>Sem imagem</small>"}</td>
       <td>
         <button class="small-button" type="button" data-edit="${escapeHtml(product.id)}">Editar</button>
@@ -128,13 +143,30 @@ function orderItemLabel(order) {
   return items.map((item) => `${item.quantity}x ${item.product_name || item.productName || "Produto"}`).join("<br>");
 }
 
+function orderPaymentLabel(status) {
+  return {
+    pending: "Pendente",
+    paid: "Pago",
+    cash_on_delivery: "Pagar na entrega",
+    not_required: "Não aplicável",
+    refunded: "Reembolsado"
+  }[status] || "Pendente";
+}
+
 function renderOrderRows() {
   if (!adminElements.orderRows) return;
-  if (!adminState.orders.length) {
-    adminElements.orderRows.innerHTML = '<tr><td colspan="7" class="admin-empty-row">Ainda não há pedidos salvos.</td></tr>';
+  if (!adminState.ready) {
+    adminElements.orderRows.innerHTML = "";
     return;
   }
-  adminElements.orderRows.innerHTML = adminState.orders.map((order) => `
+  const orders = adminState.orderFilter === "all"
+    ? adminState.orders
+    : adminState.orders.filter((order) => order.status === adminState.orderFilter);
+  if (!orders.length) {
+    adminElements.orderRows.innerHTML = '<tr><td colspan="9" class="admin-empty-row">Não há pedidos neste filtro.</td></tr>';
+    return;
+  }
+  adminElements.orderRows.innerHTML = orders.map((order) => `
     <tr>
       <td><strong>${escapeHtml(order.order_reference)}</strong><br><small>${escapeHtml(order.source || "whatsapp_checkout")}</small></td>
       <td><strong>${escapeHtml(order.customer_name || "-")}</strong><br><small>${escapeHtml(order.contact || "-")}</small></td>
@@ -147,6 +179,20 @@ function renderOrderRows() {
         <select id="status-${escapeHtml(order.id)}" data-order-status="${escapeHtml(order.id)}">
           ${["pending_whatsapp_confirmation", "confirmed", "preparing", "ready", "completed", "cancelled"].map((status) => `<option value="${status}" ${order.status === status ? "selected" : ""}>${orderStatusLabel(status)}</option>`).join("")}
         </select>
+      </td>
+      <td>
+        <label class="visually-hidden" for="payment-${escapeHtml(order.id)}">Pagamento do pedido ${escapeHtml(order.order_reference)}</label>
+        <select id="payment-${escapeHtml(order.id)}" data-order-payment="${escapeHtml(order.id)}">
+          ${["pending", "paid", "cash_on_delivery", "not_required", "refunded"].map((status) => `<option value="${status}" ${(order.payment_status || "pending") === status ? "selected" : ""}>${orderPaymentLabel(status)}</option>`).join("")}
+        </select>
+      </td>
+      <td class="admin-order-actions">
+        <label class="visually-hidden" for="notes-${escapeHtml(order.id)}">Notas internas do pedido ${escapeHtml(order.order_reference)}</label>
+        <textarea id="notes-${escapeHtml(order.id)}" data-order-notes="${escapeHtml(order.id)}" rows="3" placeholder="Notas internas, confirmação, pagamento...">${escapeHtml(order.admin_notes || "")}</textarea>
+        <div>
+          ${order.status === "pending_whatsapp_confirmation" ? `<button class="small-button" type="button" data-confirm-order="${escapeHtml(order.id)}">Confirmar pedido</button>` : ""}
+          <button class="small-button muted" type="button" data-save-order="${escapeHtml(order.id)}">Salvar</button>
+        </div>
       </td>
     </tr>
   `).join("");
@@ -186,18 +232,35 @@ async function refreshOrders() {
   }
 }
 
-async function updateOrderStatus(orderId, status) {
+async function updateOrder(orderId, changes, successMessage = "Pedido atualizado.") {
   try {
-    const { error } = await angusSupabase().from("orders").update({ status }).eq("id", orderId);
+    const { error } = await angusSupabase().from("orders").update(changes).eq("id", orderId);
     if (error) throw error;
     const order = adminState.orders.find((item) => item.id === orderId);
-    if (order) order.status = status;
+    if (order) Object.assign(order, changes);
     renderAdmin();
-    setAdminStatus("Status do pedido atualizado.", "success");
+    setAdminStatus(successMessage, "success");
   } catch (error) {
-    setAdminStatus(error.message || "Não foi possível atualizar o status.", "error");
+    setAdminStatus(error.message || "Não foi possível atualizar o pedido.", "error");
     await refreshOrders();
   }
+}
+
+async function saveOrderChanges(orderId, { confirmOrder = false } = {}) {
+  const statusInput = adminElements.orderRows.querySelector(`[data-order-status="${CSS.escape(orderId)}"]`);
+  const paymentInput = adminElements.orderRows.querySelector(`[data-order-payment="${CSS.escape(orderId)}"]`);
+  const notesInput = adminElements.orderRows.querySelector(`[data-order-notes="${CSS.escape(orderId)}"]`);
+  const currentOrder = adminState.orders.find((order) => order.id === orderId);
+  if (!statusInput || !paymentInput || !notesInput || !currentOrder) return;
+  const status = confirmOrder ? "confirmed" : statusInput.value;
+  const changes = {
+    status,
+    payment_status: paymentInput.value,
+    admin_notes: notesInput.value.trim() || null
+  };
+  if (status === "confirmed" && !currentOrder.confirmed_at) changes.confirmed_at = new Date().toISOString();
+  if (status === "completed" && !currentOrder.completed_at) changes.completed_at = new Date().toISOString();
+  await updateOrder(orderId, changes, confirmOrder ? "Pedido confirmado e salvo." : "Pedido atualizado.");
 }
 
 function setFormMode(isOpen) {
@@ -211,6 +274,7 @@ function resetForm() {
   adminElements.productForm.elements.id.value = "";
   adminElements.productForm.elements.inStock.checked = true;
   adminElements.productForm.elements.isActive.checked = true;
+  adminElements.productForm.elements.onOffer.checked = false;
   adminElements.productForm.elements.weightOptions.value = "";
 }
 
@@ -230,6 +294,7 @@ function fillForm(product) {
   form.image.value = product.image || "";
   form.weightOptions.value = product.weightOptions?.length ? JSON.stringify(product.weightOptions, null, 2) : "";
   form.inStock.checked = Boolean(product.inStock);
+  form.onOffer.checked = Number(product.oldPrice) > Number(product.price);
   form.featured.checked = Boolean(product.featured);
   form.bestSeller.checked = Boolean(product.bestSeller);
   form.isActive.checked = product.isActive !== false;
@@ -239,13 +304,21 @@ function productFromForm(imageUrl) {
   const form = adminElements.productForm.elements;
   const name = form.name.value.trim();
   if (!name) throw new Error("Informe o nome do produto.");
+  const existing = adminState.products.find((product) => product.id === form.id.value) || {};
+  const price = Number(form.price.value || 0);
+  const isOnOffer = form.onOffer.checked;
+  const oldPrice = toNumberOrNull(form.oldPrice.value);
+  if (isOnOffer && (!oldPrice || oldPrice <= price)) {
+    throw new Error("Para marcar um produto como oferta, informe um preço anterior maior que o preço final.");
+  }
   return {
+    ...existing,
     id: form.id.value || slugify(name),
     name,
     category: form.category.value,
     description: form.description.value.trim(),
-    price: Number(form.price.value || 0),
-    oldPrice: toNumberOrNull(form.oldPrice.value),
+    price,
+    oldPrice: isOnOffer ? oldPrice : null,
     unit: form.unit.value.trim(),
     pricingType: form.pricingType.value,
     badge: form.badge.value.trim(),
@@ -263,6 +336,8 @@ async function uploadProductImage(productId) {
   const fileInput = adminElements.productForm.elements.imageFile;
   const file = fileInput.files?.[0];
   if (!file) return "";
+  if (!file.type.startsWith("image/")) throw new Error("Envie um arquivo de imagem válido.");
+  if (file.size > 5 * 1024 * 1024) throw new Error("A imagem deve ter no máximo 5 MB.");
   const client = angusSupabase();
   if (!client) throw new Error("Supabase não está configurado para upload de imagens.");
   const bucket = supabaseConfig().productBucket || "product-images";
@@ -336,42 +411,65 @@ async function importLocalProducts() {
 }
 
 async function loadAdminProducts() {
-  if (!isSupabaseConfigured()) {
-    adminState.products = [...PRODUCTS];
+  const lockWorkspace = () => {
+    adminState.products = [];
+    adminState.orders = [];
+    adminState.session = null;
     adminState.ready = false;
+    adminState.editingId = null;
+    adminElements.workspace.hidden = true;
+    adminElements.logoutButton.hidden = true;
+    adminElements.login.hidden = false;
+    adminElements.ordersSection.hidden = true;
+    setFormMode(false);
     renderAdmin();
-    setAdminStatus("Supabase ainda não configurado. O painel está em modo preview e não salva alterações.", "warning");
-    adminElements.login.hidden = true;
+  };
+
+  if (!isSupabaseConfigured()) {
+    lockWorkspace();
+    setAdminStatus("Supabase não está configurado. O painel administrativo permanece bloqueado.", "error");
     return;
   }
 
   const client = angusSupabase();
-  const { data: sessionData } = await client.auth.getSession();
-  adminState.session = sessionData.session?.user?.is_anonymous ? null : sessionData.session;
-  adminElements.logoutButton.hidden = !adminState.session;
-  adminElements.login.hidden = Boolean(adminState.session);
+  const { data: sessionData, error: sessionError } = await client.auth.getSession();
+  if (sessionError) {
+    lockWorkspace();
+    setAdminStatus(sessionError.message || "Não foi possível verificar a sessão administrativa.", "error");
+    return;
+  }
+  const session = sessionData.session?.user?.is_anonymous ? null : sessionData.session;
 
-  if (!adminState.session) {
-    adminState.products = [...PRODUCTS];
-    adminState.ready = false;
-    adminState.orders = [];
-    if (adminElements.ordersSection) adminElements.ordersSection.hidden = true;
-    renderAdmin();
-    setAdminStatus("Entre para gerir produtos e imagens no Supabase.", "info");
+  if (!session) {
+    lockWorkspace();
+    setAdminStatus("Entre com uma conta administrativa para acessar o painel.", "info");
     return;
   }
 
   try {
+    const { data: adminUser, error: adminError } = await client
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+    if (adminError) throw adminError;
+    if (!adminUser) {
+      lockWorkspace();
+      setAdminStatus("Esta conta não tem permissão de administrador. Use as credenciais do administrador cadastradas.", "error");
+      return;
+    }
+
+    adminState.session = session;
     adminState.products = await loadSupabaseProducts({ includeInactive: true });
     adminState.ready = true;
+    adminElements.workspace.hidden = false;
+    adminElements.login.hidden = true;
+    adminElements.logoutButton.hidden = false;
     await loadAdminOrders();
     renderAdmin();
-    setAdminStatus("Painel conectado ao Supabase.", "success");
+    setAdminStatus("Painel administrativo conectado ao Supabase.", "success");
   } catch (error) {
-    adminState.ready = false;
-    adminState.orders = [];
-    if (adminElements.ordersSection) adminElements.ordersSection.hidden = true;
-    renderAdmin();
+    lockWorkspace();
     setAdminStatus(error.message || "Este usuário não tem acesso ao painel administrativo.", "error");
   }
 }
@@ -408,6 +506,7 @@ function setupAdminEvents() {
   });
 
   adminElements.addProduct.addEventListener("click", () => {
+    if (!adminState.ready) return;
     resetForm();
     setFormMode(true);
   });
@@ -437,9 +536,16 @@ function setupAdminEvents() {
     }
   });
 
-  adminElements.orderRows.addEventListener("change", async (event) => {
-    const select = event.target.closest("[data-order-status]");
-    if (select) await updateOrderStatus(select.dataset.orderStatus, select.value);
+  adminElements.orderFilter.addEventListener("change", (event) => {
+    adminState.orderFilter = event.target.value;
+    renderOrderRows();
+  });
+
+  adminElements.orderRows.addEventListener("click", async (event) => {
+    const confirmButton = event.target.closest("[data-confirm-order]");
+    const saveButton = event.target.closest("[data-save-order]");
+    if (confirmButton) await saveOrderChanges(confirmButton.dataset.confirmOrder, { confirmOrder: true });
+    if (saveButton) await saveOrderChanges(saveButton.dataset.saveOrder);
   });
 }
 

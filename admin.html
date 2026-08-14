@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Painel Angus Grill | Admin Preview</title>
+    <title>Painel Admin | Angus Grill</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
         <img src="assets/images/angus-logo-new.png" alt="Angus Grill Premium Meat">
         <div>
           <strong>Painel Angus Grill</strong>
-          <span>ADMIN PREVIEW</span>
+          <span>ADMIN</span>
         </div>
       </a>
       <nav class="header-actions">
@@ -25,19 +25,13 @@
     </header>
 
     <main class="admin-main">
-      <section class="section-heading">
-        <p class="eyebrow">Gestão do catálogo</p>
-        <h1>Painel Angus Grill</h1>
-        <p>Área administrativa para gerir produtos, preços, estoque, disponibilidade e imagens. O cliente usa apenas este painel; o armazenamento fica no Supabase.</p>
-      </section>
-
       <section class="admin-status" id="adminStatus" role="status"></section>
 
       <section class="admin-login" id="adminLogin">
         <article>
           <p class="eyebrow">Acesso seguro</p>
           <h2>Entrar no painel</h2>
-          <p>Use o e-mail e senha do administrador cadastrado no Supabase Auth.</p>
+          <p>Use a conta administrativa cadastrada no Supabase. Contas de clientes não têm acesso a esta área.</p>
         </article>
         <form id="loginForm" class="admin-form">
           <label>
@@ -52,9 +46,16 @@
         </form>
       </section>
 
-      <section class="summary-grid" id="summaryGrid" aria-label="Resumo"></section>
+      <div id="adminWorkspace" hidden>
+        <section class="section-heading">
+          <p class="eyebrow">Gestão da operação</p>
+          <h1>Painel Angus Grill</h1>
+          <p>Controle seguro de catálogo, imagens, estoque e pedidos registrados pelo checkout.</p>
+        </section>
 
-      <section class="admin-scope" aria-label="Escopo do painel">
+        <section class="summary-grid" id="summaryGrid" aria-label="Resumo"></section>
+
+        <section class="admin-scope" aria-label="Escopo do painel">
         <article>
           <p class="eyebrow">Catálogo</p>
           <h2>Catálogo conectado</h2>
@@ -70,9 +71,9 @@
           <h2>Manter simples</h2>
           <p>Pagamentos online, push notifications, rastreamento ao vivo, POS e contabilidade ficam fora para proteger prazo, custo e manutenção. A conta do cliente fica limitada ao histórico simples de pedidos.</p>
         </article>
-      </section>
+        </section>
 
-      <section>
+        <section>
         <div class="admin-toolbar">
           <div>
             <p class="eyebrow">Produtos</p>
@@ -93,7 +94,7 @@
               <input name="name" required>
             </label>
             <label>
-              Categoria
+              Categoria principal
               <select name="category" required></select>
             </label>
             <label>
@@ -101,7 +102,7 @@
               <input name="price" type="number" min="0" step="0.01" required>
             </label>
             <label>
-              Preço antigo
+              Preço anterior
               <input name="oldPrice" type="number" min="0" step="0.01">
             </label>
             <label>
@@ -135,11 +136,14 @@
             <label class="admin-wide">
               Upload de imagem
               <input name="imageFile" type="file" accept="image/*">
+              <small>O arquivo é salvo no bucket seguro <code>product-images</code> do Supabase Storage.</small>
             </label>
+            <label class="check-row"><input name="onOffer" type="checkbox"> Em oferta</label>
             <label class="admin-wide">
               Opções de peso/tamanho em JSON
               <textarea name="weightOptions" rows="4" placeholder='[{"id":"picanha-1kg","label":"1kg","price":17,"stock":5}]'></textarea>
             </label>
+            <p class="admin-note admin-wide">Produtos em oferta continuam na categoria principal e também aparecem em “Ofertas”. Marque “Em oferta” e informe um preço anterior maior que o preço final.</p>
             <label class="check-row"><input name="inStock" type="checkbox" checked> Disponível</label>
             <label class="check-row"><input name="featured" type="checkbox"> Destaque</label>
             <label class="check-row"><input name="bestSeller" type="checkbox"> Mais vendido</label>
@@ -167,9 +171,9 @@
             <tbody id="productRows"></tbody>
           </table>
         </div>
-      </section>
+        </section>
 
-      <section class="admin-orders" id="ordersSection" hidden>
+        <section class="admin-orders" id="ordersSection" hidden>
         <div class="admin-toolbar">
           <div>
             <p class="eyebrow">Pedidos</p>
@@ -177,6 +181,17 @@
             <p class="admin-note">Cada pedido é salvo antes de o cliente seguir para o WhatsApp. Atualize o status após confirmar com o cliente.</p>
           </div>
           <div class="admin-toolbar-actions">
+            <label class="admin-filter" for="orderFilter">Filtrar status
+              <select id="orderFilter">
+                <option value="all">Todos os pedidos</option>
+                <option value="pending_whatsapp_confirmation">Aguardando WhatsApp</option>
+                <option value="confirmed">Confirmados</option>
+                <option value="preparing">Em preparo</option>
+                <option value="ready">Prontos</option>
+                <option value="completed">Concluídos</option>
+                <option value="cancelled">Cancelados</option>
+              </select>
+            </label>
             <button class="secondary-button" type="button" id="refreshOrders">Atualizar pedidos</button>
           </div>
         </div>
@@ -191,25 +206,28 @@
                 <th>Total</th>
                 <th>Recebido</th>
                 <th>Status</th>
+                <th>Pagamento</th>
+                <th>Notas e ações</th>
               </tr>
             </thead>
             <tbody id="orderRows"></tbody>
           </table>
         </div>
-      </section>
+        </section>
 
-      <aside class="info-panel">
+        <aside class="info-panel">
         <p class="eyebrow">Pedidos pelo WhatsApp</p>
         <h2>Registro antes da conversa</h2>
         <p>O cliente preenche os dados, o pedido é salvo no Supabase e só então segue para o WhatsApp com a referência do pedido.</p>
         <p><strong>Fora desta fase:</strong> pagamentos online, rastreamento ao vivo, push notifications, automação avançada de estoque, múltiplas funções de equipe e integração com POS ou contabilidade.</p>
-      </aside>
+        </aside>
+      </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-config.js?v=supabase-admin"></script>
     <script src="assets/js/brasilinbox-products.js"></script>
     <script src="assets/js/data.js?v=supabase-admin"></script>
-    <script src="assets/js/admin.js?v=anonymous-orders-20260814"></script>
+    <script src="assets/js/admin.js?v=secured-operations-20260814"></script>
   </body>
 </html>
