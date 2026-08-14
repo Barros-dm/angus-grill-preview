@@ -2298,7 +2298,7 @@ function whatsappPreferredDateLabel(value) {
   if (!value) return "A combinar";
   const parts = value.split("-");
   if (parts.length !== 3) return value;
-  const [, month, day] = parts;
+  const [year, month, day] = parts;
   return `${day}/${month}/${year}`;
 }
 
@@ -2562,7 +2562,7 @@ function setupEvents() {
     }
     const url = `https://wa.me/447923832005?text=${encodeURIComponent(message)}`;
     elements.confirmation.hidden = false;
-    window.open(url, "_blank", "noopener,noreferrer");
+    window.location.href = url;
   });
   window.addEventListener("popstate", syncCategoryRoute);
 

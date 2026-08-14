@@ -1342,6 +1342,10 @@ a {
 .whatsapp-submit {
   min-height: 50px;
   width: 100%;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .confirmation {
@@ -3768,6 +3772,9 @@ body {
 
   .checkout-mobile-submit {
     display: inline-flex;
+    width: 100%;
+    min-height: 54px;
+    white-space: normal;
   }
 
   .checkout-field-grid,
