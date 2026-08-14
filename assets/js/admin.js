@@ -4,7 +4,6 @@ const adminState = {
   session: null,
   editingId: null,
   ready: false,
-  orderFilter: "all",
   productFilters: {
     name: "",
     category: "",
@@ -13,6 +12,19 @@ const adminState = {
     stock: "",
     highlight: "",
     image: ""
+  },
+  orderFilters: {
+    reference: "",
+    customer: "",
+    fulfilment: "",
+    items: "",
+    minTotal: "",
+    maxTotal: "",
+    dateFrom: "",
+    dateTo: "",
+    status: "",
+    payment: "",
+    notes: ""
   }
 };
 
@@ -32,7 +44,8 @@ const adminElements = {
   cancelProduct: document.getElementById("cancelProduct"),
   ordersSection: document.getElementById("ordersSection"),
   orderRows: document.getElementById("orderRows"),
-  orderFilter: document.getElementById("orderFilter"),
+  orderFilters: document.getElementById("orderFilters"),
+  clearOrderFilters: document.getElementById("clearOrderFilters"),
   refreshOrders: document.getElementById("refreshOrders")
 };
 
@@ -202,9 +215,7 @@ function renderOrderRows() {
     adminElements.orderRows.innerHTML = "";
     return;
   }
-  const orders = adminState.orderFilter === "all"
-    ? adminState.orders
-    : adminState.orders.filter((order) => order.status === adminState.orderFilter);
+  const orders = filteredOrders();
   if (!orders.length) {
     adminElements.orderRows.innerHTML = '<tr><td colspan="9" class="admin-empty-row">Não há pedidos neste filtro.</td></tr>';
     return;
@@ -239,6 +250,36 @@ function renderOrderRows() {
       </td>
     </tr>
   `).join("");
+}
+
+function filteredOrders() {
+  const filters = adminState.orderFilters;
+  const reference = filters.reference.trim().toLocaleLowerCase("pt-BR");
+  const customer = filters.customer.trim().toLocaleLowerCase("pt-BR");
+  const items = filters.items.trim().toLocaleLowerCase("pt-BR");
+  const notes = filters.notes.trim().toLocaleLowerCase("pt-BR");
+  const minTotal = filters.minTotal === "" ? null : Number(filters.minTotal);
+  const maxTotal = filters.maxTotal === "" ? null : Number(filters.maxTotal);
+
+  return adminState.orders.filter((order) => {
+    const orderItems = order.order_items?.length ? order.order_items : order.items_snapshot || [];
+    const itemText = orderItems.map((item) => item.product_name || item.productName || "").join(" ").toLocaleLowerCase("pt-BR");
+    const contactText = `${order.customer_name || ""} ${order.contact || ""}`.toLocaleLowerCase("pt-BR");
+    const orderDate = order.created_at ? new Date(order.created_at).toISOString().slice(0, 10) : "";
+    const total = Number(order.total_estimate ?? order.subtotal ?? 0);
+    if (reference && !String(order.order_reference || "").toLocaleLowerCase("pt-BR").includes(reference)) return false;
+    if (customer && !contactText.includes(customer)) return false;
+    if (filters.fulfilment && order.fulfilment_type !== filters.fulfilment) return false;
+    if (items && !itemText.includes(items)) return false;
+    if (minTotal !== null && total < minTotal) return false;
+    if (maxTotal !== null && total > maxTotal) return false;
+    if (filters.dateFrom && orderDate < filters.dateFrom) return false;
+    if (filters.dateTo && orderDate > filters.dateTo) return false;
+    if (filters.status && order.status !== filters.status) return false;
+    if (filters.payment && (order.payment_status || "pending") !== filters.payment) return false;
+    if (notes && !String(order.admin_notes || "").toLocaleLowerCase("pt-BR").includes(notes)) return false;
+    return true;
+  });
 }
 
 function renderAdmin() {
@@ -612,8 +653,37 @@ function setupAdminEvents() {
     }
   });
 
-  adminElements.orderFilter.addEventListener("change", (event) => {
-    adminState.orderFilter = event.target.value;
+  adminElements.orderFilters.addEventListener("input", (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    adminState.orderFilters[input.name] = input.value;
+    renderOrderRows();
+  });
+
+  adminElements.orderFilters.addEventListener("change", (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLSelectElement)) return;
+    adminState.orderFilters[input.name] = input.value;
+    renderOrderRows();
+  });
+
+  adminElements.clearOrderFilters.addEventListener("click", () => {
+    adminState.orderFilters = {
+      reference: "",
+      customer: "",
+      fulfilment: "",
+      items: "",
+      minTotal: "",
+      maxTotal: "",
+      dateFrom: "",
+      dateTo: "",
+      status: "",
+      payment: "",
+      notes: ""
+    };
+    adminElements.orderFilters.querySelectorAll("input, select").forEach((input) => {
+      input.value = "";
+    });
     renderOrderRows();
   });
 

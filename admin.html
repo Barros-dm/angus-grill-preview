@@ -138,11 +138,11 @@
               <input name="imageFile" type="file" accept="image/*">
               <small>O arquivo é salvo no bucket seguro <code>product-images</code> do Supabase Storage.</small>
             </label>
-            <label class="check-row"><input name="onOffer" type="checkbox"> Em oferta</label>
             <label class="admin-wide">
               Opções de peso/tamanho em JSON
               <textarea name="weightOptions" rows="4" placeholder='[{"id":"picanha-1kg","label":"1kg","price":17,"stock":5}]'></textarea>
             </label>
+            <label class="check-row"><input name="onOffer" type="checkbox"> Em oferta</label>
             <p class="admin-note admin-wide">Produtos em oferta continuam na categoria principal e também aparecem em “Ofertas”. Marque “Em oferta” e informe um preço anterior maior que o preço final.</p>
             <label class="check-row"><input name="inStock" type="checkbox" checked> Disponível</label>
             <label class="check-row"><input name="featured" type="checkbox"> Destaque</label>
@@ -228,17 +228,6 @@
             <p class="admin-note">Cada pedido é salvo antes de o cliente seguir para o WhatsApp. Atualize o status após confirmar com o cliente.</p>
           </div>
           <div class="admin-toolbar-actions">
-            <label class="admin-filter" for="orderFilter">Filtrar status
-              <select id="orderFilter">
-                <option value="all">Todos os pedidos</option>
-                <option value="pending_whatsapp_confirmation">Aguardando WhatsApp</option>
-                <option value="confirmed">Confirmados</option>
-                <option value="preparing">Em preparo</option>
-                <option value="ready">Prontos</option>
-                <option value="completed">Concluídos</option>
-                <option value="cancelled">Cancelados</option>
-              </select>
-            </label>
             <button class="secondary-button" type="button" id="refreshOrders">Atualizar pedidos</button>
           </div>
         </div>
@@ -255,6 +244,68 @@
                 <th>Status</th>
                 <th>Pagamento</th>
                 <th>Notas e ações</th>
+              </tr>
+              <tr class="admin-filter-row" id="orderFilters">
+                <th>
+                  <label class="visually-hidden" for="filterOrderReference">Filtrar por referência</label>
+                  <input id="filterOrderReference" name="reference" type="search" placeholder="Referência">
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterOrderCustomer">Filtrar por cliente</label>
+                  <input id="filterOrderCustomer" name="customer" type="search" placeholder="Cliente ou contato">
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterOrderDelivery">Filtrar por entrega</label>
+                  <select id="filterOrderDelivery" name="fulfilment">
+                    <option value="">Todos</option>
+                    <option value="delivery">Entrega</option>
+                    <option value="collection">Retirada</option>
+                  </select>
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterOrderItems">Filtrar por itens</label>
+                  <input id="filterOrderItems" name="items" type="search" placeholder="Produto">
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterOrderMinTotal">Total mínimo</label>
+                  <input id="filterOrderMinTotal" name="minTotal" type="number" min="0" step="0.01" placeholder="Mín.">
+                  <label class="visually-hidden" for="filterOrderMaxTotal">Total máximo</label>
+                  <input id="filterOrderMaxTotal" name="maxTotal" type="number" min="0" step="0.01" placeholder="Máx.">
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterOrderDateFrom">Data inicial</label>
+                  <input id="filterOrderDateFrom" name="dateFrom" type="date">
+                  <label class="visually-hidden" for="filterOrderDateTo">Data final</label>
+                  <input id="filterOrderDateTo" name="dateTo" type="date">
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterOrderStatus">Filtrar por status</label>
+                  <select id="filterOrderStatus" name="status">
+                    <option value="">Todos</option>
+                    <option value="pending_whatsapp_confirmation">Aguardando WhatsApp</option>
+                    <option value="confirmed">Confirmados</option>
+                    <option value="preparing">Em preparo</option>
+                    <option value="ready">Prontos</option>
+                    <option value="completed">Concluídos</option>
+                    <option value="cancelled">Cancelados</option>
+                  </select>
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterOrderPayment">Filtrar por pagamento</label>
+                  <select id="filterOrderPayment" name="payment">
+                    <option value="">Todos</option>
+                    <option value="pending">Pendente</option>
+                    <option value="paid">Pago</option>
+                    <option value="cash_on_delivery">Pagar na entrega</option>
+                    <option value="not_required">Não aplicável</option>
+                    <option value="refunded">Reembolsado</option>
+                  </select>
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterOrderNotes">Filtrar por notas</label>
+                  <input id="filterOrderNotes" name="notes" type="search" placeholder="Notas">
+                  <button class="small-button muted" type="button" id="clearOrderFilters">Limpar</button>
+                </th>
               </tr>
             </thead>
             <tbody id="orderRows"></tbody>
