@@ -56,14 +56,14 @@
 
       <section class="admin-scope" aria-label="Escopo do painel">
         <article>
-          <p class="eyebrow">Phase 1</p>
-          <h2>Admin preview para aprovação</h2>
-          <p>Esta tela mostra como o negócio poderá gerir catálogo de açougue e mercearia, preços, categorias, disponibilidade, destaques e ofertas. Nesta fase, os dados ainda vivem no app e os pedidos continuam pelo WhatsApp.</p>
+          <p class="eyebrow">Catálogo</p>
+          <h2>Catálogo conectado</h2>
+          <p>Gerencie catálogo, preços, disponibilidade, destaques e imagens. As alterações são salvas no Supabase e aparecem na loja.</p>
         </article>
         <article>
-          <p class="eyebrow">Backend futuro</p>
-          <h2>Gestão real após aprovação</h2>
-          <p>Na próxima fase, este painel pode salvar alterações, carregar imagens, controlar estoque simples e receber histórico de pedidos sem transformar o projeto em ecommerce completo.</p>
+          <p class="eyebrow">Pedidos</p>
+          <h2>WhatsApp com registro</h2>
+          <p>O pedido é registrado antes da conversa no WhatsApp, permitindo acompanhar cliente, endereço, itens, estimativa e status.</p>
         </article>
         <article>
           <p class="eyebrow">Fora do MVP</p>
@@ -169,10 +169,39 @@
         </div>
       </section>
 
+      <section class="admin-orders" id="ordersSection" hidden>
+        <div class="admin-toolbar">
+          <div>
+            <p class="eyebrow">Pedidos</p>
+            <h2>Pedidos recebidos</h2>
+            <p class="admin-note">Cada pedido é salvo antes de o cliente seguir para o WhatsApp. Atualize o status após confirmar com o cliente.</p>
+          </div>
+          <div class="admin-toolbar-actions">
+            <button class="secondary-button" type="button" id="refreshOrders">Atualizar pedidos</button>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table admin-orders-table">
+            <thead>
+              <tr>
+                <th>Referência</th>
+                <th>Cliente</th>
+                <th>Entrega</th>
+                <th>Itens</th>
+                <th>Total</th>
+                <th>Recebido</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="orderRows"></tbody>
+          </table>
+        </div>
+      </section>
+
       <aside class="info-panel">
         <p class="eyebrow">Pedidos pelo WhatsApp</p>
-        <h2>Fluxo aprovado para a primeira versão</h2>
-        <p>Os pedidos da primeira versão serão finalizados pelo WhatsApp. Em uma próxima fase, este painel poderá receber pedidos diretamente, controlar estoque, relatórios e histórico de clientes.</p>
+        <h2>Registro antes da conversa</h2>
+        <p>O cliente preenche os dados, o pedido é salvo no Supabase e só então segue para o WhatsApp com a referência do pedido.</p>
         <p><strong>Fora desta fase:</strong> pagamentos online, rastreamento ao vivo, push notifications, automação avançada de estoque, múltiplas funções de equipe e integração com POS ou contabilidade.</p>
       </aside>
     </main>
@@ -181,6 +210,6 @@
     <script src="assets/js/supabase-config.js?v=supabase-admin"></script>
     <script src="assets/js/brasilinbox-products.js"></script>
     <script src="assets/js/data.js?v=supabase-admin"></script>
-    <script src="assets/js/admin.js?v=supabase-admin"></script>
+    <script src="assets/js/admin.js?v=anonymous-orders-20260814"></script>
   </body>
 </html>

@@ -264,7 +264,7 @@
                 <legend>Contato</legend>
                 <div class="checkout-field-grid">
                   <label><span data-i18n="name">Nome</span><input name="name" autocomplete="name" required></label>
-                  <label><span data-i18n="phoneOrEmail">Telefone ou e-mail</span><input name="contact" autocomplete="email"></label>
+                  <label><span data-i18n="phoneOrEmail">Telefone ou e-mail</span><input name="contact" autocomplete="email" required></label>
                 </div>
               </fieldset>
               <fieldset class="checkout-section">
@@ -276,11 +276,11 @@
                 <p class="delivery-note" id="deliveryNote">ENTREGA GRÁTIS PARA COMPRAS ACIMA DE £40.
 distância máxima para entrega: 15 milhas da loja de Canterbury.</p>
                 <input type="hidden" name="deliveryZone" id="deliveryZone" value="local">
-                <label id="addressLabel"><span data-i18n="address">Endereço</span><input name="address" id="addressInput" autocomplete="street-address" inputmode="text"></label>
+                <label id="addressLabel"><span data-i18n="address">Endereço</span><input name="address" id="addressInput" autocomplete="street-address" inputmode="text" required></label>
                 <label id="addressLine2Label"><span data-i18n="addressLine2">Apartamento, bloco etc. (opcional)</span><input name="addressLine2" id="addressLine2Input" autocomplete="address-line2"></label>
                 <div class="address-grid" id="addressGrid">
-                  <label><span data-i18n="city">Cidade</span><input name="city" id="cityInput" autocomplete="address-level2"></label>
-                  <label><span data-i18n="postcode">Postcode</span><input name="postcode" id="postcodeInput" autocomplete="postal-code" inputmode="text"></label>
+                  <label><span data-i18n="city">Cidade</span><input name="city" id="cityInput" autocomplete="address-level2" required></label>
+                  <label><span data-i18n="postcode">Postcode</span><input name="postcode" id="postcodeInput" autocomplete="postal-code" inputmode="text" required></label>
                 </div>
                 <div class="delivery-quote-card" id="deliveryQuoteCard" aria-live="polite">
                   <span class="quote-kicker" data-i18n="deliveryQuoteKicker">Entrega Angus Grill</span>
@@ -332,6 +332,6 @@ distância máxima para entrega: 15 milhas da loja de Canterbury.</p>
     <script src="assets/js/brasilinbox-products.js?v=supplier-catalogue"></script>
     <script src="assets/js/data.js?v=supabase-admin"></script>
     <script src="assets/js/maps-config.local.js"></script>
-    <script src="assets/js/app.js?v=free-delivery-checkout-20260814"></script>
+    <script src="assets/js/app.js?v=anonymous-supabase-orders-20260814"></script>
   </body>
 </html>

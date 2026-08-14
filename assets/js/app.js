@@ -135,7 +135,7 @@ const I18N = {
     deliveryNotesPlaceholder: "Ex: deixar na recepção, tocar campainha, separar produtos congelados...",
     finishWhatsapp: "Finalizar pedido no WhatsApp",
     confirmation: "Pedido preparado para envio no WhatsApp. Confira a mensagem antes de enviar.",
-    orderSaveError: "Não foi possível registrar o pedido online. O pedido será enviado pelo WhatsApp com uma referência.",
+    orderSaveError: "Não foi possível registrar o pedido online. Verifique os dados e tente novamente antes de abrir o WhatsApp.",
     continueShopping: "Continuar comprando",
     viewOrder: "Ver pedido",
     categoryItems: "produtos",
@@ -329,7 +329,7 @@ const I18N = {
     deliveryNotesPlaceholder: "E.g. leave at reception, ring bell, separate frozen products...",
     finishWhatsapp: "Finish order on WhatsApp",
     confirmation: "Order prepared for WhatsApp. Please check the message before sending.",
-    orderSaveError: "Could not register the order online. The order will be sent by WhatsApp with a reference.",
+    orderSaveError: "We could not save the order online. Check the details and try again before opening WhatsApp.",
     continueShopping: "Continue shopping",
     viewOrder: "View order",
     categoryItems: "products",
@@ -523,7 +523,7 @@ const I18N = {
     deliveryNotesPlaceholder: "Ej: dejar en recepción, tocar el timbre, separar congelados...",
     finishWhatsapp: "Finalizar pedido por WhatsApp",
     confirmation: "Pedido preparado para WhatsApp. Revisa el mensaje antes de enviar.",
-    orderSaveError: "No se pudo registrar el pedido online. El pedido se enviará por WhatsApp con una referencia.",
+    orderSaveError: "No se pudo guardar el pedido online. Revise los datos e inténtelo de nuevo antes de abrir WhatsApp.",
     continueShopping: "Continuar comprando",
     viewOrder: "Ver pedido",
     categoryItems: "productos",
@@ -717,7 +717,7 @@ const I18N = {
     deliveryNotesPlaceholder: "Ex: lăsați la recepție, sunați la sonerie, separați produsele congelate...",
     finishWhatsapp: "Finalizează pe WhatsApp",
     confirmation: "Comanda este pregătită pentru WhatsApp. Verifică mesajul înainte de trimitere.",
-    orderSaveError: "Comanda nu a putut fi înregistrată online. Va fi trimisă pe WhatsApp cu o referință.",
+    orderSaveError: "Comanda nu a putut fi salvată online. Verifică datele și încearcă din nou înainte de a deschide WhatsApp.",
     continueShopping: "Continuă cumpărăturile",
     viewOrder: "Vezi comanda",
     categoryItems: "produse",
@@ -1685,6 +1685,9 @@ function updatéDeliveryUi() {
   elements.addressLabel.style.display = isDelivery ? "grid" : "none";
   elements.addressLine2Label.style.display = isDelivery ? "grid" : "none";
   elements.addressGrid.style.display = isDelivery ? "grid" : "none";
+  [elements.addressInput, elements.cityInput, elements.postcodeInput].forEach((input) => {
+    if (input) input.required = isDelivery;
+  });
   updatéDeliveryQuoteCard();
   if (!elements.deliveryNote) return;
   if (!isDelivery) {
@@ -2247,31 +2250,9 @@ async function saveAuthenticatedOrderToSupabase(order) {
 }
 
 async function saveOrderBeforeWhatsapp(order) {
-  const authenticatedResult = await saveAuthenticatedOrderToSupabase(order);
-  if (authenticatedResult) return authenticatedResult;
-
-  const endpoint = supabaseConfig().orderEndpoint || window.ANGUS_GRILL_ORDER_ENDPOINT || "";
-  if (!endpoint) {
-    saveOrderLocally(order);
-    return { saved: false, mode: "local" };
-  }
-
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(order)
-  });
-  if (!response.ok) {
-    let message = "Order endpoint failed.";
-    try {
-      const body = await response.json();
-      message = body.error || message;
-    } catch {
-      // Keep the generic message when the endpoint does not return JSON.
-    }
-    throw new Error(message);
-  }
-  return { saved: true, mode: "edge-function" };
+  const result = await saveAuthenticatedOrderToSupabase(order);
+  if (!result) throw new Error("Could not create an anonymous checkout session.");
+  return result;
 }
 
 async function attachCustomerSession(order) {
@@ -2281,10 +2262,15 @@ async function attachCustomerSession(order) {
     const { data } = await client.auth.getSession();
     const userId = data?.session?.user?.id;
     if (userId) return { ...order, customerUserId: userId };
+    const { data: anonymousData, error } = await client.auth.signInAnonymously();
+    if (error) throw error;
+    const anonymousUserId = anonymousData.session?.user?.id;
+    if (anonymousUserId) return { ...order, customerUserId: anonymousUserId };
+    throw new Error("Anonymous checkout session was not created.");
   } catch (error) {
-    console.warn("Could not read customer session.", error);
+    console.warn("Could not create checkout session.", error);
+    throw error;
   }
-  return order;
 }
 
 function whatsappPreferredTimeLabel(value) {
@@ -2557,8 +2543,9 @@ function setupEvents() {
       elements.confirmation.textContent = `${t("confirmation")} Referência: ${orderReference}`;
     } catch (error) {
       console.warn("Order could not be saved before WhatsApp.", error);
-      saveOrderLocally(order);
       elements.confirmation.textContent = `${t("orderSaveError")} Referência: ${orderReference}`;
+      elements.confirmation.hidden = false;
+      return;
     } finally {
       if (submitButton) submitButton.disabled = false;
     }

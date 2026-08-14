@@ -222,7 +222,7 @@ async function refreshAccount() {
   }
 
   const { data } = await client.auth.getSession();
-  accountState.session = data.session;
+  accountState.session = data.session?.user?.is_anonymous ? null : data.session;
 
   if (accountState.session && accountMode === "register") {
     window.location.href = "account.html";

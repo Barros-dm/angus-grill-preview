@@ -91,23 +91,16 @@ The customer account page is:
 
 It uses Supabase Auth with e-mail and password. Customers do not need Supabase dashboard access.
 
-When the order-saving endpoint is connected, saved orders should include:
+Saved orders include:
 
 `customer_user_id = auth user id`
 
 That lets the customer see their own order history while admin users can still manage orders through the admin side.
 
-Logged-in customers can also save their own pending WhatsApp orders directly through Supabase Row Level Security. Guest checkout still falls back to a local browser draft unless a protected server-side endpoint is added.
+Customers can finalize as guests. The checkout creates a Supabase anonymous session, then Row Level Security saves the pending WhatsApp order against that anonymous user ID. Logged-in customers use their existing account instead. Admin users can view and manage every order.
 
 ## 8. WhatsApp Order Logging
 
-The checkout now creates an order reference before opening WhatsApp. If no protected order endpoint is configured, the browser stores the latest order draft locally so the customer can still send the WhatsApp message with the reference.
+In Supabase Dashboard, enable **Authentication > Sign In / Providers > Anonymous Sign-Ins**. This is required once for guest checkout.
 
-To save guest orders into Supabase automatically, use a protected server-side endpoint or Supabase Edge Function that:
-
-- keeps the Supabase service-role key only in server-side secrets
-- validates the checkout payload
-- blocks abuse with customer login, CAPTCHA, or another bot-protection layer
-- inserts into `orders` and `order_items`
-
-Do not expose a public unauthenticated service-role write endpoint.
+The checkout creates an order reference, saves the order and its line items to Supabase, then opens WhatsApp. If saving fails, WhatsApp does not open, which prevents unlogged orders. Do not expose a service-role key in frontend files.

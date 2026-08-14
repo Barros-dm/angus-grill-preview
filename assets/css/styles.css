@@ -1403,7 +1403,7 @@ a {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 16px;
 }
 
@@ -1563,6 +1563,33 @@ a {
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 8px;
+}
+
+.admin-orders {
+  margin-top: 42px;
+}
+
+.admin-order-items {
+  min-width: 210px;
+  line-height: 1.5;
+}
+
+.admin-empty-row {
+  padding: 28px !important;
+  text-align: center !important;
+  color: var(--muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .small-button {

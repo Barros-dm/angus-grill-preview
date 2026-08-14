@@ -1,5 +1,6 @@
 const adminState = {
   products: [...PRODUCTS],
+  orders: [],
   session: null,
   editingId: null,
   ready: false
@@ -15,7 +16,10 @@ const adminElements = {
   addProduct: document.getElementById("addProduct"),
   importLocalProducts: document.getElementById("importLocalProducts"),
   productForm: document.getElementById("productForm"),
-  cancelProduct: document.getElementById("cancelProduct")
+  cancelProduct: document.getElementById("cancelProduct"),
+  ordersSection: document.getElementById("ordersSection"),
+  orderRows: document.getElementById("orderRows"),
+  refreshOrders: document.getElementById("refreshOrders")
 };
 
 const editableCategories = CATEGORIES.filter((category) => !["Todos", "Ofertas", "Mais Vendidos"].includes(category));
@@ -68,11 +72,13 @@ function renderSummary() {
   const categories = new Set(adminState.products.map((product) => product.category)).size;
   const offers = adminState.products.filter((product) => product.oldPrice || product.featured).length;
   const images = adminState.products.filter((product) => product.image).length;
+  const pendingOrders = adminState.orders.filter((order) => order.status === "pending_whatsapp_confirmation").length;
   const summary = [
     ["Produtos ativos", active],
     ["Categorias", categories],
     ["Ofertas/destaques", offers],
-    ["Com imagem", images]
+    ["Com imagem", images],
+    ["Pedidos aguardando", pendingOrders]
   ];
 
   adminElements.summaryGrid.innerHTML = summary.map(([label, value]) => `
@@ -100,9 +106,98 @@ function renderRows() {
   `).join("");
 }
 
+function orderStatusLabel(status) {
+  return {
+    pending_whatsapp_confirmation: "Aguardando WhatsApp",
+    confirmed: "Confirmado",
+    preparing: "Em preparo",
+    ready: "Pronto",
+    completed: "Concluído",
+    cancelled: "Cancelado"
+  }[status] || status;
+}
+
+function orderDateLabel(value) {
+  if (!value) return "-";
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(value));
+}
+
+function orderItemLabel(order) {
+  const items = order.order_items?.length ? order.order_items : order.items_snapshot || [];
+  if (!items.length) return "Sem itens";
+  return items.map((item) => `${item.quantity}x ${item.product_name || item.productName || "Produto"}`).join("<br>");
+}
+
+function renderOrderRows() {
+  if (!adminElements.orderRows) return;
+  if (!adminState.orders.length) {
+    adminElements.orderRows.innerHTML = '<tr><td colspan="7" class="admin-empty-row">Ainda não há pedidos salvos.</td></tr>';
+    return;
+  }
+  adminElements.orderRows.innerHTML = adminState.orders.map((order) => `
+    <tr>
+      <td><strong>${escapeHtml(order.order_reference)}</strong><br><small>${escapeHtml(order.source || "whatsapp_checkout")}</small></td>
+      <td><strong>${escapeHtml(order.customer_name || "-")}</strong><br><small>${escapeHtml(order.contact || "-")}</small></td>
+      <td>${escapeHtml(order.fulfilment_type === "collection" ? "Retirada" : "Entrega")}<br><small>${escapeHtml([order.address, order.address_line2, order.city, order.postcode].filter(Boolean).join(", ") || "-")}</small></td>
+      <td class="admin-order-items">${orderItemLabel(order).split("<br>").map(escapeHtml).join("<br>")}</td>
+      <td><strong>${order.total_estimate === null ? "A confirmar" : adminMoney(order.total_estimate)}</strong><br><small>Subtotal ${adminMoney(order.subtotal)}</small></td>
+      <td>${orderDateLabel(order.created_at)}</td>
+      <td>
+        <label class="visually-hidden" for="status-${escapeHtml(order.id)}">Status do pedido ${escapeHtml(order.order_reference)}</label>
+        <select id="status-${escapeHtml(order.id)}" data-order-status="${escapeHtml(order.id)}">
+          ${["pending_whatsapp_confirmation", "confirmed", "preparing", "ready", "completed", "cancelled"].map((status) => `<option value="${status}" ${order.status === status ? "selected" : ""}>${orderStatusLabel(status)}</option>`).join("")}
+        </select>
+      </td>
+    </tr>
+  `).join("");
+}
+
 function renderAdmin() {
   renderSummary();
   renderRows();
+  renderOrderRows();
+}
+
+async function loadAdminOrders() {
+  if (!adminState.session) {
+    adminState.orders = [];
+    if (adminElements.ordersSection) adminElements.ordersSection.hidden = true;
+    return;
+  }
+  const { data, error } = await angusSupabase()
+    .from("orders")
+    .select("*, order_items(*)")
+    .order("created_at", { ascending: false })
+    .limit(100);
+  if (error) throw error;
+  adminState.orders = data || [];
+  if (adminElements.ordersSection) adminElements.ordersSection.hidden = false;
+}
+
+async function refreshOrders() {
+  if (!adminState.ready) return;
+  try {
+    setAdminStatus("Atualizando pedidos...", "info");
+    await loadAdminOrders();
+    renderAdmin();
+    setAdminStatus("Pedidos atualizados.", "success");
+  } catch (error) {
+    setAdminStatus(error.message || "Não foi possível carregar os pedidos.", "error");
+  }
+}
+
+async function updateOrderStatus(orderId, status) {
+  try {
+    const { error } = await angusSupabase().from("orders").update({ status }).eq("id", orderId);
+    if (error) throw error;
+    const order = adminState.orders.find((item) => item.id === orderId);
+    if (order) order.status = status;
+    renderAdmin();
+    setAdminStatus("Status do pedido atualizado.", "success");
+  } catch (error) {
+    setAdminStatus(error.message || "Não foi possível atualizar o status.", "error");
+    await refreshOrders();
+  }
 }
 
 function setFormMode(isOpen) {
@@ -252,22 +347,33 @@ async function loadAdminProducts() {
 
   const client = angusSupabase();
   const { data: sessionData } = await client.auth.getSession();
-  adminState.session = sessionData.session;
+  adminState.session = sessionData.session?.user?.is_anonymous ? null : sessionData.session;
   adminElements.logoutButton.hidden = !adminState.session;
   adminElements.login.hidden = Boolean(adminState.session);
 
   if (!adminState.session) {
     adminState.products = [...PRODUCTS];
     adminState.ready = false;
+    adminState.orders = [];
+    if (adminElements.ordersSection) adminElements.ordersSection.hidden = true;
     renderAdmin();
     setAdminStatus("Entre para gerir produtos e imagens no Supabase.", "info");
     return;
   }
 
-  adminState.products = await loadSupabaseProducts({ includeInactive: true });
-  adminState.ready = true;
-  renderAdmin();
-  setAdminStatus("Painel conectado ao Supabase.", "success");
+  try {
+    adminState.products = await loadSupabaseProducts({ includeInactive: true });
+    adminState.ready = true;
+    await loadAdminOrders();
+    renderAdmin();
+    setAdminStatus("Painel conectado ao Supabase.", "success");
+  } catch (error) {
+    adminState.ready = false;
+    adminState.orders = [];
+    if (adminElements.ordersSection) adminElements.ordersSection.hidden = true;
+    renderAdmin();
+    setAdminStatus(error.message || "Este usuário não tem acesso ao painel administrativo.", "error");
+  }
 }
 
 function populateCategorySelect() {
@@ -307,6 +413,7 @@ function setupAdminEvents() {
   });
 
   adminElements.importLocalProducts.addEventListener("click", importLocalProducts);
+  adminElements.refreshOrders.addEventListener("click", refreshOrders);
 
   adminElements.cancelProduct.addEventListener("click", () => {
     resetForm();
@@ -328,6 +435,11 @@ function setupAdminEvents() {
     if (hideButton) {
       await toggleProductVisibility(hideButton.dataset.hide);
     }
+  });
+
+  adminElements.orderRows.addEventListener("change", async (event) => {
+    const select = event.target.closest("[data-order-status]");
+    if (select) await updateOrderStatus(select.dataset.orderStatus, select.value);
   });
 }
 
