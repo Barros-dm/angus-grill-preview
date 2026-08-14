@@ -9,6 +9,7 @@ const accountState = {
 const accountElements = {
   status: document.getElementById("accountStatus"),
   loginForm: document.getElementById("customerLoginForm"),
+  resendConfirmation: document.getElementById("resendConfirmation"),
   forgotPasswordForm: document.getElementById("forgotPasswordForm"),
   passwordResetForm: document.getElementById("passwordResetForm"),
   passwordResetCard: document.getElementById("passwordResetCard"),
@@ -279,6 +280,35 @@ function setupAccountEvents() {
       accountElements.loginForm.reset();
       await refreshAccount();
       setAccountStatus("Login efetuado com sucesso.", "success");
+    });
+  }
+
+  if (accountElements.resendConfirmation) {
+    accountElements.resendConfirmation.addEventListener("click", async () => {
+      const client = angusSupabase();
+      const email = String(accountElements.loginForm?.elements.email?.value || "").trim();
+      if (!client) {
+        setAccountStatus("Confirmação de e-mail ainda não está ativa. Tente novamente mais tarde.", "warning");
+        return;
+      }
+      if (!email) {
+        setAccountStatus("Digite o e-mail da conta para reenviar a confirmação.", "warning");
+        accountElements.loginForm?.elements.email?.focus();
+        return;
+      }
+      accountElements.resendConfirmation.disabled = true;
+      setAccountStatus("Reenviando e-mail de confirmação...", "info");
+      const { error } = await client.auth.resend({
+        type: "signup",
+        email,
+        options: { emailRedirectTo: accountRedirectUrl("account") }
+      });
+      accountElements.resendConfirmation.disabled = false;
+      if (error) {
+        setAccountStatus(friendlyAuthMessage(error.message), "error");
+        return;
+      }
+      setAccountStatus("E-mail de confirmação reenviado. Verifique a caixa de entrada e o spam.", "success");
     });
   }
 
