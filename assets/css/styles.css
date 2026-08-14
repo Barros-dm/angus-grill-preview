@@ -1588,16 +1588,15 @@ a {
   font-size: 0.82rem;
 }
 
-#productFilters th:nth-child(3),
-#orderFilters th:nth-child(5) {
+#productFilters th:nth-child(3) {
   display: grid;
   grid-template-columns: repeat(2, minmax(78px, 1fr));
   gap: 6px;
 }
 
-#orderFilters th:nth-child(6) {
+.order-filter-management {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 34px;
+  grid-template-columns: minmax(0, 1fr) 34px;
   gap: 6px;
 }
 
@@ -1677,7 +1676,7 @@ a {
 }
 
 .admin-orders-table .order-col-items {
-  width: 22%;
+  width: 24%;
 }
 
 .admin-orders-table .order-col-total {
@@ -1685,7 +1684,7 @@ a {
 }
 
 .admin-orders-table .order-col-management {
-  width: 18%;
+  width: 17%;
 }
 
 .admin-orders-table td {
@@ -1742,9 +1741,7 @@ a {
     border: 0;
   }
 
-  #productFilters th:nth-child(3),
-  #orderFilters th:nth-child(5),
-  #orderFilters th:nth-child(6) {
+  #productFilters th:nth-child(3) {
     display: grid;
   }
 

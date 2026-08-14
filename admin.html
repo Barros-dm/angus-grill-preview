@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css?v=admin-orders-filters-20260815">
+    <link rel="stylesheet" href="assets/css/styles.css?v=admin-orders-fit-20260815">
   </head>
   <body class="admin-shell">
     <header class="admin-header">
@@ -272,32 +272,22 @@
                   <input id="filterOrderItems" name="items" type="search" placeholder="Produto">
                 </th>
                 <th data-filter-label="Total">
-                  <label class="visually-hidden" for="filterOrderMinTotal">Total mínimo</label>
-                  <input id="filterOrderMinTotal" name="minTotal" type="number" min="0" step="0.01" placeholder="Mín.">
-                  <label class="visually-hidden" for="filterOrderMaxTotal">Total máximo</label>
-                  <input id="filterOrderMaxTotal" name="maxTotal" type="number" min="0" step="0.01" placeholder="Máx.">
+                  <span class="visually-hidden">Sem filtro de total</span>
                 </th>
                 <th data-filter-label="Gestão">
-                  <label class="visually-hidden" for="filterOrderStatus">Filtrar por status</label>
-                  <select id="filterOrderStatus" name="status">
-                    <option value="">Status</option>
-                    <option value="pending_whatsapp_confirmation">Aguardando WhatsApp</option>
-                    <option value="confirmed">Confirmados</option>
-                    <option value="preparing">Em preparo</option>
-                    <option value="ready">Prontos</option>
-                    <option value="completed">Concluídos</option>
-                    <option value="cancelled">Cancelados</option>
-                  </select>
-                  <label class="visually-hidden" for="filterOrderPayment">Filtrar por pagamento</label>
-                  <select id="filterOrderPayment" name="payment">
-                    <option value="">Pagamento</option>
-                    <option value="pending">Pendente</option>
-                    <option value="paid">Pago</option>
-                    <option value="cash_on_delivery">Pagar na entrega</option>
-                    <option value="not_required">Não aplicável</option>
-                    <option value="refunded">Reembolsado</option>
-                  </select>
-                  <button class="filter-reset" type="button" id="clearOrderFilters" aria-label="Limpar filtros" title="Limpar filtros">×</button>
+                  <div class="order-filter-management">
+                    <label class="visually-hidden" for="filterOrderStatus">Filtrar por status</label>
+                    <select id="filterOrderStatus" name="status">
+                      <option value="">Status</option>
+                      <option value="pending_whatsapp_confirmation">Aguardando WhatsApp</option>
+                      <option value="confirmed">Confirmados</option>
+                      <option value="preparing">Em preparo</option>
+                      <option value="ready">Prontos</option>
+                      <option value="completed">Concluídos</option>
+                      <option value="cancelled">Cancelados</option>
+                    </select>
+                    <button class="filter-reset" type="button" id="clearOrderFilters" aria-label="Limpar filtros" title="Limpar filtros">×</button>
+                  </div>
                 </th>
               </tr>
             </thead>
@@ -313,6 +303,6 @@
     <script src="assets/js/supabase-config.js?v=supabase-admin"></script>
     <script src="assets/js/brasilinbox-products.js"></script>
     <script src="assets/js/data.js?v=supabase-admin"></script>
-    <script src="assets/js/admin.js?v=admin-orders-compact-20260815"></script>
+    <script src="assets/js/admin.js?v=admin-orders-fit-20260815"></script>
   </body>
 </html>

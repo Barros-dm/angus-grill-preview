@@ -18,10 +18,7 @@ const adminState = {
     customer: "",
     fulfilment: "",
     items: "",
-    minTotal: "",
-    maxTotal: "",
-    status: "",
-    payment: ""
+    status: ""
   }
 };
 
@@ -247,22 +244,16 @@ function filteredOrders() {
   const reference = filters.reference.trim().toLocaleLowerCase("pt-BR");
   const customer = filters.customer.trim().toLocaleLowerCase("pt-BR");
   const items = filters.items.trim().toLocaleLowerCase("pt-BR");
-  const minTotal = filters.minTotal === "" ? null : Number(filters.minTotal);
-  const maxTotal = filters.maxTotal === "" ? null : Number(filters.maxTotal);
 
   return adminState.orders.filter((order) => {
     const orderItems = order.order_items?.length ? order.order_items : order.items_snapshot || [];
     const itemText = orderItems.map((item) => item.product_name || item.productName || "").join(" ").toLocaleLowerCase("pt-BR");
     const contactText = `${order.customer_name || ""} ${order.contact || ""}`.toLocaleLowerCase("pt-BR");
-    const total = Number(order.total_estimate ?? order.subtotal ?? 0);
     if (reference && !String(order.order_reference || "").toLocaleLowerCase("pt-BR").includes(reference)) return false;
     if (customer && !contactText.includes(customer)) return false;
     if (filters.fulfilment && order.fulfilment_type !== filters.fulfilment) return false;
     if (items && !itemText.includes(items)) return false;
-    if (minTotal !== null && total < minTotal) return false;
-    if (maxTotal !== null && total > maxTotal) return false;
     if (filters.status && order.status !== filters.status) return false;
-    if (filters.payment && (order.payment_status || "pending") !== filters.payment) return false;
     return true;
   });
 }
@@ -656,10 +647,7 @@ function setupAdminEvents() {
       customer: "",
       fulfilment: "",
       items: "",
-      minTotal: "",
-      maxTotal: "",
-      status: "",
-      payment: ""
+      status: ""
     };
     adminElements.orderFilters.querySelectorAll("input, select").forEach((input) => {
       input.value = "";
