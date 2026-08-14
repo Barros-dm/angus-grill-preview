@@ -26,7 +26,7 @@ const accountMode = document.body?.dataset.accountMode || "login";
 const ACCOUNT_PRODUCTION_ORIGIN = "https://angusgrill.co.uk";
 
 function accountRedirectUrl(path = "account") {
-  const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  const isLocal = window.location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(window.location.hostname);
   const origin = isLocal ? ACCOUNT_PRODUCTION_ORIGIN : window.location.origin;
   return `${origin}/${path}`;
 }
