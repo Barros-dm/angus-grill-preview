@@ -136,6 +136,7 @@ const I18N = {
     finishWhatsapp: "Finalizar pedido no WhatsApp",
     confirmation: "Pedido preparado para envio no WhatsApp. Confira a mensagem antes de enviar.",
     orderSaveError: "Não foi possível registrar o pedido online. Verifique os dados e tente novamente antes de abrir o WhatsApp.",
+    anonymousCheckoutDisabled: "O checkout anônimo ainda não está ativo. Ative Anonymous Sign-Ins no Supabase e tente novamente.",
     continueShopping: "Continuar comprando",
     viewOrder: "Ver pedido",
     categoryItems: "produtos",
@@ -330,6 +331,7 @@ const I18N = {
     finishWhatsapp: "Finish order on WhatsApp",
     confirmation: "Order prepared for WhatsApp. Please check the message before sending.",
     orderSaveError: "We could not save the order online. Check the details and try again before opening WhatsApp.",
+    anonymousCheckoutDisabled: "Anonymous checkout is not active yet. Enable Anonymous Sign-Ins in Supabase and try again.",
     continueShopping: "Continue shopping",
     viewOrder: "View order",
     categoryItems: "products",
@@ -524,6 +526,7 @@ const I18N = {
     finishWhatsapp: "Finalizar pedido por WhatsApp",
     confirmation: "Pedido preparado para WhatsApp. Revisa el mensaje antes de enviar.",
     orderSaveError: "No se pudo guardar el pedido online. Revise los datos e inténtelo de nuevo antes de abrir WhatsApp.",
+    anonymousCheckoutDisabled: "El checkout anónimo aún no está activo. Active Anonymous Sign-Ins en Supabase e inténtelo de nuevo.",
     continueShopping: "Continuar comprando",
     viewOrder: "Ver pedido",
     categoryItems: "productos",
@@ -718,6 +721,7 @@ const I18N = {
     finishWhatsapp: "Finalizează pe WhatsApp",
     confirmation: "Comanda este pregătită pentru WhatsApp. Verifică mesajul înainte de trimitere.",
     orderSaveError: "Comanda nu a putut fi salvată online. Verifică datele și încearcă din nou înainte de a deschide WhatsApp.",
+    anonymousCheckoutDisabled: "Checkout-ul anonim nu este activ încă. Activează Anonymous Sign-Ins în Supabase și încearcă din nou.",
     continueShopping: "Continuă cumpărăturile",
     viewOrder: "Vezi comanda",
     categoryItems: "produse",
@@ -2273,6 +2277,14 @@ async function attachCustomerSession(order) {
   }
 }
 
+function checkoutSaveErrorMessage(error) {
+  const message = String(error?.message || error || "").toLowerCase();
+  if (message.includes("anonymous") && (message.includes("disabled") || message.includes("enable"))) {
+    return t("anonymousCheckoutDisabled");
+  }
+  return t("orderSaveError");
+}
+
 function whatsappPreferredTimeLabel(value) {
   const labels = {
     morning: "Manhã",
@@ -2536,14 +2548,14 @@ function setupEvents() {
     const orderReference = generateOrderReference();
     const message = creatéMessage(form, orderReference);
     let order = orderPayloadFromForm(form, orderReference, message);
-    order = await attachCustomerSession(order);
     if (submitButton) submitButton.disabled = true;
     try {
+      order = await attachCustomerSession(order);
       await saveOrderBeforeWhatsapp(order);
       elements.confirmation.textContent = `${t("confirmation")} Referência: ${orderReference}`;
     } catch (error) {
       console.warn("Order could not be saved before WhatsApp.", error);
-      elements.confirmation.textContent = `${t("orderSaveError")} Referência: ${orderReference}`;
+      elements.confirmation.textContent = checkoutSaveErrorMessage(error);
       elements.confirmation.hidden = false;
       return;
     } finally {
