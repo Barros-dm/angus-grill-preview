@@ -3,7 +3,8 @@ const CUSTOMER_ORDER_STORAGE_KEY = "angus_grill_order_history";
 const accountState = {
   session: null,
   localOrders: [],
-  supabaseOrders: []
+  supabaseOrders: [],
+  passwordRecovery: isPasswordRecoveryRoute()
 };
 
 const accountElements = {
@@ -25,10 +26,11 @@ const accountElements = {
 const accountMode = document.body?.dataset.accountMode || "login";
 const ACCOUNT_PRODUCTION_ORIGIN = "https://angusgrill.co.uk";
 
-function accountRedirectUrl(path = "account") {
+function accountRedirectUrl(path = "account.html") {
   const isLocal = window.location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(window.location.hostname);
   const origin = isLocal ? ACCOUNT_PRODUCTION_ORIGIN : window.location.origin;
-  return `${origin}/${path}`;
+  const normalizedPath = path.includes(".") ? path : `${path}.html`;
+  return `${origin}/${normalizedPath}`;
 }
 
 function isPasswordRecoveryRoute() {
@@ -199,8 +201,8 @@ async function loadSupabaseOrders() {
 }
 
 function renderAuthState() {
-  const isRecovery = isPasswordRecoveryRoute();
-  const signedIn = Boolean(accountState.session);
+  const isRecovery = accountState.passwordRecovery || isPasswordRecoveryRoute();
+  const signedIn = Boolean(accountState.session) && !isRecovery;
   if (accountElements.authCard) accountElements.authCard.hidden = signedIn || isRecovery;
   if (accountElements.passwordResetCard) accountElements.passwordResetCard.hidden = !isRecovery;
   if (accountElements.registerCard) accountElements.registerCard.hidden = signedIn;
@@ -235,14 +237,16 @@ async function refreshAccount() {
 
   renderAuthState();
 
-  if (!accountState.session && !isPasswordRecoveryRoute()) {
+  const isRecovery = accountState.passwordRecovery || isPasswordRecoveryRoute();
+
+  if (!accountState.session && !isRecovery) {
     accountState.supabaseOrders = [];
     if (accountElements.orders) accountElements.orders.innerHTML = "";
     setAccountStatus("");
     return;
   }
 
-  if (isPasswordRecoveryRoute()) {
+  if (isRecovery) {
     accountState.supabaseOrders = [];
     if (accountElements.orders) accountElements.orders.innerHTML = "";
     setAccountStatus("Digite sua nova senha para concluir a recuperação.", "info");
@@ -377,7 +381,8 @@ function setupAccountEvents() {
         return;
       }
       accountElements.passwordResetForm.reset();
-      window.history.replaceState({}, "", "account");
+      accountState.passwordRecovery = false;
+      window.history.replaceState({}, "", "account.html");
       setAccountStatus("Senha atualizada com sucesso. Você já pode fazer login.", "success");
       accountState.session = null;
       await client.auth.signOut();
@@ -435,5 +440,19 @@ function setupAccountEvents() {
   }
 }
 
+function subscribeToRecoveryEvents() {
+  const client = angusSupabase();
+  if (!client) return;
+
+  client.auth.onAuthStateChange((event, session) => {
+    if (event !== "PASSWORD_RECOVERY") return;
+    accountState.passwordRecovery = true;
+    accountState.session = session?.user?.is_anonymous ? null : session;
+    renderAuthState();
+    setAccountStatus("Digite sua nova senha para concluir a recuperação.", "info");
+  });
+}
+
 setupAccountEvents();
+subscribeToRecoveryEvents();
 refreshAccount();
