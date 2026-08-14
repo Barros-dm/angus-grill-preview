@@ -137,6 +137,9 @@ function friendlyAuthMessage(message = "") {
   if (lower.includes("invalid login credentials")) return "E-mail ou senha incorretos.";
   if (lower.includes("user already registered")) return "Este e-mail já tem uma conta. Use o login.";
   if (lower.includes("password should be at least")) return "A senha precisa ter pelo menos 6 caracteres.";
+  if (lower.includes("http 504") || lower.includes("gateway timeout") || lower.includes("timeout")) {
+    return "O servidor de e-mail demorou a responder. Revise as configurações SMTP e tente novamente.";
+  }
   return text || "Não foi possível completar esta ação.";
 }
 
