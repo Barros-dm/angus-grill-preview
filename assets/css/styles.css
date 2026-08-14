@@ -1593,6 +1593,32 @@ a {
   gap: 6px;
 }
 
+.admin-row-actions {
+  display: grid;
+  gap: 6px;
+  min-width: 96px;
+}
+
+.admin-row-actions .small-button {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 7px 10px;
+  background: var(--white);
+  color: var(--charcoal);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.1;
+  box-shadow: none;
+}
+
+.admin-row-actions .small-button:hover,
+.admin-row-actions .small-button:focus-visible {
+  border-color: var(--charcoal);
+  background: #f5f6f7;
+}
+
 .admin-table input,
 .admin-table select {
   width: 100%;

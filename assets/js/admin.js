@@ -129,8 +129,10 @@ function renderRows() {
       <td>${Number(product.oldPrice) > Number(product.price) ? "Oferta" : (product.featured ? "Destaque" : "-")}</td>
       <td>${product.image ? `<img class="admin-product-thumb" src="${escapeHtml(product.image)}" alt="">` : "<small>Sem imagem</small>"}</td>
       <td>
-        <button class="small-button" type="button" data-edit="${escapeHtml(product.id)}">Editar</button>
-        <button class="small-button muted" type="button" data-hide="${escapeHtml(product.id)}">${product.isActive === false ? "Reativar" : "Ocultar"}</button>
+        <div class="admin-row-actions">
+          <button class="small-button" type="button" data-edit="${escapeHtml(product.id)}">Editar</button>
+          <button class="small-button muted" type="button" data-hide="${escapeHtml(product.id)}">${product.isActive === false ? "Reativar" : "Ocultar"}</button>
+        </div>
       </td>
     </tr>
   `).join("");
