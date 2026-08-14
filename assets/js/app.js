@@ -1299,6 +1299,10 @@ function cartSubtotalLabel() {
   return money(fixedSubtotal);
 }
 
+function qualifiesForFreeDelivery() {
+  return cartSubtotal() >= FREE_DELIVERY_THRESHOLD;
+}
+
 function selectedFulfilmentType() {
   return new FormData(elements.checkoutForm).get("fulfilmentType") || "delivery";
 }
@@ -1610,8 +1614,7 @@ function updatéDeliveryQuoteCard() {
   const mapsResultApplies = state.deliveryQuote.address === address && ["loading", "ready", "error"].includes(state.deliveryQuote.status);
   const fallback = quote ? null : detectDeliveryZone(address);
   const zone = quote?.zone || fallback?.zone;
-  const subtotal = cartSubtotal();
-  const isFree = subtotal >= FREE_DELIVERY_THRESHOLD && !cartHasVariableWeight();
+  const isFree = qualifiesForFreeDelivery();
 
   elements.deliveryQuoteCard.style.display = isDelivery ? "grid" : "none";
   elements.deliveryQuoteCard.classList.toggle("is-loading", isDelivery && state.deliveryQuote.status === "loading" && state.deliveryQuote.address === address);
@@ -1660,15 +1663,14 @@ function deliveryFeeAmount() {
   if (!cartItems().length) return 0;
   if (selectedFulfilmentType() !== "delivery") return 0;
   if (selectedDeliveryZone() === "outside") return 0;
-  const subtotal = cartSubtotal();
-  if (subtotal >= FREE_DELIVERY_THRESHOLD && !cartHasVariableWeight()) return 0;
+  if (qualifiesForFreeDelivery()) return 0;
   return DELIVERY_ZONES[selectedDeliveryZone()]?.fee || 0;
 }
 
 function deliveryFeeLabel() {
   if (selectedFulfilmentType() !== "delivery") return t("collection");
   if (selectedDeliveryZone() === "outside") return t("consult");
-  if (cartSubtotal() >= FREE_DELIVERY_THRESHOLD && !cartHasVariableWeight()) return t("free");
+  if (qualifiesForFreeDelivery()) return t("free");
   return money(deliveryFeeAmount());
 }
 
@@ -1689,7 +1691,7 @@ function updatéDeliveryUi() {
     elements.deliveryNote.textContent = t("deliverySummaryCollection");
   } else if (selectedDeliveryZone() === "outside") {
     elements.deliveryNote.textContent = t("deliverySummaryOutOfRange");
-  } else if (cartSubtotal() >= FREE_DELIVERY_THRESHOLD && !cartHasVariableWeight()) {
+  } else if (qualifiesForFreeDelivery()) {
     elements.deliveryNote.textContent = t("deliverySummaryFree");
   } else {
     elements.deliveryNote.textContent = t("deliverySummaryDefault");
