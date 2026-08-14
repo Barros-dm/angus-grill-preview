@@ -3715,7 +3715,8 @@ body {
     font-size: 0.82rem;
   }
 
-  .site-header .header-actions a[href="account.html"] {
+  .site-header .header-actions a[href="account.html"],
+  .site-header .header-actions .logout-link {
     display: none;
   }
 
@@ -4367,6 +4368,21 @@ body.home-categories-only .category-section {
   gap: 10px;
 }
 
+.logout-link {
+  border: 0;
+  padding: 10px 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.logout-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .login-link .header-icon {
   font-size: 1.42rem;
 }
@@ -4652,7 +4668,8 @@ body {
   }
 
   .header-actions .desktop-language-switcher,
-  .header-actions .login-link {
+  .header-actions .login-link,
+  .header-actions .logout-link {
     display: none;
   }
 

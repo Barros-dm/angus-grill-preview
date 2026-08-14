@@ -6,6 +6,7 @@ const state = {
   stockOnly: false,
   cart: new Map(),
   cartStorageKey: "angus_grill_cart:guest",
+  customerUser: null,
   modalProduct: null,
   modalOptionId: null,
   modalKgAmount: 0,
@@ -42,6 +43,8 @@ const I18N = {
     howToBuy: "Como comprar",
     call: "Ligar",
     account: "Login",
+    myAccount: "Minha conta",
+    logout: "Sair",
     cart: "Carrinho",
     allCategories: "Todas as categorias",
     allProductsNav: "Todos os Produtos",
@@ -237,6 +240,8 @@ const I18N = {
     howToBuy: "How to buy",
     call: "Call",
     account: "Login",
+    myAccount: "My account",
+    logout: "Sign out",
     cart: "Basket",
     allCategories: "All categories",
     allProductsNav: "All Products",
@@ -432,6 +437,8 @@ const I18N = {
     howToBuy: "Cómo comprar",
     call: "Llamar",
     account: "Login",
+    myAccount: "Mi cuenta",
+    logout: "Salir",
     cart: "Carrito",
     allCategories: "Todas las categorías",
     allProductsNav: "Todos los productos",
@@ -627,6 +634,8 @@ const I18N = {
     howToBuy: "Cum cumperi",
     call: "Sună",
     account: "Login",
+    myAccount: "Contul meu",
+    logout: "Ieșire",
     cart: "Coș",
     allCategories: "Toate categoriile",
     allProductsNav: "Toate produsele",
@@ -1117,6 +1126,9 @@ const elements = {
   desktopLanguageMenu: byId("desktopLanguageMenu"),
   desktopLanguageFlag: byId("desktopLanguageFlag"),
   desktopLanguageCode: byId("desktopLanguageCode"),
+  customerAccountLink: byId("customerAccountLink"),
+  customerAccountLabel: byId("customerAccountLabel"),
+  customerStoreLogout: byId("customerStoreLogout"),
   categoryCards: byId("categoryCards"),
   productGrid: byId("productGrid"),
   sortSelect: byId("sortSelect"),
@@ -1348,6 +1360,8 @@ async function restorePersistedCart() {
       user = null;
     }
   }
+
+  state.customerUser = user && !user.is_anonymous ? user : null;
 
   const guestKey = cartStorageKeyForUser(null);
   const customerKey = cartStorageKeyForUser(user);
@@ -1883,11 +1897,23 @@ function updateLanguageButtons() {
   });
 }
 
+function renderCustomerAuthControls() {
+  const signedIn = Boolean(state.customerUser);
+  if (elements.customerAccountLabel) {
+    elements.customerAccountLabel.textContent = signedIn ? t("myAccount") : t("account");
+  }
+  if (elements.customerStoreLogout) {
+    elements.customerStoreLogout.textContent = t("logout");
+    elements.customerStoreLogout.hidden = !signedIn;
+  }
+}
+
 function setLanguage(language) {
   if (!I18N[language]) return;
   state.language = language;
   applyTranslations();
   updateLanguageButtons();
+  renderCustomerAuthControls();
   renderCatégories();
   renderProducts();
   syncCategoryRoute();
@@ -2555,6 +2581,14 @@ function setupEvents() {
     renderProducts();
   });
   elements.openCart.addEventListener("click", openCart);
+  elements.customerStoreLogout?.addEventListener("click", async () => {
+    const client = angusSupabase();
+    if (!client) return;
+    elements.customerStoreLogout.disabled = true;
+    await client.auth.signOut();
+    state.customerUser = null;
+    window.location.reload();
+  });
   elements.mobileCart.addEventListener("click", openCart);
   elements.closeCart.addEventListener("click", (event) => {
     event.preventDefault();
@@ -2659,6 +2693,7 @@ async function initApp() {
   await restorePersistedCart();
   applyTranslations();
   updateLanguageButtons();
+  renderCustomerAuthControls();
   renderCatégories();
   renderProducts();
   syncCategoryRoute();
