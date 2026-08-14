@@ -1748,6 +1748,21 @@ a {
   opacity: 0.58;
 }
 
+.account-auth-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0;
+}
+
+.account-auth-links .forgot-password-link {
+  padding: 4px 14px;
+}
+
+.account-auth-links .forgot-password-link + .forgot-password-link {
+  border-left: 1px solid var(--border);
+}
+
 .account-orders {
   display: grid;
   gap: 14px;

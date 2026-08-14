@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css?v=account-route-20260813">
+    <link rel="stylesheet" href="assets/css/styles.css?v=account-auth-links-20260814">
   </head>
   <body class="account-shell" data-account-mode="login">
     <header class="admin-header account-header">
@@ -49,8 +49,10 @@
               <input type="password" name="password" autocomplete="current-password" required>
             </label>
             <button class="primary-button" type="submit">Entrar</button>
-            <a class="forgot-password-link" href="forgot-password.html">Esqueci minha senha</a>
-            <button class="forgot-password-link account-resend-confirmation" type="button" id="resendConfirmation">Reenviar e-mail de confirmação</button>
+            <div class="account-auth-links">
+              <a class="forgot-password-link" href="forgot-password.html">Esqueci minha senha</a>
+              <button class="forgot-password-link" type="button" id="resendConfirmation">Reenviar confirmação</button>
+            </div>
           </form>
           <div class="account-switch-panel">
             <span>Ainda não tem uma conta?</span>

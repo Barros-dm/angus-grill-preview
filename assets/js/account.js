@@ -308,7 +308,7 @@ function setupAccountEvents() {
         setAccountStatus(friendlyAuthMessage(error.message), "error");
         return;
       }
-      setAccountStatus("E-mail de confirmação reenviado. Verifique a caixa de entrada e o spam.", "success");
+      setAccountStatus("Solicitação de confirmação enviada. Verifique a caixa de entrada e o spam.", "success");
     });
   }
 
