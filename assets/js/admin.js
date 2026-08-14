@@ -233,8 +233,6 @@ function renderOrderRows() {
         <select id="payment-${escapeHtml(order.id)}" data-order-payment="${escapeHtml(order.id)}">
           ${["pending", "paid", "cash_on_delivery", "not_required", "refunded"].map((status) => `<option value="${status}" ${(order.payment_status || "pending") === status ? "selected" : ""}>${orderPaymentLabel(status)}</option>`).join("")}
         </select>
-        <label class="visually-hidden" for="notes-${escapeHtml(order.id)}">Notas internas do pedido ${escapeHtml(order.order_reference)}</label>
-        <textarea id="notes-${escapeHtml(order.id)}" data-order-notes="${escapeHtml(order.id)}" rows="3" placeholder="Notas internas, confirmação, pagamento...">${escapeHtml(order.admin_notes || "")}</textarea>
         <div>
           ${order.status === "pending_whatsapp_confirmation" ? `<button class="small-button" type="button" data-confirm-order="${escapeHtml(order.id)}">Confirmar pedido</button>` : ""}
           <button class="small-button muted" type="button" data-save-order="${escapeHtml(order.id)}">Salvar</button>
@@ -320,14 +318,12 @@ async function updateOrder(orderId, changes, successMessage = "Pedido atualizado
 async function saveOrderChanges(orderId, { confirmOrder = false } = {}) {
   const statusInput = adminElements.orderRows.querySelector(`[data-order-status="${CSS.escape(orderId)}"]`);
   const paymentInput = adminElements.orderRows.querySelector(`[data-order-payment="${CSS.escape(orderId)}"]`);
-  const notesInput = adminElements.orderRows.querySelector(`[data-order-notes="${CSS.escape(orderId)}"]`);
   const currentOrder = adminState.orders.find((order) => order.id === orderId);
-  if (!statusInput || !paymentInput || !notesInput || !currentOrder) return;
+  if (!statusInput || !paymentInput || !currentOrder) return;
   const status = confirmOrder ? "confirmed" : statusInput.value;
   const changes = {
     status,
-    payment_status: paymentInput.value,
-    admin_notes: notesInput.value.trim() || null
+    payment_status: paymentInput.value
   };
   if (status === "confirmed" && !currentOrder.confirmed_at) changes.confirmed_at = new Date().toISOString();
   if (status === "completed" && !currentOrder.completed_at) changes.completed_at = new Date().toISOString();
