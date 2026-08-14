@@ -2330,19 +2330,11 @@ function whatsappAddressBlock(form) {
 function creatéMessage(form, orderReference) {
   const type = form.fulfilmentType === "delivery" ? "Entrega" : "Retirada";
   const products = cartItems().map(({ product, option, quantity }, index) => {
-    if (isKgAmountProduct(product)) {
-      return `${index + 1}. ${product.name}
-   Quantidade: ${formatKgAmount(quantity)}
-   Total: ${money(cartLineTotal({ product, option, quantity }))} (${priceLabel(product)})
-   Observação: quantidade em kg escolhida pelo cliente`;
-    }
-    const price = option ? money(optionPrice(product, option)) : priceLabel(product);
-    const selected = option ? ` - ${option.label}` : ` - ${displayUnit(product)}`;
-    const note = option ? " - opção selecionada pelo cliente" : isVariableWeight(product) ? " - final peso/preço confirmado após pesagem" : "";
-    return `${index + 1}. ${product.name}
-   Quantidade: ${lineLabel(product, quantity, option)}
-   Opção: ${selected.replace(" - ", "")}
-   Total: ${price}${note}`;
+    const selectedOption = option ? ` - ${option.label}` : "";
+    const selectedQuantity = isKgAmountProduct(product) ? formatKgAmount(quantity) : `${quantity}x`;
+    const lineTotal = cartLineTotal({ product, option, quantity });
+    return `${index + 1}. ${product.name}${selectedOption}
+   ${selectedQuantity} - ${money(lineTotal)}`;
   }).join("\n\n");
 
   const variableWeightNote = cartHasVariableWeight()
