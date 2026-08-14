@@ -3706,6 +3706,7 @@ body {
   }
 
   .header-actions a,
+  .header-actions .logout-link,
   .cart-button {
     min-height: 38px;
     justify-content: center;
@@ -3715,8 +3716,7 @@ body {
     font-size: 0.82rem;
   }
 
-  .site-header .header-actions a[href="account.html"],
-  .site-header .header-actions .logout-link {
+  .site-header .header-actions a[href="account.html"] {
     display: none;
   }
 
@@ -4257,6 +4257,7 @@ body.home-categories-only .category-section {
   }
 
   .header-actions a,
+  .header-actions .logout-link,
   .header-actions .cart-button {
     display: flex;
     align-items: center;
@@ -4668,8 +4669,7 @@ body {
   }
 
   .header-actions .desktop-language-switcher,
-  .header-actions .login-link,
-  .header-actions .logout-link {
+  .header-actions .login-link {
     display: none;
   }
 
