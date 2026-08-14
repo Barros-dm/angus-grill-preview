@@ -1597,7 +1597,26 @@ a {
 
 #orderFilters th:nth-child(6) {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 34px;
   gap: 6px;
+}
+
+.filter-reset {
+  min-height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0;
+  background: var(--white);
+  color: var(--charcoal);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.filter-reset:hover,
+.filter-reset:focus-visible {
+  border-color: var(--charcoal);
+  background: #f5f6f7;
 }
 
 .admin-row-actions {
@@ -1654,19 +1673,19 @@ a {
 }
 
 .admin-orders-table .order-col-delivery {
-  width: 18%;
+  width: 17%;
 }
 
 .admin-orders-table .order-col-items {
-  width: 24%;
+  width: 22%;
 }
 
 .admin-orders-table .order-col-total {
-  width: 12%;
+  width: 11%;
 }
 
 .admin-orders-table .order-col-management {
-  width: 15%;
+  width: 18%;
 }
 
 .admin-orders-table td {
