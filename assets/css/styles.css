@@ -1575,6 +1575,24 @@ a {
   background: #f5f6f7;
 }
 
+.admin-filter-row th {
+  padding: 10px 8px;
+  vertical-align: top;
+}
+
+.admin-filter-row input,
+.admin-filter-row select {
+  min-width: 110px;
+  background: var(--white);
+  font-size: 0.82rem;
+}
+
+.admin-filter-row th:nth-child(3) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(78px, 1fr));
+  gap: 6px;
+}
+
 .admin-table input,
 .admin-table select {
   width: 100%;

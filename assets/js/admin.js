@@ -4,7 +4,16 @@ const adminState = {
   session: null,
   editingId: null,
   ready: false,
-  orderFilter: "all"
+  orderFilter: "all",
+  productFilters: {
+    name: "",
+    category: "",
+    minPrice: "",
+    maxPrice: "",
+    stock: "",
+    highlight: "",
+    image: ""
+  }
 };
 
 const adminElements = {
@@ -15,6 +24,8 @@ const adminElements = {
   workspace: document.getElementById("adminWorkspace"),
   summaryGrid: document.getElementById("summaryGrid"),
   productRows: document.getElementById("productRows"),
+  productFilters: document.getElementById("productFilters"),
+  clearProductFilters: document.getElementById("clearProductFilters"),
   addProduct: document.getElementById("addProduct"),
   importLocalProducts: document.getElementById("importLocalProducts"),
   productForm: document.getElementById("productForm"),
@@ -101,11 +112,15 @@ function renderRows() {
     adminElements.productRows.innerHTML = "";
     return;
   }
-  if (!adminState.products.length) {
-    adminElements.productRows.innerHTML = '<tr><td colspan="7" class="admin-empty-row">Nenhum produto encontrado. Importe o catálogo atual ou adicione o primeiro produto.</td></tr>';
+  const products = filteredProducts();
+  if (!products.length) {
+    const message = adminState.products.length
+      ? "Nenhum produto corresponde aos filtros selecionados."
+      : "Nenhum produto encontrado. Importe o catálogo atual ou adicione o primeiro produto.";
+    adminElements.productRows.innerHTML = `<tr><td colspan="7" class="admin-empty-row">${message}</td></tr>`;
     return;
   }
-  adminElements.productRows.innerHTML = adminState.products.map((product) => `
+  adminElements.productRows.innerHTML = products.map((product) => `
     <tr>
       <td><strong>${escapeHtml(product.name)}</strong><br><small>${escapeHtml(product.unit || product.id)}</small></td>
       <td>${escapeHtml(product.category)}</td>
@@ -119,6 +134,32 @@ function renderRows() {
       </td>
     </tr>
   `).join("");
+}
+
+function filteredProducts() {
+  const filters = adminState.productFilters;
+  const name = filters.name.trim().toLocaleLowerCase("pt-BR");
+  const minPrice = filters.minPrice === "" ? null : Number(filters.minPrice);
+  const maxPrice = filters.maxPrice === "" ? null : Number(filters.maxPrice);
+  return adminState.products.filter((product) => {
+    const isOffer = Number(product.oldPrice) > Number(product.price);
+    const hasHighlight = isOffer || product.featured || product.bestSeller;
+    if (name && !`${product.name} ${product.unit || ""}`.toLocaleLowerCase("pt-BR").includes(name)) return false;
+    if (filters.category && product.category !== filters.category) return false;
+    if (minPrice !== null && Number(product.price) < minPrice) return false;
+    if (maxPrice !== null && Number(product.price) > maxPrice) return false;
+    if (filters.stock === "available" && !product.inStock) return false;
+    if (filters.stock === "unavailable" && product.inStock) return false;
+    if (filters.stock === "positive" && Number(product.stock || 0) <= 0) return false;
+    if (filters.stock === "zero" && Number(product.stock || 0) !== 0) return false;
+    if (filters.highlight === "offer" && !isOffer) return false;
+    if (filters.highlight === "featured" && !product.featured) return false;
+    if (filters.highlight === "bestSeller" && !product.bestSeller) return false;
+    if (filters.highlight === "none" && hasHighlight) return false;
+    if (filters.image === "with" && !product.image) return false;
+    if (filters.image === "without" && product.image) return false;
+    return true;
+  });
 }
 
 function orderStatusLabel(status) {
@@ -477,6 +518,9 @@ async function loadAdminProducts() {
 function populateCategorySelect() {
   const select = adminElements.productForm.elements.category;
   select.innerHTML = editableCategories.map((category) => `<option value="${category}">${category}</option>`).join("");
+
+  const filter = adminElements.productFilters.querySelector('[name="category"]');
+  filter.innerHTML = `<option value="">Todas</option>${editableCategories.map((category) => `<option value="${category}">${category}</option>`).join("")}`;
 }
 
 function setupAdminEvents() {
@@ -520,6 +564,36 @@ function setupAdminEvents() {
   });
 
   adminElements.productForm.addEventListener("submit", saveProduct);
+
+  adminElements.productFilters.addEventListener("input", (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    adminState.productFilters[input.name] = input.value;
+    renderRows();
+  });
+
+  adminElements.productFilters.addEventListener("change", (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLSelectElement)) return;
+    adminState.productFilters[input.name] = input.value;
+    renderRows();
+  });
+
+  adminElements.clearProductFilters.addEventListener("click", () => {
+    adminState.productFilters = {
+      name: "",
+      category: "",
+      minPrice: "",
+      maxPrice: "",
+      stock: "",
+      highlight: "",
+      image: ""
+    };
+    adminElements.productFilters.querySelectorAll("input, select").forEach((input) => {
+      input.value = "";
+    });
+    renderRows();
+  });
 
   adminElements.productRows.addEventListener("click", async (event) => {
     const editButton = event.target.closest("[data-edit]");

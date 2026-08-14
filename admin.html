@@ -167,6 +167,53 @@
                 <th>Imagem</th>
                 <th>Ações</th>
               </tr>
+              <tr class="admin-filter-row" id="productFilters">
+                <th>
+                  <label class="visually-hidden" for="filterProductName">Filtrar por produto</label>
+                  <input id="filterProductName" name="name" type="search" placeholder="Buscar produto">
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterProductCategory">Filtrar por categoria</label>
+                  <select id="filterProductCategory" name="category">
+                    <option value="">Todas</option>
+                  </select>
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterMinPrice">Preço mínimo</label>
+                  <input id="filterMinPrice" name="minPrice" type="number" min="0" step="0.01" placeholder="Mín.">
+                  <label class="visually-hidden" for="filterMaxPrice">Preço máximo</label>
+                  <input id="filterMaxPrice" name="maxPrice" type="number" min="0" step="0.01" placeholder="Máx.">
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterProductStock">Filtrar por estoque</label>
+                  <select id="filterProductStock" name="stock">
+                    <option value="">Todos</option>
+                    <option value="available">Disponíveis</option>
+                    <option value="unavailable">Indisponíveis</option>
+                    <option value="positive">Quantidade acima de 0</option>
+                    <option value="zero">Quantidade 0</option>
+                  </select>
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterProductHighlight">Filtrar por destaque</label>
+                  <select id="filterProductHighlight" name="highlight">
+                    <option value="">Todos</option>
+                    <option value="offer">Ofertas</option>
+                    <option value="featured">Destaques</option>
+                    <option value="bestSeller">Mais vendidos</option>
+                    <option value="none">Sem destaque</option>
+                  </select>
+                </th>
+                <th>
+                  <label class="visually-hidden" for="filterProductImage">Filtrar por imagem</label>
+                  <select id="filterProductImage" name="image">
+                    <option value="">Todas</option>
+                    <option value="with">Com imagem</option>
+                    <option value="without">Sem imagem</option>
+                  </select>
+                </th>
+                <th><button class="small-button muted" type="button" id="clearProductFilters">Limpar</button></th>
+              </tr>
             </thead>
             <tbody id="productRows"></tbody>
           </table>
