@@ -135,13 +135,13 @@ function renderRows() {
   }
   adminElements.productRows.innerHTML = products.map((product) => `
     <tr>
-      <td><strong>${escapeHtml(product.name)}</strong><br><small>${escapeHtml(product.unit || product.id)}</small></td>
-      <td>${escapeHtml(product.category)}</td>
-      <td>${adminPriceLabel(product)}</td>
-      <td><span class="${product.inStock ? "stock-ok" : "stock-out"}">${product.inStock ? "Disponível" : "Indisponível"}</span>${product.stock ? `<br><small>${product.stock} em estoque</small>` : ""}</td>
-      <td>${Number(product.oldPrice) > Number(product.price) ? "Oferta" : (product.featured ? "Destaque" : "-")}</td>
-      <td>${product.image ? `<img class="admin-product-thumb" src="${escapeHtml(product.image)}" alt="">` : "<small>Sem imagem</small>"}</td>
-      <td>
+      <td data-label="Produto"><strong>${escapeHtml(product.name)}</strong><br><small>${escapeHtml(product.unit || product.id)}</small></td>
+      <td data-label="Categoria">${escapeHtml(product.category)}</td>
+      <td data-label="Preço">${adminPriceLabel(product)}</td>
+      <td data-label="Estoque"><span class="${product.inStock ? "stock-ok" : "stock-out"}">${product.inStock ? "Disponível" : "Indisponível"}</span>${product.stock ? `<br><small>${product.stock} em estoque</small>` : ""}</td>
+      <td data-label="Destaque">${Number(product.oldPrice) > Number(product.price) ? "Oferta" : (product.featured ? "Destaque" : "-")}</td>
+      <td data-label="Imagem">${product.image ? `<img class="admin-product-thumb" src="${escapeHtml(product.image)}" alt="">` : "<small>Sem imagem</small>"}</td>
+      <td data-label="Ações">
         <div class="admin-row-actions">
           <button class="small-button" type="button" data-edit="${escapeHtml(product.id)}">Editar</button>
           <button class="small-button muted" type="button" data-hide="${escapeHtml(product.id)}">${product.isActive === false ? "Reativar" : "Ocultar"}</button>
@@ -222,25 +222,25 @@ function renderOrderRows() {
   }
   adminElements.orderRows.innerHTML = orders.map((order) => `
     <tr>
-      <td><strong>${escapeHtml(order.order_reference)}</strong><br><small>${escapeHtml(order.source || "whatsapp_checkout")}</small></td>
-      <td><strong>${escapeHtml(order.customer_name || "-")}</strong><br><small>${escapeHtml(order.contact || "-")}</small></td>
-      <td>${escapeHtml(order.fulfilment_type === "collection" ? "Retirada" : "Entrega")}<br><small>${escapeHtml([order.address, order.address_line2, order.city, order.postcode].filter(Boolean).join(", ") || "-")}</small></td>
-      <td class="admin-order-items">${orderItemLabel(order).split("<br>").map(escapeHtml).join("<br>")}</td>
-      <td><strong>${order.total_estimate === null ? "A confirmar" : adminMoney(order.total_estimate)}</strong><br><small>Subtotal ${adminMoney(order.subtotal)}</small></td>
-      <td>${orderDateLabel(order.created_at)}</td>
-      <td>
+      <td data-label="Referência"><strong>${escapeHtml(order.order_reference)}</strong><br><small>${escapeHtml(order.source || "whatsapp_checkout")}</small></td>
+      <td data-label="Cliente"><strong>${escapeHtml(order.customer_name || "-")}</strong><br><small>${escapeHtml(order.contact || "-")}</small></td>
+      <td data-label="Entrega">${escapeHtml(order.fulfilment_type === "collection" ? "Retirada" : "Entrega")}<br><small>${escapeHtml([order.address, order.address_line2, order.city, order.postcode].filter(Boolean).join(", ") || "-")}</small></td>
+      <td class="admin-order-items" data-label="Itens">${orderItemLabel(order).split("<br>").map(escapeHtml).join("<br>")}</td>
+      <td data-label="Total"><strong>${order.total_estimate === null ? "A confirmar" : adminMoney(order.total_estimate)}</strong><br><small>Subtotal ${adminMoney(order.subtotal)}</small></td>
+      <td data-label="Recebido">${orderDateLabel(order.created_at)}</td>
+      <td data-label="Status">
         <label class="visually-hidden" for="status-${escapeHtml(order.id)}">Status do pedido ${escapeHtml(order.order_reference)}</label>
         <select id="status-${escapeHtml(order.id)}" data-order-status="${escapeHtml(order.id)}">
           ${["pending_whatsapp_confirmation", "confirmed", "preparing", "ready", "completed", "cancelled"].map((status) => `<option value="${status}" ${order.status === status ? "selected" : ""}>${orderStatusLabel(status)}</option>`).join("")}
         </select>
       </td>
-      <td>
+      <td data-label="Pagamento">
         <label class="visually-hidden" for="payment-${escapeHtml(order.id)}">Pagamento do pedido ${escapeHtml(order.order_reference)}</label>
         <select id="payment-${escapeHtml(order.id)}" data-order-payment="${escapeHtml(order.id)}">
           ${["pending", "paid", "cash_on_delivery", "not_required", "refunded"].map((status) => `<option value="${status}" ${(order.payment_status || "pending") === status ? "selected" : ""}>${orderPaymentLabel(status)}</option>`).join("")}
         </select>
       </td>
-      <td class="admin-order-actions">
+      <td class="admin-order-actions" data-label="Notas e ações">
         <label class="visually-hidden" for="notes-${escapeHtml(order.id)}">Notas internas do pedido ${escapeHtml(order.order_reference)}</label>
         <textarea id="notes-${escapeHtml(order.id)}" data-order-notes="${escapeHtml(order.id)}" rows="3" placeholder="Notas internas, confirmação, pagamento...">${escapeHtml(order.admin_notes || "")}</textarea>
         <div>
