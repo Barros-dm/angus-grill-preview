@@ -5,6 +5,7 @@ const state = {
   sort: "featured",
   stockOnly: false,
   cart: new Map(),
+  cartStorageKey: "angus_grill_cart:guest",
   modalProduct: null,
   modalOptionId: null,
   modalKgAmount: 0,
@@ -22,6 +23,7 @@ const state = {
 const money = (value) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 const byId = (id) => document.getElementById(id);
 const ORDER_STORAGE_KEY = "angus_grill_order_history";
+const CART_STORAGE_KEY = "angus_grill_cart";
 
 const LANGUAGE_META = {
   pt: { html: "pt-BR", label: "Português" },
@@ -1287,6 +1289,85 @@ function cartItems() {
   return [...state.cart.values()];
 }
 
+function cartStorageKeyForUser(user) {
+  return user && !user.is_anonymous ? `${CART_STORAGE_KEY}:customer:${user.id}` : `${CART_STORAGE_KEY}:guest`;
+}
+
+function readSavedCart(key) {
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+}
+
+function cartEntryFromSavedItem(savedItem) {
+  const product = PRODUCTS.find((item) => item.id === savedItem?.productId);
+  if (!product || !product.inStock) return null;
+
+  const option = savedItem.optionId ? productOptions(product).find((item) => item.id === savedItem.optionId) : null;
+  if (savedItem.optionId && !option) return null;
+  if (option && option.stock <= 0) return null;
+  if (hasOptions(product) && !option) return null;
+
+  const quantity = isKgAmountProduct(product)
+    ? sanitizeKgAmount(savedItem.quantity, { allowZero: true })
+    : Number(savedItem.quantity || 0);
+  if (!Number.isFinite(quantity) || quantity <= 0) return null;
+
+  return {
+    key: cartKey(product.id, option?.id),
+    product,
+    option,
+    quantity: option ? Math.min(quantity, option.stock) : quantity
+  };
+}
+
+function persistCart() {
+  try {
+    const savedItems = cartItems().map((item) => ({
+      productId: item.product.id,
+      optionId: item.option?.id || null,
+      quantity: item.quantity
+    }));
+    localStorage.setItem(state.cartStorageKey, JSON.stringify(savedItems));
+  } catch {
+    // A blocked browser storage area should not prevent shopping.
+  }
+}
+
+async function restorePersistedCart() {
+  let user = null;
+  const client = angusSupabase();
+  if (client) {
+    try {
+      const { data } = await client.auth.getSession();
+      user = data.session?.user || null;
+    } catch {
+      user = null;
+    }
+  }
+
+  const guestKey = cartStorageKeyForUser(null);
+  const customerKey = cartStorageKeyForUser(user);
+  const customerItems = user && !user.is_anonymous ? readSavedCart(customerKey) : [];
+  const savedItems = customerItems.length ? customerItems : readSavedCart(guestKey);
+
+  state.cartStorageKey = customerKey;
+  state.cart = new Map(
+    savedItems
+      .map(cartEntryFromSavedItem)
+      .filter(Boolean)
+      .map((item) => [item.key, item])
+  );
+
+  if (user && !user.is_anonymous && !customerItems.length && state.cart.size) {
+    persistCart();
+    localStorage.removeItem(guestKey);
+  }
+}
+
 function cartSubtotal() {
   return cartItems().reduce((total, item) => total + cartLineTotal(item), 0);
 }
@@ -1872,6 +1953,7 @@ function addToCart(productId, quantity = 1, optionId = null) {
     ? kgQuantity
     : (existing?.quantity || 0) + quantity;
   state.cart.set(key, { key, product, option, quantity: option ? Math.min(nextQuantity, option.stock) : nextQuantity });
+  persistCart();
   renderCart();
 }
 
@@ -1887,6 +1969,7 @@ function setCartQuantity(key, quantity) {
       state.cart.set(key, { ...existing, quantity: nextQuantity });
     }
   }
+  persistCart();
   renderCart();
 }
 
@@ -2573,6 +2656,7 @@ async function initApp() {
   } catch (error) {
     console.warn("Supabase products unavailable; using local catalogue.", error);
   }
+  await restorePersistedCart();
   applyTranslations();
   updateLanguageButtons();
   renderCatégories();
