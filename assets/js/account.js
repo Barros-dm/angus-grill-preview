@@ -445,7 +445,7 @@ function setupAccountEvents() {
         }, 500);
         return;
       }
-      setAccountStatus("Conta criada. Confirme o e-mail antes de fazer login. Ela aparecerá em Authentication > Users no Supabase.", "success");
+      setAccountStatus("Conta criada com sucesso. Confirme seu e-mail para entrar.", "success");
     });
   }
 
