@@ -25,6 +25,12 @@ This creates:
 - admin-only order viewing and order status management
 - customer-only access to their own order history
 
+Then run:
+
+`supabase/customer-profiles-migration.sql`
+
+This creates a profile for every existing e-mail account and automatically keeps `customer_profiles` in sync when future customers register or are invited through Supabase Auth.
+
 ## 3. Create The Admin User
 
 There are two separate kinds of user in Supabase:
@@ -106,6 +112,8 @@ The customer account page is:
 `account.html`
 
 It uses Supabase Auth with e-mail and password. Customers do not need Supabase dashboard access.
+
+Each e-mail account also has a matching row in `public.customer_profiles`, created by the customer profile migration. Anonymous checkout sessions are not stored as customer profiles.
 
 Saved orders include:
 
