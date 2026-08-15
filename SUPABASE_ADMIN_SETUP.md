@@ -29,7 +29,7 @@ Then run:
 
 `supabase/customer-profiles-migration.sql`
 
-This creates a profile for every existing e-mail account and automatically keeps `customer_profiles` in sync when future customers register or are invited through Supabase Auth.
+This creates a profile for every existing e-mail account and automatically keeps `customer_profiles` in sync when future customers register or are invited through Supabase Auth. It also grants only store admins permission to view the customer list in `admin.html`.
 
 ## 3. Create The Admin User
 

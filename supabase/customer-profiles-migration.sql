@@ -8,6 +8,15 @@ create table if not exists public.customer_profiles (
   created_at timestamptz not null default now()
 );
 
+alter table public.customer_profiles enable row level security;
+
+drop policy if exists "Admins can view customer profiles" on public.customer_profiles;
+create policy "Admins can view customer profiles"
+on public.customer_profiles
+for select
+to authenticated
+using (public.is_angus_admin());
+
 create or replace function public.sync_customer_profile()
 returns trigger
 language plpgsql

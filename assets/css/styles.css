@@ -1710,6 +1710,18 @@ a {
   width: 17%;
 }
 
+.admin-customers-table .customer-col-name {
+  width: 30%;
+}
+
+.admin-customers-table .customer-col-email {
+  width: 42%;
+}
+
+.admin-customers-table .customer-col-created {
+  width: 28%;
+}
+
 .admin-orders-table td {
   vertical-align: top;
   overflow-wrap: anywhere;

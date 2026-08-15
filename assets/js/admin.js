@@ -1,6 +1,7 @@
 const adminState = {
   products: [],
   orders: [],
+  customers: [],
   session: null,
   editingId: null,
   ready: false,
@@ -19,6 +20,9 @@ const adminState = {
     fulfilment: "",
     items: "",
     status: ""
+  },
+  customerFilters: {
+    query: ""
   }
 };
 
@@ -40,7 +44,12 @@ const adminElements = {
   orderRows: document.getElementById("orderRows"),
   orderFilters: document.getElementById("orderFilters"),
   clearOrderFilters: document.getElementById("clearOrderFilters"),
-  refreshOrders: document.getElementById("refreshOrders")
+  refreshOrders: document.getElementById("refreshOrders"),
+  customersSection: document.getElementById("customersSection"),
+  customerRows: document.getElementById("customerRows"),
+  customerFilters: document.getElementById("customerFilters"),
+  clearCustomerFilters: document.getElementById("clearCustomerFilters"),
+  refreshCustomers: document.getElementById("refreshCustomers")
 };
 
 const editableCategories = CATEGORIES.filter((category) => !["Todos", "Ofertas", "Mais Vendidos"].includes(category));
@@ -98,12 +107,14 @@ function renderSummary() {
   const offers = adminState.products.filter((product) => Number(product.oldPrice) > Number(product.price)).length;
   const images = adminState.products.filter((product) => product.image).length;
   const pendingOrders = adminState.orders.filter((order) => order.status === "pending_whatsapp_confirmation").length;
+  const customers = adminState.customers.length;
   const summary = [
     ["Produtos ativos", active],
     ["Categorias", categories],
     ["Ofertas/destaques", offers],
     ["Com imagem", images],
-    ["Pedidos aguardando", pendingOrders]
+    ["Pedidos aguardando", pendingOrders],
+    ["Clientes cadastrados", customers]
   ];
 
   adminElements.summaryGrid.innerHTML = summary.map(([label, value]) => `
@@ -258,10 +269,42 @@ function filteredOrders() {
   });
 }
 
+function filteredCustomers() {
+  const query = adminState.customerFilters.query.trim().toLocaleLowerCase("pt-BR");
+  if (!query) return adminState.customers;
+  return adminState.customers.filter((customer) => `${customer.name || ""} ${customer.email || ""}`
+    .toLocaleLowerCase("pt-BR")
+    .includes(query));
+}
+
+function renderCustomerRows() {
+  if (!adminElements.customerRows) return;
+  if (!adminState.ready) {
+    adminElements.customerRows.innerHTML = "";
+    return;
+  }
+  const customers = filteredCustomers();
+  if (!customers.length) {
+    const message = adminState.customers.length
+      ? "Nenhum cliente corresponde à busca."
+      : "Nenhuma conta de cliente encontrada.";
+    adminElements.customerRows.innerHTML = `<tr><td colspan="3" class="admin-empty-row">${message}</td></tr>`;
+    return;
+  }
+  adminElements.customerRows.innerHTML = customers.map((customer) => `
+    <tr>
+      <td data-label="Cliente"><strong>${escapeHtml(customer.name || "Não informado")}</strong></td>
+      <td data-label="E-mail">${escapeHtml(customer.email || "-")}</td>
+      <td data-label="Cadastro">${orderDateLabel(customer.created_at)}</td>
+    </tr>
+  `).join("");
+}
+
 function renderAdmin() {
   renderSummary();
   renderRows();
   renderOrderRows();
+  renderCustomerRows();
 }
 
 async function loadAdminOrders() {
@@ -289,6 +332,43 @@ async function refreshOrders() {
     setAdminStatus("Pedidos atualizados.", "success");
   } catch (error) {
     setAdminStatus(error.message || "Não foi possível carregar os pedidos.", "error");
+  }
+}
+
+async function loadAdminCustomers() {
+  if (!adminState.session) {
+    adminState.customers = [];
+    if (adminElements.customersSection) adminElements.customersSection.hidden = true;
+    return "";
+  }
+  const { data, error } = await angusSupabase()
+    .from("customer_profiles")
+    .select("id, email, name, created_at")
+    .order("created_at", { ascending: false })
+    .limit(200);
+  if (error) {
+    adminState.customers = [];
+    if (adminElements.customersSection) adminElements.customersSection.hidden = true;
+    return error.message || "Não foi possível carregar clientes.";
+  }
+  adminState.customers = data || [];
+  if (adminElements.customersSection) adminElements.customersSection.hidden = false;
+  return "";
+}
+
+async function refreshCustomers() {
+  if (!adminState.ready) return;
+  try {
+    setAdminStatus("Atualizando clientes...", "info");
+    const customerError = await loadAdminCustomers();
+    renderAdmin();
+    if (customerError) {
+      setAdminStatus("Não foi possível carregar a lista de clientes. Execute novamente a migração de perfis no Supabase.", "warning");
+      return;
+    }
+    setAdminStatus("Lista de clientes atualizada.", "success");
+  } catch (error) {
+    setAdminStatus(error.message || "Não foi possível carregar clientes.", "error");
   }
 }
 
@@ -472,6 +552,7 @@ async function loadAdminProducts() {
   const lockWorkspace = () => {
     adminState.products = [];
     adminState.orders = [];
+    adminState.customers = [];
     adminState.session = null;
     adminState.ready = false;
     adminState.editingId = null;
@@ -479,6 +560,7 @@ async function loadAdminProducts() {
     adminElements.logoutButton.hidden = true;
     adminElements.login.hidden = false;
     adminElements.ordersSection.hidden = true;
+    adminElements.customersSection.hidden = true;
     setFormMode(false);
     renderAdmin();
   };
@@ -524,8 +606,14 @@ async function loadAdminProducts() {
     adminElements.login.hidden = true;
     adminElements.logoutButton.hidden = false;
     await loadAdminOrders();
+    const customerError = await loadAdminCustomers();
     renderAdmin();
-    setAdminStatus("Painel administrativo conectado ao Supabase.", "success");
+    setAdminStatus(
+      customerError
+        ? "Painel conectado. Execute novamente a migração de perfis para liberar a lista de clientes."
+        : "Painel administrativo conectado ao Supabase.",
+      customerError ? "warning" : "success"
+    );
   } catch (error) {
     lockWorkspace();
     setAdminStatus(error.message || "Este usuário não tem acesso ao painel administrativo.", "error");
@@ -584,6 +672,7 @@ function setupAdminEvents() {
 
   adminElements.importLocalProducts.addEventListener("click", importLocalProducts);
   adminElements.refreshOrders.addEventListener("click", refreshOrders);
+  adminElements.refreshCustomers.addEventListener("click", refreshCustomers);
 
   adminElements.cancelProduct.addEventListener("click", () => {
     resetForm();
@@ -663,6 +752,21 @@ function setupAdminEvents() {
       input.value = "";
     });
     renderOrderRows();
+  });
+
+  adminElements.customerFilters.addEventListener("input", (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    adminState.customerFilters[input.name] = input.value;
+    renderCustomerRows();
+  });
+
+  adminElements.clearCustomerFilters.addEventListener("click", () => {
+    adminState.customerFilters = { query: "" };
+    adminElements.customerFilters.querySelectorAll("input").forEach((input) => {
+      input.value = "";
+    });
+    renderCustomerRows();
   });
 
   adminElements.orderRows.addEventListener("click", async (event) => {

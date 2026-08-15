@@ -296,6 +296,46 @@
         </div>
         </section>
 
+        <section class="admin-orders" id="customersSection" hidden>
+        <div class="admin-toolbar">
+          <div>
+            <p class="eyebrow">Clientes</p>
+            <h2>Contas de clientes</h2>
+            <p class="admin-note">Lista de contas criadas na loja. Clientes podem acompanhar somente os próprios pedidos.</p>
+          </div>
+          <div class="admin-toolbar-actions">
+            <button class="secondary-button" type="button" id="refreshCustomers">Atualizar clientes</button>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table admin-customers-table">
+            <colgroup>
+              <col class="customer-col-name">
+              <col class="customer-col-email">
+              <col class="customer-col-created">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>E-mail</th>
+                <th>Cadastro</th>
+              </tr>
+              <tr class="admin-filter-row" id="customerFilters">
+                <th data-filter-label="Cliente">
+                  <label class="visually-hidden" for="filterCustomerName">Filtrar por cliente</label>
+                  <input id="filterCustomerName" name="query" type="search" placeholder="Buscar nome ou e-mail">
+                </th>
+                <th data-filter-label="E-mail"><span class="visually-hidden">A busca por nome também pesquisa e-mail</span></th>
+                <th data-filter-label="Cadastro">
+                  <button class="small-button muted" type="button" id="clearCustomerFilters">Limpar</button>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="customerRows"></tbody>
+          </table>
+        </div>
+        </section>
+
       </div>
     </main>
 
@@ -303,6 +343,6 @@
     <script src="assets/js/supabase-config.js?v=supabase-admin"></script>
     <script src="assets/js/brasilinbox-products.js"></script>
     <script src="assets/js/data.js?v=supabase-admin"></script>
-    <script src="assets/js/admin.js?v=admin-orders-fit-20260815"></script>
+    <script src="assets/js/admin.js?v=admin-customers-20260815"></script>
   </body>
 </html>
