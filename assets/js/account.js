@@ -445,7 +445,7 @@ function setupAccountEvents() {
         }, 500);
         return;
       }
-      setAccountStatus("Conta criada com sucesso. Confirme seu e-mail para entrar.", "success");
+      setAccountStatus("Conta criada com sucesso. Verifique sua caixa de entrada e spam para confirmar seu e-mail e entrar.", "success");
     });
   }
 
