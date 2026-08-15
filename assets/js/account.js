@@ -36,7 +36,7 @@ function accountRedirectUrl(path = "account.html") {
 function isPasswordRecoveryRoute() {
   const queryType = new URLSearchParams(window.location.search).get("type");
   const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-  return queryType === "recovery" || hashParams.get("type") === "recovery" || hashParams.has("access_token");
+  return queryType === "recovery" || hashParams.get("type") === "recovery";
 }
 
 function passwordPairFromForm(form) {
