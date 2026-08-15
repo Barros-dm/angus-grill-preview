@@ -532,6 +532,16 @@ async function loadAdminProducts() {
   }
 }
 
+function friendlyAdminLoginMessage(message = "") {
+  const text = String(message || "");
+  const lower = text.toLowerCase();
+  if (lower.includes("invalid login credentials")) {
+    return "E-mail ou senha incorretos. O convite para o painel do Supabase não cria uma conta de login da loja.";
+  }
+  if (lower.includes("email not confirmed")) return "Confirme o e-mail da conta antes de entrar.";
+  return text || "Não foi possível entrar no painel.";
+}
+
 function populateCategorySelect() {
   const select = adminElements.productForm.elements.category;
   select.innerHTML = editableCategories.map((category) => `<option value="${category}">${category}</option>`).join("");
@@ -552,7 +562,7 @@ function setupAdminEvents() {
       password: formData.get("password")
     });
     if (error) {
-      setAdminStatus(error.message, "error");
+      setAdminStatus(friendlyAdminLoginMessage(error.message), "error");
       return;
     }
     adminElements.loginForm.reset();

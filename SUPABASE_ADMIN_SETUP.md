@@ -27,14 +27,30 @@ This creates:
 
 ## 3. Create The Admin User
 
-In Supabase Authentication, create the client login user.
+There are two separate kinds of user in Supabase:
 
-Then add that user to `admin_users`:
+- **Project member**: invited through the Supabase project dashboard. This gives access to Supabase itself, but cannot log into `admin.html`.
+- **Store admin**: created in **Authentication > Users**. This can log into `admin.html` only after being added to `admin_users`.
+
+For a store admin, open **Authentication > Users > Invite user**, send the invite to the client email, and let them choose their password. Then run this in the SQL Editor, replacing the email:
 
 ```sql
 insert into public.admin_users (user_id, email)
-values ('PASTE_AUTH_USER_ID_HERE', 'client-email@example.com');
+select id, email
+from auth.users
+where lower(email) = lower('client-email@example.com')
+on conflict (user_id) do update set email = excluded.email;
 ```
+
+Use this check before the insert. It must return one row. If it returns no rows, the person was invited to the Supabase project rather than the store authentication system:
+
+```sql
+select id, email, email_confirmed_at, last_sign_in_at
+from auth.users
+where lower(email) = lower('client-email@example.com');
+```
+
+You and the client can both be store admins: create an Auth user for each email and run the insert for each one. Do not put customer accounts in `admin_users`.
 
 ## 4. Add Supabase Public Config
 

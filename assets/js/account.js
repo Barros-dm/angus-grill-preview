@@ -145,6 +145,12 @@ function friendlyAuthMessage(message = "") {
   return text || "Não foi possível completar esta ação.";
 }
 
+function isExistingSignupResponse(data) {
+  // Supabase can return a user-shaped response for an existing address when
+  // email confirmation is enabled, so the registration state remains private.
+  return Array.isArray(data?.user?.identities) && data.user.identities.length === 0;
+}
+
 function renderOrders() {
   if (!accountElements.orders) return;
   const orders = [
@@ -399,6 +405,7 @@ function setupAccountEvents() {
         return;
       }
       const formData = new FormData(accountElements.registerForm);
+      const email = String(formData.get("email") || "").trim();
       const { password, passwordConfirm } = passwordPairFromForm(accountElements.registerForm);
       const validationMessage = validatePasswordPair(password, passwordConfirm);
       if (validationMessage) {
@@ -407,7 +414,7 @@ function setupAccountEvents() {
       }
       setAccountStatus("Criando conta...", "info");
       const { data, error } = await client.auth.signUp({
-        email: String(formData.get("email") || ""),
+        email,
         password,
         options: {
           emailRedirectTo: accountRedirectUrl("account"),
@@ -418,6 +425,17 @@ function setupAccountEvents() {
         setAccountStatus(friendlyAuthMessage(error.message), "error");
         return;
       }
+
+      if (isExistingSignupResponse(data)) {
+        setAccountStatus("Este e-mail já possui uma conta. Faça login ou reenvie a confirmação de e-mail.", "warning");
+        return;
+      }
+
+      if (!data.user) {
+        setAccountStatus("Não foi possível criar a conta. Tente novamente.", "error");
+        return;
+      }
+
       accountElements.registerForm.reset();
       if (data.session) {
         accountState.session = data.session;
@@ -427,7 +445,7 @@ function setupAccountEvents() {
         }, 500);
         return;
       }
-      setAccountStatus("Conta criada. Confirme o e-mail antes de fazer login.", "success");
+      setAccountStatus("Conta criada. Confirme o e-mail antes de fazer login. Ela aparecerá em Authentication > Users no Supabase.", "success");
     });
   }
 
