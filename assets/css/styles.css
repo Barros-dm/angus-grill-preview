@@ -1448,6 +1448,41 @@ a {
   font-size: 2rem;
 }
 
+.admin-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, max-content));
+  align-items: end;
+  gap: 8px;
+  margin-top: 34px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-tab {
+  min-height: 48px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 12px 18px 10px;
+}
+
+.admin-tab:hover,
+.admin-tab:focus-visible {
+  color: var(--charcoal);
+}
+
+.admin-tab.is-active {
+  border-bottom-color: var(--deep-red);
+  color: var(--deep-red);
+}
+
+.admin-panel[hidden] {
+  display: none;
+}
+
 .admin-toolbar {
   display: flex;
   justify-content: space-between;
@@ -2211,6 +2246,16 @@ a {
   .admin-form-actions {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .admin-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .admin-tab {
+    min-height: 56px;
+    padding-inline: 8px;
   }
 
   .admin-form-grid {

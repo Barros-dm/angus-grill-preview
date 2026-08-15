@@ -4,6 +4,7 @@ const adminState = {
   customers: [],
   session: null,
   editingId: null,
+  activeTab: "products",
   ready: false,
   productFilters: {
     name: "",
@@ -33,6 +34,9 @@ const adminElements = {
   logoutButton: document.getElementById("logoutButton"),
   workspace: document.getElementById("adminWorkspace"),
   summaryGrid: document.getElementById("summaryGrid"),
+  tabs: document.querySelectorAll("[data-admin-tab]"),
+  productsSection: document.getElementById("productsSection"),
+  productsTab: document.getElementById("productsTab"),
   productRows: document.getElementById("productRows"),
   productFilters: document.getElementById("productFilters"),
   clearProductFilters: document.getElementById("clearProductFilters"),
@@ -41,11 +45,13 @@ const adminElements = {
   productForm: document.getElementById("productForm"),
   cancelProduct: document.getElementById("cancelProduct"),
   ordersSection: document.getElementById("ordersSection"),
+  ordersTab: document.getElementById("ordersTab"),
   orderRows: document.getElementById("orderRows"),
   orderFilters: document.getElementById("orderFilters"),
   clearOrderFilters: document.getElementById("clearOrderFilters"),
   refreshOrders: document.getElementById("refreshOrders"),
   customersSection: document.getElementById("customersSection"),
+  customersTab: document.getElementById("customersTab"),
   customerRows: document.getElementById("customerRows"),
   customerFilters: document.getElementById("customerFilters"),
   clearCustomerFilters: document.getElementById("clearCustomerFilters"),
@@ -61,6 +67,47 @@ function adminMoney(value) {
 function setAdminStatus(message, tone = "info") {
   adminElements.status.textContent = message;
   adminElements.status.dataset.tone = tone;
+}
+
+const adminTabs = {
+  products: { button: "productsTab", panel: "productsSection" },
+  orders: { button: "ordersTab", panel: "ordersSection" },
+  customers: { button: "customersTab", panel: "customersSection" }
+};
+
+function setAdminTabAvailability(tabName, available) {
+  const tab = adminTabs[tabName];
+  if (!tab) return;
+  const button = adminElements[tab.button];
+  const panel = adminElements[tab.panel];
+  if (!button || !panel) return;
+
+  button.hidden = !available;
+  panel.dataset.tabAvailable = String(available);
+  if (!available && adminState.activeTab === tabName) {
+    adminState.activeTab = "products";
+    setAdminTab("products");
+  }
+}
+
+function setAdminTab(tabName, { focus = false } = {}) {
+  const target = adminTabs[tabName];
+  const targetPanel = target && adminElements[target.panel];
+  if (!targetPanel || targetPanel.dataset.tabAvailable === "false") return;
+
+  adminState.activeTab = tabName;
+  Object.entries(adminTabs).forEach(([name, tab]) => {
+    const button = adminElements[tab.button];
+    const panel = adminElements[tab.panel];
+    if (!button || !panel) return;
+    const isActive = name === tabName;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
+    button.tabIndex = isActive ? 0 : -1;
+    panel.hidden = !isActive || panel.dataset.tabAvailable === "false";
+  });
+
+  if (focus) adminElements[target.button]?.focus();
 }
 
 function escapeHtml(value = "") {
@@ -310,7 +357,7 @@ function renderAdmin() {
 async function loadAdminOrders() {
   if (!adminState.session) {
     adminState.orders = [];
-    if (adminElements.ordersSection) adminElements.ordersSection.hidden = true;
+    setAdminTabAvailability("orders", false);
     return;
   }
   const { data, error } = await angusSupabase()
@@ -320,7 +367,7 @@ async function loadAdminOrders() {
     .limit(100);
   if (error) throw error;
   adminState.orders = data || [];
-  if (adminElements.ordersSection) adminElements.ordersSection.hidden = false;
+  setAdminTabAvailability("orders", true);
 }
 
 async function refreshOrders() {
@@ -338,7 +385,7 @@ async function refreshOrders() {
 async function loadAdminCustomers() {
   if (!adminState.session) {
     adminState.customers = [];
-    if (adminElements.customersSection) adminElements.customersSection.hidden = true;
+    setAdminTabAvailability("customers", false);
     return "";
   }
   const { data, error } = await angusSupabase()
@@ -348,11 +395,11 @@ async function loadAdminCustomers() {
     .limit(200);
   if (error) {
     adminState.customers = [];
-    if (adminElements.customersSection) adminElements.customersSection.hidden = true;
+    setAdminTabAvailability("customers", false);
     return error.message || "Não foi possível carregar clientes.";
   }
   adminState.customers = data || [];
-  if (adminElements.customersSection) adminElements.customersSection.hidden = false;
+  setAdminTabAvailability("customers", true);
   return "";
 }
 
@@ -556,11 +603,13 @@ async function loadAdminProducts() {
     adminState.session = null;
     adminState.ready = false;
     adminState.editingId = null;
+    adminState.activeTab = "products";
     adminElements.workspace.hidden = true;
     adminElements.logoutButton.hidden = true;
     adminElements.login.hidden = false;
-    adminElements.ordersSection.hidden = true;
-    adminElements.customersSection.hidden = true;
+    setAdminTabAvailability("orders", false);
+    setAdminTabAvailability("customers", false);
+    setAdminTab("products");
     setFormMode(false);
     renderAdmin();
   };
@@ -607,6 +656,7 @@ async function loadAdminProducts() {
     adminElements.logoutButton.hidden = false;
     await loadAdminOrders();
     const customerError = await loadAdminCustomers();
+    setAdminTab(adminState.activeTab);
     renderAdmin();
     setAdminStatus(
       customerError
@@ -639,6 +689,27 @@ function populateCategorySelect() {
 }
 
 function setupAdminEvents() {
+  adminElements.tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      setAdminTab(tab.dataset.adminTab, { focus: true });
+    });
+  });
+
+  document.querySelector(".admin-tabs")?.addEventListener("keydown", (event) => {
+    if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) return;
+    const tabs = [...adminElements.tabs].filter((tab) => !tab.hidden);
+    const currentIndex = tabs.indexOf(document.activeElement);
+    if (currentIndex < 0 || !tabs.length) return;
+    event.preventDefault();
+    const nextIndex = event.key === "Home"
+      ? 0
+      : event.key === "End"
+        ? tabs.length - 1
+        : (currentIndex + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+    const nextTab = tabs[nextIndex];
+    setAdminTab(nextTab.dataset.adminTab, { focus: true });
+  });
+
   adminElements.loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const formData = new FormData(adminElements.loginForm);

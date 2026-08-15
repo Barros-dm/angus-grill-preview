@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css?v=admin-orders-fit-20260815">
+    <link rel="stylesheet" href="assets/css/styles.css?v=admin-tabs-20260815">
   </head>
   <body class="admin-shell">
     <header class="admin-header">
@@ -55,7 +55,13 @@
 
         <section class="summary-grid" id="summaryGrid" aria-label="Resumo"></section>
 
-        <section>
+        <nav class="admin-tabs" aria-label="Áreas de gestão" role="tablist">
+          <button class="admin-tab is-active" type="button" id="productsTab" data-admin-tab="products" role="tab" aria-controls="productsSection" aria-selected="true">Produtos</button>
+          <button class="admin-tab" type="button" id="ordersTab" data-admin-tab="orders" role="tab" aria-controls="ordersSection" aria-selected="false" tabindex="-1" hidden>Pedidos recebidos</button>
+          <button class="admin-tab" type="button" id="customersTab" data-admin-tab="customers" role="tab" aria-controls="customersSection" aria-selected="false" tabindex="-1" hidden>Clientes</button>
+        </nav>
+
+        <section class="admin-panel" id="productsSection" role="tabpanel" aria-labelledby="productsTab">
         <div class="admin-toolbar">
           <div>
             <p class="eyebrow">Produtos</p>
@@ -202,7 +208,7 @@
         </div>
         </section>
 
-        <section class="admin-orders" id="ordersSection" hidden>
+        <section class="admin-panel admin-orders" id="ordersSection" role="tabpanel" aria-labelledby="ordersTab" hidden>
         <div class="admin-toolbar">
           <div>
             <p class="eyebrow">Pedidos</p>
@@ -278,7 +284,7 @@
         </div>
         </section>
 
-        <section class="admin-orders" id="customersSection" hidden>
+        <section class="admin-panel admin-orders" id="customersSection" role="tabpanel" aria-labelledby="customersTab" hidden>
         <div class="admin-toolbar">
           <div>
             <p class="eyebrow">Clientes</p>
@@ -325,6 +331,6 @@
     <script src="assets/js/supabase-config.js?v=supabase-admin"></script>
     <script src="assets/js/brasilinbox-products.js"></script>
     <script src="assets/js/data.js?v=supabase-admin"></script>
-    <script src="assets/js/admin.js?v=admin-customers-20260815"></script>
+    <script src="assets/js/admin.js?v=admin-tabs-20260815"></script>
   </body>
 </html>
