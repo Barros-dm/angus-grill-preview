@@ -779,6 +779,24 @@ a {
   color: var(--muted);
 }
 
+.footer .footer-credit {
+  grid-column: 1 / -1;
+  justify-self: center;
+  margin: 8px 0 0;
+  padding: 6px 0;
+  color: #666;
+  font-size: 11px;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.footer .footer-credit:hover,
+.footer .footer-credit:focus-visible {
+  color: var(--deep-red);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .footer .footer-instagram {
   display: inline-flex;
   align-items: center;
